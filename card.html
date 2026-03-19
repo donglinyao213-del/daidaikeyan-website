@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>带带科研 — 名片宣传卡</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @page {
+      size: 90mm 54mm;
+      margin: 0;
+    }
+
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+      color: #1e293b;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .card {
+      width: 90mm;
+      height: 54mm;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+    }
+
+    .card:last-child {
+      page-break-after: auto;
+    }
+
+    /* ===== 正面 ===== */
+    .front {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4mm 6mm 3mm;
+    }
+
+    .front-brand {
+      font-size: 14pt;
+      font-weight: 800;
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.08em;
+      margin-bottom: 1mm;
+    }
+
+    .front-subtitle {
+      font-size: 5.5pt;
+      color: #475569;
+      font-weight: 400;
+      margin-bottom: 2.5mm;
+    }
+
+    .front-qr-wrap {
+      display: flex;
+      align-items: center;
+      gap: 3mm;
+    }
+
+    .front-qr {
+      width: 20mm;
+      height: 20mm;
+      border: 0.5px solid #dbeafe;
+      border-radius: 3px;
+      padding: 0.8mm;
+    }
+
+    .front-qr img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .front-qr-text {
+      text-align: left;
+    }
+
+    .front-qr-label {
+      font-size: 6.5pt;
+      font-weight: 600;
+      color: #3B82F6;
+      margin-bottom: 0.8mm;
+    }
+
+    .front-qr-desc {
+      font-size: 5pt;
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .front-bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1.5mm;
+      background: linear-gradient(90deg, #3B82F6, #60A5FA, #3B82F6);
+    }
+
+    /* ===== 背面 ===== */
+    .back {
+      padding: 4mm 5mm 3mm;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .back-title {
+      font-size: 6pt;
+      font-weight: 700;
+      color: #3B82F6;
+      text-align: center;
+      margin-bottom: 2.5mm;
+      letter-spacing: 0.05em;
+    }
+
+    .tags-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5mm;
+      margin-bottom: 3mm;
+    }
+
+    .tag-item {
+      background: linear-gradient(135deg, #eff6ff, #f8fafc);
+      border: 0.5px solid #dbeafe;
+      border-radius: 2px;
+      padding: 1.2mm 1mm;
+      text-align: center;
+      font-size: 5.5pt;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .divider {
+      height: 0.3px;
+      background: #e2e8f0;
+      margin-bottom: 2.5mm;
+    }
+
+    .advantages-row {
+      display: flex;
+      justify-content: center;
+      gap: 5mm;
+      margin-bottom: 3mm;
+    }
+
+    .adv-item {
+      display: flex;
+      align-items: center;
+      gap: 1mm;
+    }
+
+    .adv-icon {
+      width: 4mm;
+      height: 4mm;
+      min-width: 4mm;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .adv-icon svg {
+      width: 2.5mm;
+      height: 2.5mm;
+    }
+
+    .adv-label {
+      font-size: 5.5pt;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .back-footer {
+      margin-top: auto;
+      text-align: center;
+    }
+
+    .back-url {
+      font-size: 6pt;
+      color: #3B82F6;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    /* 打印 */
+    @media print {
+      body { background: white; }
+    }
+
+    /* 屏幕预览 */
+    @media screen {
+      body {
+        background: #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8mm;
+        padding: 20mm 0;
+      }
+      .card {
+        background: white;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+        border-radius: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== 正面：品牌 + 扫码入口 ===== -->
+  <div class="card front">
+    <div class="front-brand">带带科研</div>
+    <div class="front-subtitle">专业科研服务撮合平台</div>
+
+    <div class="front-qr-wrap">
+      <div class="front-qr">
+        <img src="assets/qrcode_profile.png" alt="带带科研小程序码">
+      </div>
+      <div class="front-qr-text">
+        <div class="front-qr-label">微信扫码使用</div>
+        <div class="front-qr-desc">精准对接领域专家<br>24小时快速匹配</div>
+      </div>
+    </div>
+
+    <div class="front-bottom-bar"></div>
+  </div>
+
+  <!-- ===== 背面：核心卖点 ===== -->
+  <div class="card back">
+    <div class="back-title">热门服务领域</div>
+
+    <div class="tags-grid">
+      <div class="tag-item">仿真建模</div>
+      <div class="tag-item">编程开发</div>
+      <div class="tag-item">AI深度学习</div>
+      <div class="tag-item">数据分析</div>
+      <div class="tag-item">论文润色</div>
+      <div class="tag-item">有限元分析</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="advantages-row">
+      <div class="adv-item">
+        <div class="adv-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <div class="adv-label">精准匹配</div>
+      </div>
+      <div class="adv-item">
+        <div class="adv-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div class="adv-label">专家认证</div>
+      </div>
+      <div class="adv-item">
+        <div class="adv-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <div class="adv-label">全程保障</div>
+      </div>
+    </div>
+
+    <div class="back-footer">
+      <div class="back-url">daidaikeyan.cn</div>
+    </div>
+  </div>
+
+</body>
+</html>
