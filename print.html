@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>带带科研 — 专业科研服务撮合平台 宣传册</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+      color: #1e293b;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      padding: 20mm 18mm;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+    }
+
+    .page:last-child {
+      page-break-after: auto;
+    }
+
+    /* ===== 第1页：封面 ===== */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .cover-brand {
+      font-size: 52pt;
+      font-weight: 800;
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+
+    .cover-subtitle {
+      font-size: 18pt;
+      color: #475569;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .cover-slogan {
+      font-size: 22pt;
+      color: #3B82F6;
+      font-weight: 600;
+      margin-bottom: 48px;
+    }
+
+    .cover-qr {
+      width: 52mm;
+      height: 52mm;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 4mm;
+      margin-bottom: 12px;
+    }
+
+    .cover-qr img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .cover-qr-label {
+      font-size: 10pt;
+      color: #94a3b8;
+      margin-bottom: 60px;
+    }
+
+    .cover-desc {
+      font-size: 10.5pt;
+      color: #64748b;
+      max-width: 380px;
+      line-height: 1.8;
+    }
+
+    .cover-bottom-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 8mm;
+      background: linear-gradient(90deg, #3B82F6, #60A5FA, #3B82F6);
+    }
+
+    /* ===== 第2页：核心内容 ===== */
+    .section-title {
+      font-size: 16pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 4mm;
+      padding-bottom: 2mm;
+      border-bottom: 2px solid #3B82F6;
+      display: inline-block;
+    }
+
+    .section-desc {
+      font-size: 9pt;
+      color: #94a3b8;
+      margin-bottom: 5mm;
+    }
+
+    /* 服务领域网格 */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3mm;
+      margin-bottom: 10mm;
+    }
+
+    .service-item {
+      background: linear-gradient(135deg, #eff6ff, #f8fafc);
+      border: 1px solid #dbeafe;
+      border-radius: 6px;
+      padding: 3.5mm 2mm;
+      text-align: center;
+      font-size: 9.5pt;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    /* 平台优势 */
+    .advantages-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4mm;
+      margin-bottom: 10mm;
+    }
+
+    .advantage-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 4mm 5mm;
+      display: flex;
+      gap: 3mm;
+      align-items: flex-start;
+    }
+
+    .advantage-icon {
+      width: 10mm;
+      height: 10mm;
+      min-width: 10mm;
+      background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14pt;
+    }
+
+    .advantage-title {
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 1mm;
+    }
+
+    .advantage-desc {
+      font-size: 8pt;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    /* 服务流程 */
+    .process-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2mm;
+    }
+
+    .process-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+
+    .process-num {
+      width: 12mm;
+      height: 12mm;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      color: white;
+      font-size: 13pt;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2.5mm;
+    }
+
+    .process-label {
+      font-size: 10pt;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 1.5mm;
+    }
+
+    .process-desc {
+      font-size: 7.5pt;
+      color: #64748b;
+      line-height: 1.4;
+      padding: 0 1mm;
+    }
+
+    .process-arrow {
+      position: absolute;
+      top: 6mm;
+      right: -4mm;
+      color: #93c5fd;
+      font-size: 12pt;
+    }
+
+    /* ===== 第3页 ===== */
+    .tags-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5mm;
+      margin-bottom: 10mm;
+    }
+
+    .tag {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 20px;
+      padding: 2mm 4mm;
+      font-size: 8.5pt;
+      color: #2563eb;
+      font-weight: 500;
+    }
+
+    /* 专家入驻 CTA */
+    .cta-box {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 1.5px solid #93c5fd;
+      border-radius: 12px;
+      padding: 6mm 8mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10mm;
+    }
+
+    .cta-title {
+      font-size: 15pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 2mm;
+    }
+
+    .cta-desc {
+      font-size: 9pt;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    .cta-benefits {
+      list-style: none;
+      margin-top: 3mm;
+    }
+
+    .cta-benefits li {
+      font-size: 8.5pt;
+      color: #334155;
+      padding: 1mm 0;
+    }
+
+    .cta-benefits li::before {
+      content: "✓ ";
+      color: #3B82F6;
+      font-weight: 700;
+    }
+
+    .cta-qr {
+      width: 36mm;
+      height: 36mm;
+      min-width: 36mm;
+      border: 1.5px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 2.5mm;
+      background: white;
+    }
+
+    .cta-qr img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* 数据展示 */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 16mm;
+      margin-bottom: 10mm;
+      padding: 5mm 0;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 24pt;
+      font-weight: 800;
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 8.5pt;
+      color: #64748b;
+      margin-top: 1mm;
+    }
+
+    /* 页脚 */
+    .page-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #1e293b, #334155);
+      padding: 5mm 18mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-size: 12pt;
+      font-weight: 700;
+      color: white;
+    }
+
+    .footer-sub {
+      font-size: 8pt;
+      color: #94a3b8;
+      margin-top: 1mm;
+    }
+
+    .footer-url {
+      font-size: 11pt;
+      color: #60A5FA;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .footer-copy {
+      font-size: 7pt;
+      color: #64748b;
+      margin-top: 1mm;
+    }
+
+    /* 打印时隐藏不需要的元素 */
+    @media print {
+      body { background: white; }
+      .page { margin: 0; }
+    }
+
+    /* 屏幕预览居中 */
+    @media screen {
+      body {
+        background: #e2e8f0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10mm;
+        padding: 10mm 0;
+      }
+      .page {
+        background: white;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.12);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== 第1页：封面 ==================== -->
+  <div class="page cover">
+    <div class="cover-brand">带带科研</div>
+    <div class="cover-subtitle">专业科研服务撮合平台</div>
+    <div class="cover-slogan">精准对接领域专家</div>
+
+    <div class="cover-qr">
+      <img src="assets/qrcode.png" alt="带带科研小程序码">
+    </div>
+    <div class="cover-qr-label">微信扫码 · 立即使用</div>
+
+    <div class="cover-desc">
+      覆盖仿真建模、编程开发、AI深度学习、数据分析等<br>
+      12 大科研服务领域，平台担保交易，24小时快速匹配
+    </div>
+
+    <div class="cover-bottom-bar"></div>
+  </div>
+
+  <!-- ==================== 第2页：核心内容 ==================== -->
+  <div class="page">
+    <!-- 12大服务领域 -->
+    <div class="section-title">12 大服务领域</div>
+    <div class="section-desc">覆盖主流科研技术方向，满足多元化学术需求</div>
+    <div class="services-grid">
+      <div class="service-item">仿真建模</div>
+      <div class="service-item">编程开发</div>
+      <div class="service-item">AI深度学习</div>
+      <div class="service-item">数据分析</div>
+      <div class="service-item">有限元分析</div>
+      <div class="service-item">论文润色</div>
+      <div class="service-item">实验设计</div>
+      <div class="service-item">统计分析</div>
+      <div class="service-item">科研绘图</div>
+      <div class="service-item">电路设计</div>
+      <div class="service-item">工程计算</div>
+      <div class="service-item">更多领域</div>
+    </div>
+
+    <!-- 4大平台优势 -->
+    <div class="section-title">平台优势</div>
+    <div class="section-desc">专注科研服务，让学术合作更简单</div>
+    <div class="advantages-grid">
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <div>
+          <div class="advantage-title">精准匹配</div>
+          <div class="advantage-desc">智能需求分析，根据研究方向、技术栈、项目周期等维度，精准对接最合适的领域专家</div>
+        </div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+          <div class="advantage-title">专家认证</div>
+          <div class="advantage-desc">严格资质审核，验证学历背景与专业能力，确保每一位入驻专家的服务质量</div>
+        </div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </div>
+        <div>
+          <div class="advantage-title">全程保障</div>
+          <div class="advantage-desc">平台担保交易，资金安全托管，服务全程可追溯，不满意可协商退款</div>
+        </div>
+      </div>
+      <div class="advantage-card">
+        <div class="advantage-icon">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div>
+          <div class="advantage-title">高效对接</div>
+          <div class="advantage-desc">一对一客服快速响应，从需求发布到专家对接，平均24小时内完成匹配</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 服务流程 -->
+    <div class="section-title">服务流程</div>
+    <div class="section-desc">四步完成，简单高效</div>
+    <div class="process-row">
+      <div class="process-step">
+        <div class="process-num">1</div>
+        <div class="process-label">描述需求</div>
+        <div class="process-desc">在小程序中简要描述<br>科研需求和技术方向</div>
+        <div class="process-arrow">→</div>
+      </div>
+      <div class="process-step">
+        <div class="process-num">2</div>
+        <div class="process-label">客服确认</div>
+        <div class="process-desc">专属客服一对一沟通<br>明确需求细节与预期</div>
+        <div class="process-arrow">→</div>
+      </div>
+      <div class="process-step">
+        <div class="process-num">3</div>
+        <div class="process-label">专家对接</div>
+        <div class="process-desc">平台匹配领域专家<br>确认方案与报价</div>
+        <div class="process-arrow">→</div>
+      </div>
+      <div class="process-step">
+        <div class="process-num">4</div>
+        <div class="process-label">完成交付</div>
+        <div class="process-desc">专家完成服务<br>验收满意后确认完成</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 第3页：热门需求 + 专家入驻 + 联系 ==================== -->
+  <div class="page">
+    <!-- 热门需求标签云 -->
+    <div class="section-title">热门需求</div>
+    <div class="section-desc">来自真实用户的高频科研服务需求</div>
+    <div class="tags-cloud">
+      <span class="tag">Simulink仿真建模</span>
+      <span class="tag">YOLO目标检测</span>
+      <span class="tag">论文润色与翻译</span>
+      <span class="tag">Python数据分析</span>
+      <span class="tag">ANSYS有限元</span>
+      <span class="tag">MATLAB算法开发</span>
+      <span class="tag">深度学习模型训练</span>
+      <span class="tag">SPSS统计分析</span>
+      <span class="tag">CFD流体仿真</span>
+      <span class="tag">PCB电路设计</span>
+      <span class="tag">科研绘图</span>
+      <span class="tag">文献综述</span>
+      <span class="tag">实验方案设计</span>
+      <span class="tag">NLP自然语言处理</span>
+      <span class="tag">图像分割与识别</span>
+      <span class="tag">嵌入式开发</span>
+    </div>
+
+    <!-- 专家入驻 CTA -->
+    <div class="section-title">专家入驻</div>
+    <div class="section-desc">加入带带科研专家团队，发挥您的专业价值</div>
+    <div class="cta-box">
+      <div>
+        <div class="cta-title">成为认证专家</div>
+        <div class="cta-desc">如果您在某一科研领域有深厚积累，欢迎加入我们</div>
+        <ul class="cta-benefits">
+          <li>灵活接单，自主安排时间，按能力获取报酬</li>
+          <li>平台保障交易安全，按时结算服务费用</li>
+          <li>加入专业社群，与同领域专家交流合作</li>
+        </ul>
+      </div>
+      <div style="text-align: center;">
+        <div class="cta-qr">
+          <img src="assets/qrcode_profile.png" alt="扫码入驻">
+        </div>
+        <div style="font-size: 7.5pt; color: #64748b; margin-top: 2mm;">扫码申请入驻</div>
+      </div>
+    </div>
+
+    <!-- 数据展示 -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-num">12+</div>
+        <div class="stat-label">覆盖科研服务领域</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">1000+</div>
+        <div class="stat-label">认证专家入驻</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5000+</div>
+        <div class="stat-label">需求成功对接</div>
+      </div>
+    </div>
+
+    <!-- 学术诚信声明 -->
+    <div style="text-align: center; margin-bottom: 6mm;">
+      <div style="font-size: 8pt; color: #94a3b8; line-height: 1.6;">
+        带带科研致力于构建规范、透明的科研服务生态。平台严格遵守学术诚信原则，所有服务以辅助和指导为核心。
+      </div>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="page-footer">
+      <div>
+        <div class="footer-brand">带带科研</div>
+        <div class="footer-sub">专业科研服务撮合平台</div>
+      </div>
+      <div style="text-align: right;">
+        <div class="footer-url">daidaikeyan.cn</div>
+        <div class="footer-copy">&copy; 2025 带带科研 All Rights Reserved</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
