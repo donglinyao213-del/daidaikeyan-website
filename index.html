@@ -116,86 +116,167 @@
     }
   </script>
   <style>
+    /* ---- Base ---- */
     html { scroll-behavior: smooth; }
-    body { font-family: 'Noto Sans SC', system-ui, sans-serif; }
-    .gradient-text {
-      background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 50%, #818CF8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    body {
+      font-family: 'Noto Sans SC', system-ui, sans-serif;
+      letter-spacing: 0.01em;
+      transition: background-color 0.5s ease, color 0.5s ease;
     }
-    .hero-bg {
-      background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+
+    /* ---- Dark (default) ---- */
+    :root {
+      --bg-primary: #0F172A;
+      --bg-secondary: #1E293B;
+      --bg-card: rgba(255,255,255,0.03);
+      --bg-card-alt: rgba(255,255,255,0.02);
+      --bg-icon: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.04);
+      --border-hover: rgba(96,165,250,0.15);
+      --text-primary: rgba(255,255,255,0.90);
+      --text-secondary: rgba(255,255,255,0.70);
+      --text-tertiary: rgba(255,255,255,0.40);
+      --text-muted: rgba(255,255,255,0.25);
+      --text-faint: rgba(255,255,255,0.15);
+      --icon-color: rgba(255,255,255,0.40);
+      --nav-bg: rgba(15,23,42,0.60);
+      --qr-bg: #ffffff;
+      --qr-text: #374151;
+      --divider: rgba(255,255,255,0.04);
+      --plus-color: rgba(255,255,255,0.10);
     }
-    .card-hover {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    /* ---- Light (macOS) ---- */
+    html.light {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-card: rgba(0,0,0,0.025);
+      --bg-card-alt: rgba(0,0,0,0.018);
+      --bg-icon: rgba(0,0,0,0.05);
+      --border: rgba(0,0,0,0.08);
+      --border-hover: rgba(0,0,0,0.15);
+      --text-primary: #1d1d1f;
+      --text-secondary: #424245;
+      --text-tertiary: #6e6e73;
+      --text-muted: #86868b;
+      --text-faint: #aeaeb2;
+      --icon-color: #86868b;
+      --nav-bg: rgba(255,255,255,0.80);
+      --qr-bg: #ffffff;
+      --qr-text: #374151;
+      --divider: rgba(0,0,0,0.06);
+      --plus-color: rgba(0,0,0,0.10);
     }
-    .card-hover:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+
+    /* ---- Themed classes ---- */
+    .t-bg-primary { background-color: var(--bg-primary); }
+    .t-bg-secondary { background-color: var(--bg-secondary); }
+    .t-bg-card { background-color: var(--bg-card); }
+    .t-bg-card-alt { background-color: var(--bg-card-alt); }
+    .t-bg-icon { background-color: var(--bg-icon); }
+    .t-border { border-color: var(--border); }
+    .t-text-primary { color: var(--text-primary); }
+    .t-text-secondary { color: var(--text-secondary); }
+    .t-text-tertiary { color: var(--text-tertiary); }
+    .t-text-muted { color: var(--text-muted); }
+    .t-text-faint { color: var(--text-faint); }
+    .t-icon { color: var(--icon-color); }
+    .t-nav-bg { background-color: var(--nav-bg); }
+    .t-divider { background-color: var(--divider); }
+
+    .card {
+      transition: border-color 0.3s ease, background-color 0.5s ease;
     }
-    .step-line::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 100%;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, #3B82F6, #3B82F640);
+    .card:hover {
+      border-color: var(--border-hover);
     }
-    @media (max-width: 768px) {
-      .step-line::after { display: none; }
+
+    /* Smooth theme transition on all themed elements */
+    .t-bg-primary, .t-bg-secondary, .t-bg-card, .t-bg-card-alt, .t-bg-icon,
+    .t-text-primary, .t-text-secondary, .t-text-tertiary, .t-text-muted, .t-text-faint,
+    .t-icon, .t-nav-bg, .t-divider, .card, nav, section, footer, details {
+      transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
     }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      width: 36px; height: 36px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      background: var(--bg-icon);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .theme-toggle:hover { border-color: var(--border-hover); }
+    .theme-toggle svg { width: 16px; height: 16px; color: var(--icon-color); transition: color 0.3s ease; }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+    html.light .theme-toggle .icon-sun { display: block; }
+    html.light .theme-toggle .icon-moon { display: none; }
+
+    /* QR code box in light mode */
+    html.light .qr-box {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+    }
+
+    details summary::-webkit-details-marker { display: none; }
+    details summary { list-style: none; }
   </style>
 </head>
-<body class="bg-brand-dark text-gray-200 antialiased">
+<body class="t-bg-primary antialiased">
 
   <!-- Navigation -->
-  <nav class="fixed top-0 w-full z-50 bg-brand-dark/80 backdrop-blur-md border-b border-white/5">
-    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-      <a href="#" class="text-xl font-bold tracking-wide gradient-text">带带科研</a>
-      <div class="hidden md:flex items-center gap-8 text-sm text-gray-400">
-        <a href="#capabilities" class="hover:text-white transition-colors">平台能力</a>
-        <a href="#approach" class="hover:text-white transition-colors">服务方式</a>
-        <a href="#principles" class="hover:text-white transition-colors">质量原则</a>
-        <a href="#join" class="hover:text-white transition-colors">专家入驻</a>
-        <a href="#contact" class="hover:text-white transition-colors">联系我们</a>
+  <nav class="fixed top-0 w-full z-50 t-nav-bg backdrop-blur-xl border-b t-border">
+    <div class="max-w-5xl mx-auto px-8 h-16 flex items-center justify-between">
+      <a href="#" class="text-lg font-medium tracking-wide t-text-primary">带带科研</a>
+      <div class="hidden md:flex items-center gap-10 text-[13px] t-text-tertiary">
+        <a href="#capabilities" class="hover:opacity-70 transition-opacity duration-300">平台能力</a>
+        <a href="#approach" class="hover:opacity-70 transition-opacity duration-300">服务方式</a>
+        <a href="#principles" class="hover:opacity-70 transition-opacity duration-300">质量原则</a>
+        <a href="#join" class="hover:opacity-70 transition-opacity duration-300">专家入驻</a>
+        <a href="#contact" class="hover:opacity-70 transition-opacity duration-300">联系我们</a>
       </div>
-      <a href="#hero" class="text-sm text-brand-accent hover:text-brand-light transition-colors">扫码使用 →</a>
+      <div class="flex items-center gap-4">
+        <a href="#hero" class="text-[13px] t-text-tertiary hover:opacity-70 transition-opacity duration-300">扫码使用 →</a>
+        <button onclick="toggleTheme()" class="theme-toggle" aria-label="切换主题">
+          <svg class="icon-moon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+          <svg class="icon-sun" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        </button>
+      </div>
     </div>
   </nav>
 
   <!-- Hero -->
-  <section id="hero" class="hero-bg min-h-screen flex items-center pt-16">
-    <div class="max-w-6xl mx-auto px-6 py-20 md:py-32 w-full">
-      <div class="flex flex-col md:flex-row items-center gap-16">
+  <section id="hero" class="t-bg-primary min-h-screen flex items-center pt-16">
+    <div class="max-w-5xl mx-auto px-8 py-24 md:py-40 w-full">
+      <div class="flex flex-col md:flex-row items-center gap-20">
         <div class="flex-1 text-center md:text-left">
-          <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-white leading-tight mb-6">
+          <h1 class="text-4xl md:text-[56px] font-medium tracking-tight t-text-primary leading-tight mb-8">
             带带科研
           </h1>
-          <p class="text-lg md:text-xl text-gray-400 mb-4 font-light">
+          <p class="text-base md:text-lg t-text-muted mb-6 font-light tracking-wide">
             AI 驱动的智能科研服务平台
           </p>
-          <p class="text-2xl md:text-3xl text-brand-light font-medium mb-10">
+          <p class="text-xl md:text-2xl t-text-secondary font-light mb-16 tracking-wide">
             研究问题咨询 · 方法论指导 · 专家资源对接
           </p>
-          <p class="text-gray-500 text-sm">
+          <p class="t-text-faint text-[13px] font-light">
             以 AI 辅助能力结合人工专家协作，提升科研效率
           </p>
         </div>
-        <div class="flex flex-col items-center gap-4">
-          <div class="w-48 h-48 bg-white rounded-2xl p-3 shadow-lg shadow-brand-accent/10">
+        <div class="flex flex-col items-center gap-5">
+          <div class="w-44 h-44 rounded-3xl p-3 qr-box" style="background:var(--qr-bg);">
             <img src="assets/qrcode.png" alt="带带科研小程序码" class="w-full h-full object-contain"
-                 onerror="this.parentElement.innerHTML='<div class=\'w-full h-full bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-sm\'>小程序码</div>'">
+                 onerror="this.parentElement.innerHTML='<div class=\'w-full h-full bg-gray-50 rounded-2xl flex items-center justify-center text-gray-300 text-sm\'>小程序码</div>'">
           </div>
-          <p class="text-gray-400 text-sm">微信扫码立即使用</p>
-          <div class="flex flex-col items-center gap-1 mt-1">
-            <div class="inline-flex items-center bg-white rounded-full pl-2.5 pr-4 py-1.5 shadow-sm" style="min-width: 140px;">
-              <svg viewBox="0 0 24 24" class="w-4 h-4 mr-2 flex-shrink-0"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="#07C160" stroke-width="2.5" fill="none"/></svg>
-              <span class="text-sm text-gray-800 font-medium">带带科研</span>
+          <p class="t-text-muted text-[13px]">微信扫码立即使用</p>
+          <div class="flex flex-col items-center gap-1.5 mt-2">
+            <div class="inline-flex items-center bg-white rounded-full pl-3 pr-4 py-1.5" style="min-width: 140px;">
+              <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 mr-2 flex-shrink-0"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="#07C160" stroke-width="2.5" fill="none"/></svg>
+              <span class="text-[13px] text-gray-700 font-medium">带带科研</span>
             </div>
-            <p class="text-[10px] text-gray-500">微信搜一搜</p>
-          </div>
+            <p class="text-[10px] t-text-faint">微信搜一搜</p>
           </div>
         </div>
       </div>
@@ -203,114 +284,97 @@
   </section>
 
   <!-- 核心能力 -->
-  <section id="capabilities" class="py-24 bg-brand-deeper">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl font-bold text-white text-center mb-4">核心能力</h2>
-      <p class="text-gray-500 text-center mb-16">AI 与专家协同，构建智能科研服务闭环</p>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="bg-brand-dark/60 rounded-2xl p-8 border border-white/5 card-hover">
-          <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center text-brand-accent mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-1.5 4.5H6.5L5 14.5m14 0H5"/></svg>
+  <section id="capabilities" class="py-32 t-bg-primary">
+    <div class="max-w-5xl mx-auto px-8">
+      <h2 class="text-2xl font-medium t-text-primary text-center mb-3">核心能力</h2>
+      <p class="t-text-muted text-[13px] text-center mb-20">AI 与专家协同，构建智能科研服务闭环</p>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="t-bg-card rounded-3xl p-10 border t-border card">
+          <div class="w-10 h-10 rounded-2xl t-bg-icon flex items-center justify-center t-icon mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-1.5 4.5H6.5L5 14.5m14 0H5"/></svg>
           </div>
-          <h3 class="text-lg font-medium text-white mb-3">AI 科研咨询</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">基于科研知识与场景理解的智能咨询支持，辅助研究问题梳理与方法论探索。</p>
+          <h3 class="text-[15px] font-medium t-text-secondary mb-3">AI 科研咨询</h3>
+          <p class="t-text-muted text-[13px] leading-relaxed">基于科研知识与场景理解的智能咨询支持，辅助研究问题梳理与方法论探索。</p>
         </div>
-        <div class="bg-brand-dark/60 rounded-2xl p-8 border border-white/5 card-hover">
-          <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center text-brand-accent mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+        <div class="t-bg-card rounded-3xl p-10 border t-border card">
+          <div class="w-10 h-10 rounded-2xl t-bg-icon flex items-center justify-center t-icon mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
           </div>
-          <h3 class="text-lg font-medium text-white mb-3">专家资源匹配</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">面向课题需求的专家资源智能匹配与精准对接，覆盖多学科领域。</p>
+          <h3 class="text-[15px] font-medium t-text-secondary mb-3">专家资源匹配</h3>
+          <p class="t-text-muted text-[13px] leading-relaxed">面向课题需求的专家资源智能匹配与精准对接，覆盖多学科领域。</p>
         </div>
-        <div class="bg-brand-dark/60 rounded-2xl p-8 border border-white/5 card-hover">
-          <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center text-brand-accent mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <div class="t-bg-card rounded-3xl p-10 border t-border card">
+          <div class="w-10 h-10 rounded-2xl t-bg-icon flex items-center justify-center t-icon mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           </div>
-          <h3 class="text-lg font-medium text-white mb-3">资质审核管理</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">严格的专家资质审核与入驻管理体系，确保服务专业性与可靠性。</p>
+          <h3 class="text-[15px] font-medium t-text-secondary mb-3">资质审核管理</h3>
+          <p class="t-text-muted text-[13px] leading-relaxed">严格的专家资质审核与入驻管理体系，确保服务专业性与可靠性。</p>
         </div>
-        <div class="bg-brand-dark/60 rounded-2xl p-8 border border-white/5 card-hover">
-          <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center text-brand-accent mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5"/></svg>
+        <div class="t-bg-card rounded-3xl p-10 border t-border card">
+          <div class="w-10 h-10 rounded-2xl t-bg-icon flex items-center justify-center t-icon mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5"/></svg>
           </div>
-          <h3 class="text-lg font-medium text-white mb-3">服务协同跟踪</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">在线沟通、服务协同与全流程跟踪，保障服务质量与交付效率。</p>
+          <h3 class="text-[15px] font-medium t-text-secondary mb-3">服务协同跟踪</h3>
+          <p class="t-text-muted text-[13px] leading-relaxed">在线沟通、服务协同与全流程跟踪，保障服务质量与交付效率。</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 服务方式 -->
-  <section id="approach" class="py-24 bg-brand-dark">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl font-bold text-white text-center mb-4">服务方式</h2>
-      <p class="text-gray-500 text-center mb-16">AI 辅助 + 人工专家，双轨协作</p>
-      <div class="flex flex-col md:flex-row items-start gap-10">
-        <div class="flex-1 space-y-8">
+  <section id="approach" class="py-32 t-bg-secondary">
+    <div class="max-w-5xl mx-auto px-8">
+      <h2 class="text-2xl font-medium t-text-primary text-center mb-3">服务方式</h2>
+      <p class="t-text-muted text-[13px] text-center mb-20">AI 辅助 + 人工专家，双轨协作</p>
+      <div class="flex flex-col md:flex-row items-start gap-16">
+        <div class="flex-1 space-y-12">
           <div>
-            <h3 class="text-lg font-medium text-white mb-4 flex items-center gap-2">
-              <span class="w-8 h-8 rounded-lg bg-brand-accent/10 flex items-center justify-center text-brand-accent text-sm font-bold">AI</span>
-              AI 辅助层
-            </h3>
-            <div class="space-y-3 pl-10">
-              <div class="flex items-start gap-3">
-                <div class="w-1.5 h-1.5 rounded-full bg-brand-accent mt-2 shrink-0"></div>
-                <p class="text-gray-400 text-sm leading-relaxed">科研信息获取 — 快速检索与整合科研领域相关知识</p>
-              </div>
-              <div class="flex items-start gap-3">
-                <div class="w-1.5 h-1.5 rounded-full bg-brand-accent mt-2 shrink-0"></div>
-                <p class="text-gray-400 text-sm leading-relaxed">需求智能梳理 — 分析研究问题，明确需求方向与关键要素</p>
-              </div>
-              <div class="flex items-start gap-3">
-                <div class="w-1.5 h-1.5 rounded-full bg-brand-accent mt-2 shrink-0"></div>
-                <p class="text-gray-400 text-sm leading-relaxed">资源自动匹配 — 基于需求特征，智能推荐合适的专家资源</p>
-              </div>
+            <div class="flex items-center gap-3 mb-5">
+              <span class="w-7 h-7 rounded-xl t-bg-icon flex items-center justify-center t-icon text-[11px] font-medium">AI</span>
+              <h3 class="text-[15px] font-medium t-text-secondary">AI 辅助层</h3>
+            </div>
+            <div class="space-y-4 pl-10">
+              <p class="t-text-muted text-[13px] leading-relaxed">科研信息获取 — 快速检索与整合科研领域相关知识</p>
+              <p class="t-text-muted text-[13px] leading-relaxed">需求智能梳理 — 分析研究问题，明确需求方向与关键要素</p>
+              <p class="t-text-muted text-[13px] leading-relaxed">资源自动匹配 — 基于需求特征，智能推荐合适的专家资源</p>
             </div>
           </div>
+          <div class="w-full h-px t-divider"></div>
           <div>
-            <h3 class="text-lg font-medium text-white mb-4 flex items-center gap-2">
-              <span class="w-8 h-8 rounded-lg bg-brand-accent/10 flex items-center justify-center text-brand-accent shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg>
+            <div class="flex items-center gap-3 mb-5">
+              <span class="w-7 h-7 rounded-xl t-bg-icon flex items-center justify-center t-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg>
               </span>
-              专家协作层
-            </h3>
-            <div class="space-y-3 pl-10">
-              <div class="flex items-start gap-3">
-                <div class="w-1.5 h-1.5 rounded-full bg-brand-light mt-2 shrink-0"></div>
-                <p class="text-gray-400 text-sm leading-relaxed">一对一专业沟通 — 与领域专家直接交流，深入理解需求</p>
-              </div>
-              <div class="flex items-start gap-3">
-                <div class="w-1.5 h-1.5 rounded-full bg-brand-light mt-2 shrink-0"></div>
-                <p class="text-gray-400 text-sm leading-relaxed">方案定制 — 根据具体课题制定个性化服务方案</p>
-              </div>
-              <div class="flex items-start gap-3">
-                <div class="w-1.5 h-1.5 rounded-full bg-brand-light mt-2 shrink-0"></div>
-                <p class="text-gray-400 text-sm leading-relaxed">服务交付 — 全程协同跟踪，确保交付质量与效率</p>
-              </div>
+              <h3 class="text-[15px] font-medium t-text-secondary">专家协作层</h3>
+            </div>
+            <div class="space-y-4 pl-10">
+              <p class="t-text-muted text-[13px] leading-relaxed">一对一专业沟通 — 与领域专家直接交流，深入理解需求</p>
+              <p class="t-text-muted text-[13px] leading-relaxed">方案定制 — 根据具体课题制定个性化服务方案</p>
+              <p class="t-text-muted text-[13px] leading-relaxed">服务交付 — 全程协同跟踪，确保交付质量与效率</p>
             </div>
           </div>
         </div>
         <div class="flex-1 flex items-center justify-center">
-          <div class="w-full max-w-sm bg-brand-deeper rounded-2xl border border-white/5 p-8">
-            <div class="flex flex-col items-center gap-6">
-              <div class="w-16 h-16 rounded-full bg-brand-accent/10 border-2 border-brand-accent/30 flex items-center justify-center">
-                <span class="text-brand-accent text-sm font-bold">需求</span>
+          <div class="w-full max-w-xs t-bg-card-alt rounded-3xl border t-border p-10">
+            <div class="flex flex-col items-center gap-5">
+              <div class="w-14 h-14 rounded-2xl t-bg-icon flex items-center justify-center">
+                <span class="t-text-tertiary text-[12px] font-medium">需求</span>
               </div>
-              <div class="w-px h-6 bg-gradient-to-b from-brand-accent to-brand-accent/30"></div>
-              <div class="flex items-center gap-4 w-full">
-                <div class="flex-1 bg-brand-dark/60 rounded-xl p-4 text-center border border-brand-accent/10">
-                  <p class="text-brand-accent text-xs font-medium mb-1">AI 辅助</p>
-                  <p class="text-gray-500 text-[10px]">梳理 · 匹配</p>
+              <div class="w-px h-8 t-divider"></div>
+              <div class="flex items-center gap-3 w-full">
+                <div class="flex-1 t-bg-card rounded-2xl p-4 text-center">
+                  <p class="t-text-tertiary text-[11px] font-medium mb-1">AI 辅助</p>
+                  <p class="t-text-faint text-[10px]">梳理 · 匹配</p>
                 </div>
-                <div class="text-gray-600 text-lg">+</div>
-                <div class="flex-1 bg-brand-dark/60 rounded-xl p-4 text-center border border-brand-light/10">
-                  <p class="text-brand-light text-xs font-medium mb-1">专家协作</p>
-                  <p class="text-gray-500 text-[10px]">沟通 · 定制</p>
+                <div class="t-text-faint text-sm">+</div>
+                <div class="flex-1 t-bg-card rounded-2xl p-4 text-center">
+                  <p class="t-text-tertiary text-[11px] font-medium mb-1">专家协作</p>
+                  <p class="t-text-faint text-[10px]">沟通 · 定制</p>
                 </div>
               </div>
-              <div class="w-px h-6 bg-gradient-to-b from-brand-accent/30 to-brand-accent"></div>
-              <div class="w-16 h-16 rounded-full bg-brand-accent/10 border-2 border-brand-accent/30 flex items-center justify-center">
-                <span class="text-brand-accent text-sm font-bold">交付</span>
+              <div class="w-px h-8 t-divider"></div>
+              <div class="w-14 h-14 rounded-2xl t-bg-icon flex items-center justify-center">
+                <span class="t-text-tertiary text-[12px] font-medium">交付</span>
               </div>
             </div>
           </div>
@@ -320,109 +384,107 @@
   </section>
 
   <!-- 服务流程 -->
-  <section id="process" class="py-24 bg-brand-deeper">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl font-bold text-white text-center mb-4">服务流程</h2>
-      <p class="text-gray-500 text-center mb-16">从需求到交付，AI 与专家全程协同</p>
-      <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
+  <section id="process" class="py-32 t-bg-primary">
+    <div class="max-w-5xl mx-auto px-8">
+      <h2 class="text-2xl font-medium t-text-primary text-center mb-3">服务流程</h2>
+      <p class="t-text-muted text-[13px] text-center mb-20">从需求到交付，AI 与专家全程协同</p>
+      <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
         <div class="text-center">
-          <div class="w-16 h-16 rounded-full bg-brand-accent/10 border-2 border-brand-accent flex items-center justify-center text-brand-accent text-xl font-bold mx-auto mb-5">1</div>
-          <h3 class="text-white font-medium mb-2">提出需求</h3>
-          <p class="text-gray-500 text-sm">描述您的研究问题或科研服务需求</p>
+          <div class="w-12 h-12 rounded-2xl t-bg-icon flex items-center justify-center t-text-muted text-[13px] font-medium mx-auto mb-5">1</div>
+          <h3 class="t-text-secondary text-[14px] font-medium mb-2">提出需求</h3>
+          <p class="t-text-muted text-[12px] leading-relaxed">描述您的研究问题或科研服务需求</p>
         </div>
         <div class="text-center">
-          <div class="w-16 h-16 rounded-full bg-brand-accent/10 border-2 border-brand-accent flex items-center justify-center text-brand-accent text-xl font-bold mx-auto mb-5">2</div>
-          <h3 class="text-white font-medium mb-2">AI 辅助梳理</h3>
-          <p class="text-gray-500 text-sm">智能分析需求，推荐匹配方向</p>
+          <div class="w-12 h-12 rounded-2xl t-bg-icon flex items-center justify-center t-text-muted text-[13px] font-medium mx-auto mb-5">2</div>
+          <h3 class="t-text-secondary text-[14px] font-medium mb-2">AI 辅助梳理</h3>
+          <p class="t-text-muted text-[12px] leading-relaxed">智能分析需求，推荐匹配方向</p>
         </div>
         <div class="text-center">
-          <div class="w-16 h-16 rounded-full bg-brand-accent/10 border-2 border-brand-accent flex items-center justify-center text-brand-accent text-xl font-bold mx-auto mb-5">3</div>
-          <h3 class="text-white font-medium mb-2">专家对接</h3>
-          <p class="text-gray-500 text-sm">平台匹配领域专家，确认服务方案</p>
+          <div class="w-12 h-12 rounded-2xl t-bg-icon flex items-center justify-center t-text-muted text-[13px] font-medium mx-auto mb-5">3</div>
+          <h3 class="t-text-secondary text-[14px] font-medium mb-2">专家对接</h3>
+          <p class="t-text-muted text-[12px] leading-relaxed">平台匹配领域专家，确认服务方案</p>
         </div>
         <div class="text-center">
-          <div class="w-16 h-16 rounded-full bg-brand-accent/10 border-2 border-brand-accent flex items-center justify-center text-brand-accent text-xl font-bold mx-auto mb-5">4</div>
-          <h3 class="text-white font-medium mb-2">协同交付</h3>
-          <p class="text-gray-500 text-sm">在线协作，全程跟踪，验收完成</p>
+          <div class="w-12 h-12 rounded-2xl t-bg-icon flex items-center justify-center t-text-muted text-[13px] font-medium mx-auto mb-5">4</div>
+          <h3 class="t-text-secondary text-[14px] font-medium mb-2">协同交付</h3>
+          <p class="t-text-muted text-[12px] leading-relaxed">在线协作，全程跟踪，验收完成</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 质量原则 -->
-  <section id="principles" class="py-24 bg-brand-dark">
-    <div class="max-w-6xl mx-auto px-6">
-      <h2 class="text-3xl font-bold text-white text-center mb-4">质量原则</h2>
-      <p class="text-gray-500 text-center mb-16">学术诚信是我们不可逾越的底线</p>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="bg-brand-deeper rounded-2xl p-8 border border-white/5 card-hover text-center">
-          <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center text-brand-accent mx-auto mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+  <section id="principles" class="py-32 t-bg-secondary">
+    <div class="max-w-5xl mx-auto px-8">
+      <h2 class="text-2xl font-medium t-text-primary text-center mb-3">质量原则</h2>
+      <p class="t-text-muted text-[13px] text-center mb-20">学术诚信是我们不可逾越的底线</p>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="t-bg-card-alt rounded-3xl p-10 border t-border card text-center">
+          <div class="w-10 h-10 rounded-2xl t-bg-icon flex items-center justify-center t-icon mx-auto mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
           </div>
-          <h3 class="text-lg font-medium text-white mb-3">学术诚信</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">坚守学术道德，不支持任何形式的论文代写、数据造假、抄袭剽窃等学术不端行为。</p>
+          <h3 class="text-[15px] font-medium t-text-secondary mb-3">学术诚信</h3>
+          <p class="t-text-muted text-[13px] leading-relaxed">坚守学术道德，不支持任何形式的论文代写、数据造假、抄袭剽窃等学术不端行为。</p>
         </div>
-        <div class="bg-brand-deeper rounded-2xl p-8 border border-white/5 card-hover text-center">
-          <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center text-brand-accent mx-auto mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-1.5 4.5H6.5L5 14.5m14 0H5"/></svg>
+        <div class="t-bg-card-alt rounded-3xl p-10 border t-border card text-center">
+          <div class="w-10 h-10 rounded-2xl t-bg-icon flex items-center justify-center t-icon mx-auto mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-1.5 4.5H6.5L5 14.5m14 0H5"/></svg>
           </div>
-          <h3 class="text-lg font-medium text-white mb-3">专业审慎</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">以专业态度对待每一项科研需求，提供负责任的资源对接与智能辅助服务。</p>
+          <h3 class="text-[15px] font-medium t-text-secondary mb-3">专业审慎</h3>
+          <p class="t-text-muted text-[13px] leading-relaxed">以专业态度对待每一项科研需求，提供负责任的资源对接与智能辅助服务。</p>
         </div>
-        <div class="bg-brand-deeper rounded-2xl p-8 border border-white/5 card-hover text-center">
-          <div class="w-12 h-12 rounded-xl bg-brand-accent/10 flex items-center justify-center text-brand-accent mx-auto mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z"/></svg>
+        <div class="t-bg-card-alt rounded-3xl p-10 border t-border card text-center">
+          <div class="w-10 h-10 rounded-2xl t-bg-icon flex items-center justify-center t-icon mx-auto mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z"/></svg>
           </div>
-          <h3 class="text-lg font-medium text-white mb-3">合规边界</h3>
-          <p class="text-gray-400 text-sm leading-relaxed">明确服务边界，提供资源对接与智能辅助，不越界、不替代研究者的学术判断。</p>
+          <h3 class="text-[15px] font-medium t-text-secondary mb-3">合规边界</h3>
+          <p class="t-text-muted text-[13px] leading-relaxed">明确服务边界，提供资源对接与智能辅助，不越界、不替代研究者的学术判断。</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- 专家入驻 -->
-  <section id="join" class="py-24 bg-brand-deeper">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="bg-gradient-to-br from-brand-accent/10 to-transparent rounded-3xl border border-brand-accent/20 p-10 md:p-16">
-        <div class="flex flex-col md:flex-row items-center gap-12">
+  <section id="join" class="py-32 t-bg-primary">
+    <div class="max-w-5xl mx-auto px-8">
+      <div class="t-bg-card-alt rounded-3xl border t-border p-12 md:p-20">
+        <div class="flex flex-col md:flex-row items-center gap-16">
           <div class="flex-1">
-            <h2 class="text-3xl font-bold text-white mb-4">成为认证专家</h2>
-            <p class="text-gray-400 mb-8">如果您在某一科研领域有深厚积累，欢迎加入带带科研，借助 AI + 专家协作模式，高效服务科研需求。</p>
-            <div class="space-y-4">
+            <h2 class="text-2xl font-medium t-text-primary mb-4">成为认证专家</h2>
+            <p class="t-text-muted text-[13px] leading-relaxed mb-10">如果您在某一科研领域有深厚积累，欢迎加入带带科研，借助 AI + 专家协作模式，高效服务科研需求。</p>
+            <div class="space-y-5">
               <div class="flex items-start gap-3">
-                <div class="w-5 h-5 rounded-full bg-brand-accent/20 flex items-center justify-center mt-0.5 shrink-0">
-                  <svg class="w-3 h-3 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                <div class="w-5 h-5 rounded-lg t-bg-icon flex items-center justify-center mt-0.5 shrink-0">
+                  <svg class="w-3 h-3 t-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                 </div>
-                <p class="text-gray-300 text-sm">借助平台 AI 能力，高效匹配适合的科研需求</p>
+                <p class="t-text-tertiary text-[13px]">借助平台 AI 能力，高效匹配适合的科研需求</p>
               </div>
               <div class="flex items-start gap-3">
-                <div class="w-5 h-5 rounded-full bg-brand-accent/20 flex items-center justify-center mt-0.5 shrink-0">
-                  <svg class="w-3 h-3 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                <div class="w-5 h-5 rounded-lg t-bg-icon flex items-center justify-center mt-0.5 shrink-0">
+                  <svg class="w-3 h-3 t-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                 </div>
-                <p class="text-gray-300 text-sm">灵活接单，自主安排，按专业能力获取报酬</p>
+                <p class="t-text-tertiary text-[13px]">灵活接单，自主安排，按专业能力获取报酬</p>
               </div>
               <div class="flex items-start gap-3">
-                <div class="w-5 h-5 rounded-full bg-brand-accent/20 flex items-center justify-center mt-0.5 shrink-0">
-                  <svg class="w-3 h-3 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                <div class="w-5 h-5 rounded-lg t-bg-icon flex items-center justify-center mt-0.5 shrink-0">
+                  <svg class="w-3 h-3 t-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                 </div>
-                <p class="text-gray-300 text-sm">平台保障交易安全，按时结算</p>
+                <p class="t-text-tertiary text-[13px]">平台保障交易安全，按时结算</p>
               </div>
             </div>
           </div>
-          <div class="flex flex-col items-center gap-4">
-            <div class="w-40 h-40 bg-white rounded-2xl p-3">
+          <div class="flex flex-col items-center gap-5">
+            <div class="w-40 h-40 rounded-3xl p-3 qr-box" style="background:var(--qr-bg);">
               <img src="assets/qrcode_profile.png" alt="扫码入驻" class="w-full h-full object-contain"
-                   onerror="this.parentElement.innerHTML='<div class=\'w-full h-full bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs\'>小程序码</div>'">
+                   onerror="this.parentElement.innerHTML='<div class=\'w-full h-full bg-gray-50 rounded-2xl flex items-center justify-center text-gray-300 text-xs\'>小程序码</div>'">
             </div>
-            <p class="text-gray-400 text-sm">扫码申请入驻</p>
-            <div class="flex flex-col items-center gap-1 mt-1">
-              <div class="inline-flex items-center bg-white rounded-full pl-2.5 pr-4 py-1.5 shadow-sm" style="min-width: 140px;">
-                <svg viewBox="0 0 24 24" class="w-4 h-4 mr-2 flex-shrink-0"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="#07C160" stroke-width="2.5" fill="none"/></svg>
-                <span class="text-sm text-gray-800 font-medium">带带科研</span>
+            <p class="t-text-muted text-[13px]">扫码申请入驻</p>
+            <div class="flex flex-col items-center gap-1.5 mt-2">
+              <div class="inline-flex items-center bg-white rounded-full pl-3 pr-4 py-1.5" style="min-width: 140px;">
+                <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 mr-2 flex-shrink-0"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="#07C160" stroke-width="2.5" fill="none"/></svg>
+                <span class="text-[13px] text-gray-700 font-medium">带带科研</span>
               </div>
-              <p class="text-[10px] text-gray-500">微信搜一搜</p>
-            </div>
-        
+              <p class="text-[10px] t-text-faint">微信搜一搜</p>
             </div>
           </div>
         </div>
@@ -431,44 +493,44 @@
   </section>
 
   <!-- 常见问题 FAQ -->
-  <section id="faq" class="py-24 bg-brand-deeper">
-    <div class="max-w-3xl mx-auto px-6">
-      <h2 class="text-3xl font-bold text-white text-center mb-4">常见问题</h2>
-      <p class="text-gray-500 text-center mb-16">关于带带科研，你可能想了解的</p>
-      <div class="space-y-4">
-        <details class="bg-brand-dark/60 rounded-xl border border-white/5 overflow-hidden group">
-          <summary class="px-6 py-5 cursor-pointer text-white font-medium text-sm flex items-center justify-between hover:bg-white/5 transition-colors">
+  <section id="faq" class="py-32 t-bg-secondary">
+    <div class="max-w-3xl mx-auto px-8">
+      <h2 class="text-2xl font-medium t-text-primary text-center mb-3">常见问题</h2>
+      <p class="t-text-muted text-[13px] text-center mb-20">关于带带科研，你可能想了解的</p>
+      <div class="space-y-3">
+        <details class="t-bg-card-alt rounded-2xl border t-border overflow-hidden group">
+          <summary class="px-8 py-6 cursor-pointer t-text-secondary font-medium text-[14px] flex items-center justify-between hover:opacity-80 transition-opacity duration-300">
             带带科研提供哪些服务？
-            <span class="text-gray-500 group-open:rotate-45 transition-transform text-lg">+</span>
+            <span class="t-text-faint group-open:rotate-45 transition-transform duration-300 text-lg">+</span>
           </summary>
-          <div class="px-6 pb-5 text-gray-400 text-sm leading-relaxed">
+          <div class="px-8 pb-6 t-text-muted text-[13px] leading-relaxed">
             带带科研提供 AI 科研咨询与专家资源对接服务。通过 AI 辅助能力，帮助用户进行研究问题梳理、方法论探索与科研信息获取；同时智能匹配领域专家，提供一对一专业沟通、方案定制与服务交付，覆盖多学科科研需求。
           </div>
         </details>
-        <details class="bg-brand-dark/60 rounded-xl border border-white/5 overflow-hidden group">
-          <summary class="px-6 py-5 cursor-pointer text-white font-medium text-sm flex items-center justify-between hover:bg-white/5 transition-colors">
+        <details class="t-bg-card-alt rounded-2xl border t-border overflow-hidden group">
+          <summary class="px-8 py-6 cursor-pointer t-text-secondary font-medium text-[14px] flex items-center justify-between hover:opacity-80 transition-opacity duration-300">
             AI 辅助具体能做什么？
-            <span class="text-gray-500 group-open:rotate-45 transition-transform text-lg">+</span>
+            <span class="t-text-faint group-open:rotate-45 transition-transform duration-300 text-lg">+</span>
           </summary>
-          <div class="px-6 pb-5 text-gray-400 text-sm leading-relaxed">
+          <div class="px-8 pb-6 t-text-muted text-[13px] leading-relaxed">
             AI 辅助贯穿服务全流程：在需求阶段，AI 帮助用户梳理研究问题、明确需求方向；在匹配阶段，AI 基于需求特征智能推荐合适的专家资源；在服务过程中，AI 提供科研信息获取与知识咨询支持，提升整体科研效率。
           </div>
         </details>
-        <details class="bg-brand-dark/60 rounded-xl border border-white/5 overflow-hidden group">
-          <summary class="px-6 py-5 cursor-pointer text-white font-medium text-sm flex items-center justify-between hover:bg-white/5 transition-colors">
+        <details class="t-bg-card-alt rounded-2xl border t-border overflow-hidden group">
+          <summary class="px-8 py-6 cursor-pointer t-text-secondary font-medium text-[14px] flex items-center justify-between hover:opacity-80 transition-opacity duration-300">
             如何保障服务质量？
-            <span class="text-gray-500 group-open:rotate-45 transition-transform text-lg">+</span>
+            <span class="t-text-faint group-open:rotate-45 transition-transform duration-300 text-lg">+</span>
           </summary>
-          <div class="px-6 pb-5 text-gray-400 text-sm leading-relaxed">
+          <div class="px-8 pb-6 t-text-muted text-[13px] leading-relaxed">
             平台通过三重机制保障服务质量：一是严格的专家资质审核与入驻管理体系；二是全流程服务跟踪与在线协同机制；三是坚守学术诚信底线，不支持任何形式的学术不端行为，确保服务专业、合规、可靠。
           </div>
         </details>
-        <details class="bg-brand-dark/60 rounded-xl border border-white/5 overflow-hidden group">
-          <summary class="px-6 py-5 cursor-pointer text-white font-medium text-sm flex items-center justify-between hover:bg-white/5 transition-colors">
+        <details class="t-bg-card-alt rounded-2xl border t-border overflow-hidden group">
+          <summary class="px-8 py-6 cursor-pointer t-text-secondary font-medium text-[14px] flex items-center justify-between hover:opacity-80 transition-opacity duration-300">
             如何成为认证专家？
-            <span class="text-gray-500 group-open:rotate-45 transition-transform text-lg">+</span>
+            <span class="t-text-faint group-open:rotate-45 transition-transform duration-300 text-lg">+</span>
           </summary>
-          <div class="px-6 pb-5 text-gray-400 text-sm leading-relaxed">
+          <div class="px-8 pb-6 t-text-muted text-[13px] leading-relaxed">
             如果您在某一科研领域有深厚积累，可通过微信小程序扫码申请入驻。入驻后可借助平台 AI 能力高效匹配科研需求，灵活接单、自主安排时间、按专业能力获取报酬。平台保障交易安全并按时结算。
           </div>
         </details>
@@ -477,13 +539,13 @@
   </section>
 
   <!-- 信任背书 -->
-  <section id="contact" class="py-24 bg-brand-dark">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="max-w-2xl mx-auto text-center">
-        <p class="text-gray-500 text-sm leading-relaxed mb-4">
+  <section id="contact" class="py-32 t-bg-primary">
+    <div class="max-w-5xl mx-auto px-8">
+      <div class="max-w-xl mx-auto text-center">
+        <p class="t-text-faint text-[13px] leading-loose mb-6">
           带带科研致力于以 AI 技术与专家资源协同，构建高效、合规的智能科研服务平台。平台严格遵守学术诚信原则，所有服务以辅助和指导为核心，帮助用户提升科研效率。
         </p>
-        <p class="text-gray-600 text-xs">
+        <p class="t-text-faint text-[11px]">
           平台不提供任何形式的学术不端服务。所有交易受平台规则约束，请在使用前阅读用户协议。
         </p>
       </div>
@@ -491,30 +553,40 @@
   </section>
 
   <!-- Footer -->
-  <footer class="py-12 bg-brand-deeper border-t border-white/5">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+  <footer class="py-16 t-bg-secondary border-t t-border">
+    <div class="max-w-5xl mx-auto px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-10">
         <div class="text-center md:text-left">
-          <p class="text-lg font-bold gradient-text mb-2">带带科研</p>
-          <p class="text-gray-500 text-sm">AI驱动的智能科研服务平台</p>
+          <p class="text-[15px] font-medium t-text-secondary mb-1.5">带带科研</p>
+          <p class="t-text-faint text-[12px]">AI驱动的智能科研服务平台</p>
         </div>
-        <div class="flex flex-col items-center gap-1">
-          <div class="inline-flex items-center bg-white rounded-full pl-2.5 pr-4 py-1.5 shadow-sm" style="min-width: 160px;">
-            <svg viewBox="0 0 24 24" class="w-4 h-4 mr-2 flex-shrink-0"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="#07C160" stroke-width="2.5" fill="none"/></svg>
-            <span class="text-sm text-gray-800 font-medium">带带科研</span>
+        <div class="flex flex-col items-center gap-1.5">
+          <div class="inline-flex items-center bg-white rounded-full pl-3 pr-4 py-1.5" style="min-width: 140px;">
+            <svg viewBox="0 0 24 24" class="w-3.5 h-3.5 mr-2 flex-shrink-0"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="#07C160" stroke-width="2.5" fill="none"/></svg>
+            <span class="text-[13px] text-gray-700 font-medium">带带科研</span>
           </div>
-          <p class="text-[10px] text-gray-500">微信搜一搜</p>
+          <p class="text-[10px] t-text-faint">微信搜一搜</p>
         </div>
-        <div class="text-center md:text-right text-sm text-gray-600">
-          <div class="flex gap-4 justify-center md:justify-end mb-2">
-            <a href="#" class="hover:text-gray-400 transition-colors">用户协议</a>
-            <a href="#" class="hover:text-gray-400 transition-colors">隐私政策</a>
+        <div class="text-center md:text-right">
+          <div class="flex gap-6 justify-center md:justify-end mb-3">
+            <a href="#" class="text-[12px] t-text-faint hover:opacity-70 transition-opacity duration-300">用户协议</a>
+            <a href="#" class="text-[12px] t-text-faint hover:opacity-70 transition-opacity duration-300">隐私政策</a>
           </div>
-          <p>&copy; 2025 带带科研 All Rights Reserved</p>
+          <p class="text-[11px] t-text-faint">&copy; 2025 带带科研 All Rights Reserved</p>
         </div>
       </div>
     </div>
   </footer>
+
+  <script>
+    function toggleTheme() {
+      document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+    }
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.add('light');
+    }
+  </script>
 
 </body>
 </html>
