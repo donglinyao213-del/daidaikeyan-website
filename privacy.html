@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>隐私政策 - 带带科研</title>
+  <meta name="description" content="带带科研隐私政策，说明我们如何收集、使用、存储和保护您的个人信息。">
+  <meta name="theme-color" content="#0F172A">
+  <link rel="canonical" href="https://daidaikeyan.com/privacy.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['"Noto Sans SC"','system-ui','sans-serif']}}}}</script>
+  <style>
+    html{scroll-behavior:smooth;background-color:var(--bg-primary);transition:background-color .5s ease}
+    body{font-family:'Noto Sans SC',system-ui,sans-serif;letter-spacing:.01em;transition:background-color .5s ease,color .5s ease}
+    :root{--bg-primary:#0F172A;--bg-secondary:#1E293B;--bg-card:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.04);--text-primary:rgba(255,255,255,0.90);--text-secondary:rgba(255,255,255,0.70);--text-tertiary:rgba(255,255,255,0.40);--text-muted:rgba(255,255,255,0.25);--text-faint:rgba(255,255,255,0.15);--nav-bg:rgba(15,23,42,0.60)}
+    html.light{--bg-primary:#ffffff;--bg-secondary:#f8f9fa;--bg-card:rgba(0,0,0,0.025);--border:rgba(0,0,0,0.08);--text-primary:#1d1d1f;--text-secondary:#424245;--text-tertiary:#6e6e73;--text-muted:#86868b;--text-faint:#aeaeb2;--nav-bg:rgba(255,255,255,0.80)}
+    .t-bg-primary{background-color:var(--bg-primary)}.t-bg-secondary{background-color:var(--bg-secondary)}.t-border{border-color:var(--border)}.t-text-primary{color:var(--text-primary)}.t-text-secondary{color:var(--text-secondary)}.t-text-tertiary{color:var(--text-tertiary)}.t-text-muted{color:var(--text-muted)}.t-text-faint{color:var(--text-faint)}.t-nav-bg{background-color:var(--nav-bg)}
+    .nav-link{color:var(--text-tertiary);transition:color .3s ease}.nav-link:hover{color:var(--text-primary)}
+    .t-bg-primary,.t-bg-secondary,.t-text-primary,.t-text-secondary,.t-text-tertiary,.t-text-muted,.t-text-faint,section,footer{transition:background-color .5s ease,color .5s ease,border-color .5s ease}
+    .theme-toggle{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg-card);border:1px solid var(--border);transition:all .3s ease}
+    .theme-toggle svg{width:16px;height:16px;color:var(--text-tertiary)}.theme-toggle .icon-sun{display:none}.theme-toggle .icon-moon{display:block}html.light .theme-toggle .icon-sun{display:block}html.light .theme-toggle .icon-moon{display:none}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}body{animation:fadeIn .4s ease}
+    article h2{font-size:1.1rem;font-weight:500;margin:1.5rem 0 .5rem}article p{margin-bottom:.5rem;line-height:1.8}
+  </style>
+</head>
+<body class="t-bg-primary antialiased">
+  <nav class="fixed top-0 w-full z-50 t-nav-bg backdrop-blur-xl border-b t-border">
+    <div class="max-w-5xl mx-auto px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="text-lg font-medium tracking-wide t-text-primary">带带科研</a>
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="text-[13px] nav-link">← 返回首页</a>
+        <button onclick="toggleTheme()" class="theme-toggle" aria-label="切换主题">
+          <svg class="icon-moon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+          <svg class="icon-sun" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <article class="t-bg-primary pt-32 pb-16">
+    <div class="max-w-3xl mx-auto px-8">
+      <h1 class="text-3xl font-medium t-text-primary text-center mb-12">带带科研隐私政策</h1>
+      <div class="t-text-secondary text-[14px] space-y-4">
+        <h2 class="t-text-primary">一、信息收集</h2>
+        <p>我们在您使用平台服务过程中，可能收集以下信息：</p>
+        <p>1. 微信授权信息：包括微信昵称、头像等公开信息，用于创建和展示您的平台账号。</p>
+        <p>2. 专家入驻信息：您主动提交的简历、资质证明等文件，仅用于入驻审核。</p>
+        <p>3. 需求信息：您发布的服务需求描述，用于专家匹配和服务撮合。</p>
+        <p>4. 交易信息：订单记录、沟通记录等，用于交易管理和纠纷处理。</p>
+
+        <h2 class="t-text-primary">二、信息使用</h2>
+        <p>我们收集的信息将用于以下目的：</p>
+        <p>1. 提供、维护和改进平台服务。</p>
+        <p>2. 进行需求与专家的智能匹配。</p>
+        <p>3. 处理交易和提供客户支持。</p>
+        <p>4. 保障平台安全，防范学术不端和欺诈行为。</p>
+        <p>5. 遵守法律法规要求。</p>
+
+        <h2 class="t-text-primary">三、信息存储与保护</h2>
+        <p>1. 您的数据存储在微信云开发安全环境中，采用加密传输和存储。</p>
+        <p>2. 我们采取合理的技术和管理措施保护您的个人信息安全。</p>
+        <p>3. 专家简历等敏感文件仅供平台审核人员查阅，不会对外公开。</p>
+
+        <h2 class="t-text-primary">四、信息共享</h2>
+        <p>我们不会将您的个人信息出售给第三方。以下情况除外：</p>
+        <p>1. 经您明确同意后的共享。</p>
+        <p>2. 在服务撮合过程中，向交易对方展示必要的信息（如专家资质概要）。</p>
+        <p>3. 根据法律法规要求、司法程序或政府主管部门的强制性要求。</p>
+
+        <h2 class="t-text-primary">五、学术数据保护</h2>
+        <p>1. 平台对用户提交的学术相关资料严格保密。</p>
+        <p>2. 审核过程中接触到的简历、研究方向等信息，审核人员负有保密义务。</p>
+        <p>3. 平台不会将用户的学术信息用于任何未经授权的用途。</p>
+
+        <h2 class="t-text-primary">六、用户权利</h2>
+        <p>您对个人信息享有以下权利：</p>
+        <p>1. 查阅权：您可以在个人中心查看您的账号信息。</p>
+        <p>2. 更正权：您可以修改您的个人资料。</p>
+        <p>3. 删除权：您可以通过注销账号删除所有个人数据。</p>
+        <p>4. 撤回同意权：您可以随时停止使用平台服务。</p>
+
+        <h2 class="t-text-primary">七、未成年人保护</h2>
+        <p>本平台面向具有完全民事行为能力的成年人。如果我们发现未经监护人同意收集了未成年人信息，将尽快删除相关数据。</p>
+
+        <h2 class="t-text-primary">八、政策更新</h2>
+        <p>我们可能适时修订本隐私政策。重大变更将通过平台公告通知您。继续使用平台服务即表示您同意更新后的隐私政策。</p>
+
+        <h2 class="t-text-primary">九、联系我们</h2>
+        <p>如您对本隐私政策有任何疑问，请通过平台客服功能与我们联系。</p>
+      </div>
+    </div>
+  </article>
+
+  <footer class="py-12 t-bg-secondary border-t t-border">
+    <div class="max-w-5xl mx-auto px-8 text-center">
+      <p class="text-[13px] t-text-muted">带带科研 - AI驱动的智能科研服务平台</p>
+      <p class="text-[11px] t-text-faint mt-2">&copy; 2025 带带科研 All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTheme(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark')}
+    if(localStorage.getItem('theme')==='light'){document.documentElement.classList.add('light')}
+  </script>
+</body>
+</html>

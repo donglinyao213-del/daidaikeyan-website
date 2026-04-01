@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户协议 - 带带科研</title>
+  <meta name="description" content="带带科研用户服务协议，包含服务说明、用户注册、专家入驻规范、学术诚信要求、交易规则等条款。">
+  <meta name="theme-color" content="#0F172A">
+  <link rel="canonical" href="https://daidaikeyan.com/agreement.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['"Noto Sans SC"','system-ui','sans-serif']}}}}</script>
+  <style>
+    html{scroll-behavior:smooth;background-color:var(--bg-primary);transition:background-color .5s ease}
+    body{font-family:'Noto Sans SC',system-ui,sans-serif;letter-spacing:.01em;transition:background-color .5s ease,color .5s ease}
+    :root{--bg-primary:#0F172A;--bg-secondary:#1E293B;--bg-card:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.04);--text-primary:rgba(255,255,255,0.90);--text-secondary:rgba(255,255,255,0.70);--text-tertiary:rgba(255,255,255,0.40);--text-muted:rgba(255,255,255,0.25);--text-faint:rgba(255,255,255,0.15);--nav-bg:rgba(15,23,42,0.60)}
+    html.light{--bg-primary:#ffffff;--bg-secondary:#f8f9fa;--bg-card:rgba(0,0,0,0.025);--border:rgba(0,0,0,0.08);--text-primary:#1d1d1f;--text-secondary:#424245;--text-tertiary:#6e6e73;--text-muted:#86868b;--text-faint:#aeaeb2;--nav-bg:rgba(255,255,255,0.80)}
+    .t-bg-primary{background-color:var(--bg-primary)}.t-bg-secondary{background-color:var(--bg-secondary)}.t-border{border-color:var(--border)}.t-text-primary{color:var(--text-primary)}.t-text-secondary{color:var(--text-secondary)}.t-text-tertiary{color:var(--text-tertiary)}.t-text-muted{color:var(--text-muted)}.t-text-faint{color:var(--text-faint)}.t-nav-bg{background-color:var(--nav-bg)}
+    .nav-link{color:var(--text-tertiary);transition:color .3s ease}.nav-link:hover{color:var(--text-primary)}
+    .t-bg-primary,.t-bg-secondary,.t-text-primary,.t-text-secondary,.t-text-tertiary,.t-text-muted,.t-text-faint,section,footer{transition:background-color .5s ease,color .5s ease,border-color .5s ease}
+    .theme-toggle{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg-card);border:1px solid var(--border);transition:all .3s ease}
+    .theme-toggle svg{width:16px;height:16px;color:var(--text-tertiary)}.theme-toggle .icon-sun{display:none}.theme-toggle .icon-moon{display:block}html.light .theme-toggle .icon-sun{display:block}html.light .theme-toggle .icon-moon{display:none}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}body{animation:fadeIn .4s ease}
+    article h2{font-size:1.1rem;font-weight:500;margin:1.5rem 0 .5rem}article p{margin-bottom:.5rem;line-height:1.8}
+  </style>
+</head>
+<body class="t-bg-primary antialiased">
+  <nav class="fixed top-0 w-full z-50 t-nav-bg backdrop-blur-xl border-b t-border">
+    <div class="max-w-5xl mx-auto px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="text-lg font-medium tracking-wide t-text-primary">带带科研</a>
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="text-[13px] nav-link">← 返回首页</a>
+        <button onclick="toggleTheme()" class="theme-toggle" aria-label="切换主题">
+          <svg class="icon-moon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+          <svg class="icon-sun" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <article class="t-bg-primary pt-32 pb-16">
+    <div class="max-w-3xl mx-auto px-8">
+      <h1 class="text-3xl font-medium t-text-primary text-center mb-12">带带科研用户服务协议</h1>
+      <div class="t-text-secondary text-[14px] space-y-4">
+        <h2 class="t-text-primary">一、服务说明</h2>
+        <p>带带科研（以下简称"本平台"）是一个连接学术研究需求方与专业领域专家的服务撮合平台。本平台为用户提供需求发布、专家匹配、在线沟通及交易管理等服务。</p>
+
+        <h2 class="t-text-primary">二、用户注册与账号管理</h2>
+        <p>1. 用户须通过微信授权完成注册，确保提供的信息真实、准确。</p>
+        <p>2. 用户应妥善保管账号信息，因账号管理不当造成的损失由用户自行承担。</p>
+        <p>3. 用户可随时申请注销账号，注销后数据将被永久删除且不可恢复。</p>
+
+        <h2 class="t-text-primary">三、专家入驻规范</h2>
+        <p>1. 申请入驻的专家须提交真实的学术简历或相关资质证明。</p>
+        <p>2. 平台将对入驻申请进行审核，审核结果将在个人中心展示。</p>
+        <p>3. 专家应确保其提供的服务内容真实、专业，不得虚假宣传。</p>
+
+        <h2 class="t-text-primary">四、学术诚信与合规要求</h2>
+        <p>本平台严格遵守学术诚信原则，用户在使用平台服务时须遵守以下规定：</p>
+        <p>1. 严禁代写论文、学位论文买卖、学术造假等违反学术道德的行为。</p>
+        <p>2. 严禁伪造、篡改实验数据或研究成果。</p>
+        <p>3. 严禁抄袭、剽窃他人学术成果。</p>
+        <p>4. 严禁利用平台进行任何形式的学术不端行为，包括但不限于论文代投、虚假同行评审、不当署名等。</p>
+        <p>5. 平台鼓励合法的学术咨询、方法论指导、数据分析辅导等正当学术服务。</p>
+        <p>6. 违反上述规定的用户，平台有权立即终止服务、封禁账号，并保留追究法律责任的权利。</p>
+
+        <h2 class="t-text-primary">五、交易规则</h2>
+        <p>1. 需求方与专家之间的服务交易通过平台进行撮合和管理。</p>
+        <p>2. 服务内容、价格等由双方协商确定，平台提供沟通和交易保障。</p>
+        <p>3. 交易产生的纠纷，平台将协助双方协商解决。</p>
+
+        <h2 class="t-text-primary">六、知识产权</h2>
+        <p>1. 用户在平台发布的内容，其知识产权归原作者所有。</p>
+        <p>2. 未经授权，任何人不得转载、复制平台上的内容用于商业用途。</p>
+
+        <h2 class="t-text-primary">七、免责声明</h2>
+        <p>1. 平台仅提供信息撮合服务，不对专家提供的具体服务质量做担保。</p>
+        <p>2. 因不可抗力导致的服务中断，平台不承担责任。</p>
+        <p>3. 用户因违反本协议或相关法律法规造成的后果，由用户自行承担。</p>
+
+        <h2 class="t-text-primary">八、协议修改</h2>
+        <p>本平台有权根据需要修改本协议内容，修改后的协议将在平台内公布。用户继续使用平台服务即视为同意修改后的协议。</p>
+      </div>
+    </div>
+  </article>
+
+  <footer class="py-12 t-bg-secondary border-t t-border">
+    <div class="max-w-5xl mx-auto px-8 text-center">
+      <p class="text-[13px] t-text-muted">带带科研 - AI驱动的智能科研服务平台</p>
+      <p class="text-[11px] t-text-faint mt-2">&copy; 2025 带带科研 All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTheme(){document.documentElement.classList.toggle('light');localStorage.setItem('theme',document.documentElement.classList.contains('light')?'light':'dark')}
+    if(localStorage.getItem('theme')==='light'){document.documentElement.classList.add('light')}
+  </script>
+</body>
+</html>

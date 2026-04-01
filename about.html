@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于我们 - 带带科研</title>
+  <meta name="description" content="带带科研是智灵研创科技服务有限公司旗下核心产品，专注于AI+科研领域，致力于通过人工智能技术提升科研效率。">
+  <meta name="theme-color" content="#0F172A">
+  <link rel="canonical" href="https://daidaikeyan.com/about.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0F172A',
+              deeper: '#1E293B',
+              accent: '#3B82F6',
+            }
+          },
+          fontFamily: {
+            sans: ['"Noto Sans SC"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; background-color: var(--bg-primary); transition: background-color 0.5s ease; }
+    body {
+      font-family: 'Noto Sans SC', system-ui, sans-serif;
+      letter-spacing: 0.01em;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    :root {
+      --bg-primary: #0F172A;
+      --bg-secondary: #1E293B;
+      --bg-card: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.04);
+      --text-primary: rgba(255,255,255,0.90);
+      --text-secondary: rgba(255,255,255,0.70);
+      --text-tertiary: rgba(255,255,255,0.40);
+      --text-muted: rgba(255,255,255,0.25);
+      --text-faint: rgba(255,255,255,0.15);
+      --nav-bg: rgba(15,23,42,0.60);
+    }
+
+    html.light {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-card: rgba(0,0,0,0.025);
+      --border: rgba(0,0,0,0.08);
+      --text-primary: #1d1d1f;
+      --text-secondary: #424245;
+      --text-tertiary: #6e6e73;
+      --text-muted: #86868b;
+      --text-faint: #aeaeb2;
+      --nav-bg: rgba(255,255,255,0.80);
+    }
+
+    .t-bg-primary { background-color: var(--bg-primary); }
+    .t-bg-secondary { background-color: var(--bg-secondary); }
+    .t-bg-card { background-color: var(--bg-card); }
+    .t-border { border-color: var(--border); }
+    .t-text-primary { color: var(--text-primary); }
+    .t-text-secondary { color: var(--text-secondary); }
+    .t-text-tertiary { color: var(--text-tertiary); }
+    .t-text-muted { color: var(--text-muted); }
+    .t-text-faint { color: var(--text-faint); }
+    .t-nav-bg { background-color: var(--nav-bg); }
+
+    .nav-link { color: var(--text-tertiary); transition: color 0.3s ease; }
+    .nav-link:hover { color: var(--text-primary); }
+
+    .t-bg-primary, .t-bg-secondary, .t-bg-card, .t-text-primary, .t-text-secondary,
+    .t-text-tertiary, .t-text-muted, .t-text-faint, section, footer {
+      transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+    }
+
+    .theme-toggle {
+      width: 36px; height: 36px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; background: var(--bg-card); border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+    .theme-toggle svg { width: 16px; height: 16px; color: var(--text-tertiary); }
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+    html.light .theme-toggle .icon-sun { display: block; }
+    html.light .theme-toggle .icon-moon { display: none; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    body { animation: fadeIn 0.4s ease; }
+
+    article h2 { font-size: 1.25rem; font-weight: 500; margin: 1.5rem 0 0.75rem; }
+    article p { margin-bottom: 0.75rem; line-height: 1.8; }
+  </style>
+</head>
+<body class="t-bg-primary antialiased">
+
+  <nav class="fixed top-0 w-full z-50 t-nav-bg backdrop-blur-xl border-b t-border">
+    <div class="max-w-5xl mx-auto px-8 h-16 flex items-center justify-between">
+      <a href="index.html" class="text-lg font-medium tracking-wide t-text-primary">带带科研</a>
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="text-[13px] nav-link">← 返回首页</a>
+        <button onclick="toggleTheme()" class="theme-toggle" aria-label="切换主题">
+          <svg class="icon-moon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+          <svg class="icon-sun" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <article class="t-bg-primary pt-32 pb-16">
+    <div class="max-w-3xl mx-auto px-8">
+      <div class="text-center mb-12">
+        <h1 class="text-3xl font-medium t-text-primary mb-6">关于我们</h1>
+        <p class="t-text-tertiary text-[13px]">智灵研创科技服务有限公司</p>
+      </div>
+
+      <div class="t-text-secondary text-[15px] space-y-6">
+        <h2 class="t-text-primary">公司简介</h2>
+        <p>智灵研创科技服务有限公司是一家专注于AI+科研领域的新型初创企业，致力于通过人工智能技术提升科研效率，降低科研门槛。</p>
+
+        <h2 class="t-text-primary">核心产品</h2>
+        <p>公司核心产品「带带科研」（daidaikeyan.com）是一个创新的智能科研服务平台，将AI智能体与专家资源深度融合，为科研人员提供全流程、一站式的科研支持服务。</p>
+        <p>小带科研智能体正在构建中，基于世界顶尖推理模型Claude Opus 4.6，专为科研场景深度定制，将为科研工作提供智能化辅助，大幅提升研究效率。</p>
+
+        <h2 class="t-text-primary">服务理念</h2>
+        <p>我们坚持学术诚信底线，通过技术创新和专业服务，助力高校、科研机构和企业研发团队提升科研产出质量。平台严格遵守学术诚信原则，所有服务以辅助和指导为核心，帮助用户提升科研效率。</p>
+
+        <h2 class="t-text-primary">核心能力</h2>
+        <ul class="list-disc list-inside space-y-2 t-text-secondary">
+          <li>AI科研咨询：智能梳理研究问题、方法论探索、科研信息获取</li>
+          <li>专家资源匹配：智能推荐领域专家、一对一专业沟通、需求精准对接</li>
+          <li>协同交付管理：在线沟通协作、全流程跟踪、质量保障验收</li>
+          <li>云平台算力：GPU算力云租赁，支持大模型训练与科研计算</li>
+        </ul>
+
+        <h2 class="t-text-primary">合作资源</h2>
+        <p>我们与C9联盟等顶尖高校建立了深度合作关系，汇聚来自清华大学、北京大学、浙江大学、复旦大学、上海交通大学、南京大学、中国科学技术大学、哈尔滨工业大学、西安交通大学等高校的优秀专家资源。</p>
+
+        <h2 class="t-text-primary">联系方式</h2>
+        <p>官方网站：daidaikeyan.com<br>
+        云平台：waas.aigate.cc<br>
+        微信小程序：带带科研</p>
+      </div>
+    </div>
+  </article>
+
+  <footer class="py-12 t-bg-secondary border-t t-border">
+    <div class="max-w-5xl mx-auto px-8 text-center">
+      <p class="text-[13px] t-text-muted">带带科研 - AI驱动的智能科研服务平台</p>
+      <p class="text-[11px] t-text-faint mt-2">&copy; 2025 带带科研 All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+    }
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.add('light');
+    }
+  </script>
+
+</body>
+</html>
