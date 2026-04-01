@@ -295,6 +295,7 @@
         <a href="#approach" class="nav-link">服务方式</a>
         <a href="#principles" class="nav-link">质量原则</a>
         <a href="#join" class="nav-link">专家入驻</a>
+        <a href="assets/company-intro.pdf" class="nav-link" target="_blank">关于我们</a>
         <a href="#contact" class="nav-link">联系我们</a>
       </div>
       <div class="flex items-center gap-4">
@@ -338,13 +339,14 @@
             </div>
             <p class="text-[10px] t-text-faint">微信搜一搜</p>
           </div>
-          <div class="mt-4" onclick="jumpTravel(this)" style="cursor:pointer;">
-            <div class="app-entry">
-              <div class="pulse-dot"></div>
-              <span class="t-text-secondary text-[14px]">小带</span>
-              <span class="text-gradient">Try now</span>
-            </div>
-          </div>
+        </div>
+      </div>
+      <!-- 小带 Try now 居中 -->
+      <div class="flex justify-center mt-16" onclick="jumpTravel(this)" style="cursor:pointer;">
+        <div class="app-entry">
+          <div class="pulse-dot"></div>
+          <span class="t-text-secondary text-[14px]">小带</span>
+          <span class="text-gradient">Try now</span>
         </div>
       </div>
     </div>
@@ -674,9 +676,15 @@
       var btn = el.querySelector('.app-entry');
       btn.classList.add('travel');
       setTimeout(function() {
-        window.location.href = 'http://localhost:8080';
+        window.location.href = 'app.html';
       }, 900);
     }
+
+    window.addEventListener('pageshow', function() {
+      document.querySelectorAll('.app-entry.travel').forEach(function(btn) {
+        btn.classList.remove('travel');
+      });
+    });
   </script>
 
 </body>

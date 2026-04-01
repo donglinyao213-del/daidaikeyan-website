@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小带 — AI科研超级助手</title>
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --text-primary: rgba(255,255,255,0.85);
+      --text-secondary: rgba(255,255,255,0.35);
+      --text-strong: rgba(255,255,255,0.55);
+      --text-muted: rgba(255,255,255,0.25);
+      --text-faint: rgba(255,255,255,0.15);
+      --text-ultra-faint: rgba(255,255,255,0.1);
+      --text-status: rgba(255,255,255,0.2);
+      --border: rgba(255,255,255,0.06);
+      --border-tag: rgba(129,140,248,0.15);
+      --glow-primary: rgba(99,102,241,0.06);
+      --glow-secondary: rgba(168,85,247,0.04);
+      --beacon: #818cf8;
+      --beacon-shadow: rgba(129,140,248,0.4);
+      --tag-color: rgba(129,140,248,0.7);
+      --tag-hover-border: rgba(129,140,248,0.2);
+      --tag-hover-text: rgba(255,255,255,0.5);
+    }
+
+    html.light {
+      --bg: #ffffff;
+      --text-primary: #1d1d1f;
+      --text-secondary: #6e6e73;
+      --text-strong: #424245;
+      --text-muted: #86868b;
+      --text-faint: #aeaeb2;
+      --text-ultra-faint: #d2d2d7;
+      --text-status: #86868b;
+      --border: rgba(0,0,0,0.06);
+      --border-tag: rgba(59,130,246,0.2);
+      --glow-primary: rgba(59,130,246,0.03);
+      --glow-secondary: rgba(139,92,246,0.02);
+      --beacon: #3b82f6;
+      --beacon-shadow: rgba(59,130,246,0.3);
+      --tag-color: #3b82f6;
+      --tag-hover-border: rgba(59,130,246,0.4);
+      --tag-hover-text: #1e40af;
+    }
+
+    body {
+      font-family: 'Noto Sans SC', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    /* 背景光晕 */
+    body::before {
+      content: '';
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--glow-primary) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      transition: background 0.5s ease;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--glow-secondary) 0%, transparent 70%);
+      top: 30%;
+      left: 60%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: drift 8s ease-in-out infinite alternate;
+      transition: background 0.5s ease;
+    }
+
+    @keyframes drift {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      100% { transform: translate(-40%, -60%) scale(1.2); }
+    }
+
+    .container {
+      max-width: 640px;
+      padding: 0 32px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 呼吸光点 */
+    .beacon {
+      width: 10px;
+      height: 10px;
+      background: var(--beacon);
+      border-radius: 50%;
+      margin: 0 auto 48px;
+      box-shadow: 0 0 20px var(--beacon-shadow);
+      animation: breathe 3s ease-in-out infinite;
+      transition: background 0.5s ease;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.5; box-shadow: 0 0 20px var(--beacon-shadow); }
+      50% { opacity: 1; box-shadow: 0 0 40px var(--beacon-shadow); }
+    }
+
+    h1 {
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: 6px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .model-tag {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--tag-color);
+      border: 1px solid var(--border-tag);
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 56px;
+      transition: all 0.5s ease;
+    }
+
+    .desc {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 2.2;
+      color: var(--text-secondary);
+      margin-bottom: 64px;
+      letter-spacing: 0.5px;
+      transition: color 0.5s ease;
+    }
+
+    .desc strong {
+      color: var(--text-strong);
+      font-weight: 400;
+    }
+
+    /* 能力标签 */
+    .capabilities {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 72px;
+    }
+
+    .cap-tag {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      transition: all 0.5s ease;
+    }
+
+    .cap-tag:hover {
+      color: var(--tag-hover-text);
+      border-color: var(--tag-hover-border);
+    }
+
+    /* 状态 */
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: #f59e0b;
+      border-radius: 50%;
+      animation: pulse-amber 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-amber {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .status-text {
+      font-size: 12px;
+      color: var(--text-status);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.5s ease;
+    }
+
+    .back {
+      font-size: 12px;
+      color: var(--text-faint);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+
+    .back:hover {
+      color: var(--text-muted);
+    }
+
+    /* 底部分隔线 */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--border);
+      margin: 40px auto 24px;
+      transition: background 0.5s ease;
+    }
+
+    .footer-text {
+      font-size: 11px;
+      color: var(--text-ultra-faint);
+      letter-spacing: 1px;
+      transition: color 0.5s ease;
+    }
+
+    /* 主题切换按钮 */
+    .theme-toggle {
+      position: fixed;
+      top: 32px;
+      right: 32px;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: var(--border);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--tag-hover-border);
+    }
+
+    .theme-toggle svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      transition: color 0.3s ease;
+    }
+
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+    html.light .theme-toggle .icon-sun { display: block; }
+    html.light .theme-toggle .icon-moon { display: none; }
+  </style>
+</head>
+<body>
+
+  <button onclick="toggleTheme()" class="theme-toggle" aria-label="切换主题">
+    <svg class="icon-moon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+    <svg class="icon-sun" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+  </button>
+
+  <div class="container">
+    <div class="beacon"></div>
+
+    <h1>小带</h1>
+    <div class="model-tag">Powered by Claude Opus 4.6</div>
+
+    <p class="desc">
+      基于世界顶尖推理模型Opus4.6，专为科研场景深度定制。<br>
+      <strong>Agent Skills</strong> 驱动全链路科研工作流 —— 从文献综述、假设构建、实验设计，<br>
+      到论文写作与评审修订，覆盖完整学术生命周期。<br><br>
+      同时具备通用智能对话能力，一个入口，解决所有问题。
+    </p>
+
+    <div class="capabilities">
+      <span class="cap-tag">智能文献综述</span>
+      <span class="cap-tag">假设构建</span>
+      <span class="cap-tag">实验方案设计</span>
+      <span class="cap-tag">数据分析</span>
+      <span class="cap-tag">分阶段论文写作</span>
+      <span class="cap-tag">评审修订</span>
+      <span class="cap-tag">MCP协议集成</span>
+      <span class="cap-tag">多学科适配</span>
+      <span class="cap-tag">通用对话</span>
+    </div>
+
+    <div class="status">
+      <div class="status-dot"></div>
+      <span class="status-text">即将上线</span>
+    </div>
+
+    <a href="index.html" class="back">← 返回带带科研</a>
+
+    <div class="divider"></div>
+    <p class="footer-text">daidaikeyan.com</p>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+    }
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.add('light');
+    }
+  </script>
+
+</body>
+</html>
