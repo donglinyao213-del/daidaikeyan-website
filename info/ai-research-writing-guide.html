@@ -99,6 +99,12 @@
     article h3 { font-size: 1.25rem; font-weight: 500; margin: 1.5rem 0 0.75rem; }
     article p { margin-bottom: 1rem; line-height: 1.8; }
     article strong { font-weight: 500; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    body { animation: fadeIn 0.4s ease; }
   </style>
 </head>
 <body class="t-bg-primary antialiased">
