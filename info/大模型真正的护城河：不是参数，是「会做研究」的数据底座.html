@@ -1,0 +1,1429 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>大模型真正的护城河：不是参数，是「会做研究」的数据底座</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tiempos+Headline:wght@400;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Source+Serif+Pro:wght@400;600&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #64748b;
+            --accent: #3b82f6;
+            --muted: #f8fafc;
+            --border: #e2e8f0;
+        }
+        
+        body {
+            font-family: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+            line-height: 1.7;
+            color: var(--primary);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        .serif {
+            font-family: 'Tiempos Headline', 'Source Han Serif CN', 'Songti SC', 'SimSun', serif;
+        }
+        
+        .hero-title {
+            font-family: 'Tiempos Headline', 'Source Han Serif CN', 'Songti SC', 'SimSun', serif;
+            font-style: italic;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .toc-fixed {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            width: 280px;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-content {
+            margin-left: 320px;
+            max-width: 800px;
+            padding: 2rem;
+        }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .bento-item {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+        
+        .citation-link {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent);
+            transition: all 0.2s ease;
+        }
+        
+        .citation-link:hover {
+            background: var(--accent);
+            color: white;
+            border-bottom-color: transparent;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .toc-link {
+            display: block;
+            padding: 0.5rem 0;
+            color: var(--secondary);
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            padding-left: 1rem;
+            margin-left: -1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .toc-link:hover, .toc-link.active {
+            color: var(--accent);
+            border-left-color: var(--accent);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .toc-link.level-2 {
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .toc-link.level-3 {
+            margin-left: 2rem;
+            font-size: 0.85rem;
+        }
+        
+        /* Mermaid diagram styling */
+        .mermaid-container {
+            display: flex;
+            justify-content: center;
+            min-height: 300px;
+            max-height: 800px;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mermaid-container .mermaid {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .mermaid-container .mermaid svg {
+            max-width: 100%;
+            height: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .mermaid-container .mermaid:active {
+            cursor: grabbing;
+        }
+
+        .mermaid-container.zoomed .mermaid {
+            height: 100%;
+            width: 100%;
+            cursor: grab;
+        }
+
+        .mermaid-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mermaid-control-btn {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #374151;
+            font-size: 14px;
+            min-width: 36px;
+            height: 36px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mermaid-control-btn:hover {
+            background: #f8fafc;
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .mermaid-control-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Enhanced mermaid element styling for better contrast */
+        .mermaid .node rect,
+        .mermaid .node circle,
+        .mermaid .node ellipse,
+        .mermaid .node polygon {
+            stroke: var(--accent) !important;
+            stroke-width: 2px !important;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .mermaid .node .label {
+            color: var(--primary) !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            font-family: 'Inter', sans-serif !important;
+        }
+        
+        .mermaid .edgePath .path {
+            stroke: var(--secondary) !important;
+            stroke-width: 2px !important;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+        }
+        
+        .mermaid .edgeLabel {
+            background-color: white !important;
+            color: var(--primary) !important;
+            font-weight: 500 !important;
+            padding: 4px 8px !important;
+            border-radius: 4px !important;
+            border: 1px solid var(--border) !important;
+            font-family: 'Inter', sans-serif !important;
+        }
+        
+        /* Timeline specific styling */
+        .mermaid .section {
+            fill: var(--accent) !important;
+            opacity: 0.1 !important;
+        }
+        
+        .mermaid .section-title {
+            fill: var(--primary) !important;
+            font-weight: 600 !important;
+            font-family: 'Inter', sans-serif !important;
+        }
+        
+        .mermaid .task {
+            fill: white !important;
+            stroke: var(--accent) !important;
+            stroke-width: 2px !important;
+        }
+        
+        .mermaid .task-text {
+            fill: var(--primary) !important;
+            font-weight: 500 !important;
+            font-family: 'Inter', sans-serif !important;
+        }
+        
+        /* Enhanced contrast for different node types */
+        .mermaid .node.primary rect,
+        .mermaid .node.primary circle,
+        .mermaid .node.primary ellipse,
+        .mermaid .node.primary polygon {
+            fill: #dbeafe !important;
+            stroke: #1d4ed8 !important;
+            stroke-width: 2px !important;
+        }
+        
+        .mermaid .node.primary .label {
+            color: #1e293b !important;
+            font-weight: 700 !important;
+        }
+        
+        .mermaid .node.secondary rect,
+        .mermaid .node.secondary circle,
+        .mermaid .node.secondary ellipse,
+        .mermaid .node.secondary polygon {
+            fill: #f1f5f9 !important;
+            stroke: #475569 !important;
+            stroke-width: 2px !important;
+        }
+        
+        .mermaid .node.secondary .label {
+            color: #374151 !important;
+            font-weight: 600 !important;
+        }
+        
+        .mermaid .node.accent rect,
+        .mermaid .node.accent circle,
+        .mermaid .node.accent ellipse,
+        .mermaid .node.accent polygon {
+            fill: #eff6ff !important;
+            stroke: #2563eb !important;
+            stroke-width: 2px !important;
+        }
+        
+        .mermaid .node.accent .label {
+            color: #1e40af !important;
+            font-weight: 600 !important;
+        }
+        
+        @media (max-width: 1024px) {
+            .toc-fixed {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 1rem;
+            }
+            .mermaid-control-btn:not(.reset-zoom) {
+                display: none;
+            }
+            .mermaid-controls {
+                top: auto;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: 2.25rem;
+                line-height: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 1.875rem;
+            }
+            .bento-item {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .serif.text-xl {
+                font-size: 1.25rem;
+            }
+            .bento-item {
+                padding: 1.25rem;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .hero-title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+  <base target="_blank">
+</head>
+
+  <body>
+    <!-- Fixed Table of Contents -->
+    <nav class="toc-fixed">
+      <h3 class="text-lg font-bold mb-4 text-slate-800">目录导航</h3>
+      <div class="space-y-1">
+        <a href="#hero" class="toc-link">引言</a>
+        <a href="#problem" class="toc-link">核心痛点</a>
+        <a href="#problem-scenarios" class="toc-link level-2">典型失效场景</a>
+        <a href="#problem-root" class="toc-link level-2">问题根源诊断</a>
+        <a href="#solution" class="toc-link">方法论数据底座</a>
+        <a href="#methodology-essence" class="toc-link level-2">科研方法论本质</a>
+        <a href="#data-sources" class="toc-link level-2">四大核心渠道</a>
+        <a href="#four-layers" class="toc-link level-2">四层结构化体系</a>
+        <a href="#applications" class="toc-link">实际应用价值</a>
+        <a href="#ai-developers" class="toc-link level-2">对AI从业者</a>
+        <a href="#researchers" class="toc-link level-2">对科研人员</a>
+        <a href="#platforms" class="toc-link level-2">对知识平台</a>
+        <a href="#trends" class="toc-link">行业趋势判断</a>
+        <a href="#competition-shift" class="toc-link level-2">竞争格局转向</a>
+        <a href="#future-features" class="toc-link level-2">未来产品特征</a>
+        <a href="#conclusion" class="toc-link">结论与展望</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section id="hero" class="mb-16">
+        <div class="bento-grid">
+          <div class="bento-item">
+            <h1 class="hero-title text-4xl lg:text-5xl leading-tight mb-6">
+              大模型真正的护城河：
+              <br/>
+              不是参数，是「会做研究」的数据底座
+            </h1>
+            <p class="text-xl text-slate-600 mb-8 leading-relaxed">
+              当大模型参数竞赛遭遇边际效益递减，真正的竞争护城河正在回归「数据质量」——
+              不是海量数据，而是精准匹配专业场景、解决实际研究难题的方法论骨架
+            </p>
+            <div class="flex items-center space-x-6 text-sm text-slate-500">
+              <span><i class="fas fa-brain mr-2"></i>AI科研辅助</span>
+              <span><i class="fas fa-database mr-2"></i>方法论数据</span>
+              <span><i class="fas fa-chart-line mr-2"></i>行业趋势</span>
+            </div>
+          </div>
+          <div class="bento-item bg-gradient-to-br from-blue-50 to-indigo-100">
+            <img src="https://kimi-web-img.moonshot.cn/img/crad.ict.ac.cn/c4089f0d5623fa56ac6ced775b3724c784f0ec90.jpg" alt="神经网络与学术论文的融合图像" class="w-full h-48 object-cover rounded-lg mb-4" size="medium" aspect="wide" query="神经网络 学术" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+            <h3 class="font-bold text-slate-800 mb-2">核心洞察</h3>
+            <p class="text-sm text-slate-600">
+              大模型在科研场景中的瓶颈，根源在于训练数据缺乏系统化的「科研方法论骨架」
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Problem Section -->
+      <section id="problem" class="mb-16">
+        <h2 class="serif text-3xl font-bold mb-8 text-slate-800">一、核心痛点：大模型为何当不好&#34;全能研究员&#34;</h2>
+
+        <div id="problem-scenarios" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">1.1 跨学科研究中的典型失效场景</h3>
+
+          <div class="highlight-box">
+            <h4 class="font-bold text-lg mb-3 text-slate-800">
+              <i class="fas fa-exclamation-triangle text-amber-500 mr-2"></i>
+              经济学领域：混淆计算机实验逻辑与计量经济学因果识别规范
+            </h4>
+            <p class="mb-4">
+              当用户提出经济学课题时，模型往往本能地调用计算机科学领域的实验设计逻辑——强调A/B测试、随机分组、算法效率与统计显著性——却完全忽视计量经济学关于<strong>因果识别（Causal Identification）</strong>的核心规范。
+            </p>
+            <div class="bg-white p-4 rounded-lg border-l-4 border-blue-400">
+              <p class="text-sm text-slate-600 mb-2"><strong>典型失效：</strong></p>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>• 无法理解<strong>工具变量</strong>的相关性与排他性双重约束</li>
+                <li>• 忽视<strong>DID设计</strong>的平行趋势假设检验要求</li>
+                <li>• 混淆预测性分析与因果推断的边界</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg border border-slate-200 mb-6">
+            <h4 class="font-bold text-lg mb-3 text-slate-800">
+              <i class="fas fa-stethoscope text-red-500 mr-2"></i>
+              医学领域：忽视RCT伦理要求与样本量标准
+            </h4>
+            <p class="mb-4">
+              随机对照试验（RCT）作为循证医学的金标准，其设计与实施涉及复杂的伦理审查流程、严格的统计学规范以及多中心协作的标准化操作。
+            </p>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr class="bg-slate-50">
+                    <th class="border border-slate-200 p-2 text-left">关键要素</th>
+                    <th class="border border-slate-200 p-2 text-left">典型失效表现</th>
+                    <th class="border border-slate-200 p-2 text-left">潜在后果</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="border border-slate-200 p-2 font-medium">伦理审查</td>
+                    <td class="border border-slate-200 p-2">忽略IRB审批必要性</td>
+                    <td class="border border-slate-200 p-2">研究无法通过审查，引发法律风险</td>
+                  </tr>
+                  <tr class="bg-slate-25">
+                    <td class="border border-slate-200 p-2 font-medium">样本量计算</td>
+                    <td class="border border-slate-200 p-2">给出缺乏统计依据的随意数字</td>
+                    <td class="border border-slate-200 p-2">研究因样本不足无法检测真实效应</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-slate-200 p-2 font-medium">试验注册</td>
+                    <td class="border border-slate-200 p-2">未提及ClinicalTrials.gov预注册</td>
+                    <td class="border border-slate-200 p-2">不符合国际期刊发表标准</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="problem-root" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">1.2 问题根源诊断</h3>
+
+          <div class="highlight-box">
+            <h4 class="font-bold text-lg mb-3 text-slate-800">
+              <i class="fas fa-search text-blue-500 mr-2"></i>
+              非参数规模不足，而是数据底座缺失&#34;科研方法论骨架&#34;
+            </h4>
+            <p class="mb-4">
+              问题的核心在于，科研能力并非简单的信息记忆与模式匹配，而是涉及对<strong>学科范式、方法规范、实践智慧</strong>的深度理解与灵活运用——这些知识构成了&#34;科研方法论的骨架&#34;。
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-r from-slate-50 to-blue-50 p-6 rounded-lg border border-slate-200">
+            <h5 class="font-semibold mb-4">现有训练数据的三重结构性缺陷</h5>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="text-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-certificate text-red-600"></i>
+                </div>
+                <h6 class="font-medium mb-2">权威性缺失</h6>
+                <p class="text-sm text-slate-600">缺乏学术共同体的质量把关，方法论表述准确性无法保证</p>
+              </div>
+              <div class="text-center">
+                <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-puzzle-piece text-amber-600"></i>
+                </div>
+                <h6 class="font-medium mb-2">情境性剥离</h6>
+                <p class="text-sm text-slate-600">只见研究结果，不见研究过程中的决策依据与失败尝试</p>
+              </div>
+              <div class="text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-network-wired text-blue-600"></i>
+                </div>
+                <h6 class="font-medium mb-2">整合不足</h6>
+                <p class="text-sm text-slate-600">不同学科方法论缺乏统一的语义框架与映射机制</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Solution Section -->
+      <section id="solution" class="mb-16">
+        <h2 class="serif text-3xl font-bold mb-8 text-slate-800">二、科研方法论的数据底座：构建&#34;全学科科研方法论Scale&#34;</h2>
+
+        <div id="methodology-essence" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">2.1 真实科研的方法论本质</h3>
+
+          <div class="bg-white p-6 rounded-lg border border-slate-200 mb-6">
+            <h4 class="font-bold text-lg mb-4 text-slate-800">非信息搬运，而是跨学科、有规范、能落地的体系化知识</h4>
+            <p class="mb-4">
+              真实世界的科研是一套高度复杂、严格规范、具有强实践导向的体系化知识系统，其核心特征可概括为三个维度：
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="text-center p-4 bg-gradient-to-b from-blue-50 to-blue-100 rounded-lg">
+                <div class="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-project-diagram text-blue-700 text-xl"></i>
+                </div>
+                <h5 class="font-semibold mb-2">跨学科性</h5>
+                <p class="text-sm text-slate-600">现代科学研究日益突破传统学科边界，在交叉领域产生创新</p>
+              </div>
+              <div class="text-center p-4 bg-gradient-to-b from-green-50 to-green-100 rounded-lg">
+                <div class="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-gavel text-green-700 text-xl"></i>
+                </div>
+                <h5 class="font-semibold mb-2">规范性</h5>
+                <p class="text-sm text-slate-600">每个成熟学科都形成了经过长期检验的&#34;好的研究&#34;标准</p>
+              </div>
+              <div class="text-center p-4 bg-gradient-to-b from-purple-50 to-purple-100 rounded-lg">
+                <div class="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <i class="fas fa-cogs text-purple-700 text-xl"></i>
+                </div>
+                <h5 class="font-semibold mb-2">落地性</h5>
+                <p class="text-sm text-slate-600">科研方法论不是抽象原则，而是&#34;能落地&#34;的操作性知识</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg border border-slate-200">
+            <h4 class="font-bold text-lg mb-4 text-slate-800">学科差异化范式示例</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr class="bg-slate-50">
+                    <th class="border border-slate-200 p-3 text-left">学科领域</th>
+                    <th class="border border-slate-200 p-3 text-left">核心方法技术</th>
+                    <th class="border border-slate-200 p-3 text-left">质量标准关键词</th>
+                    <th class="border border-slate-200 p-3 text-left">典型规范来源</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="border border-slate-200 p-3 font-medium">物理学</td>
+                    <td class="border border-slate-200 p-3">思想实验、精密测量、数学建模</td>
+                    <td class="border border-slate-200 p-3">可重复性、测量精度、理论预言</td>
+                    <td class="border border-slate-200 p-3">《物理评论》系列期刊投稿指南</td>
+                  </tr>
+                  <tr class="bg-slate-25">
+                    <td class="border border-slate-200 p-3 font-medium">医学</td>
+                    <td class="border border-slate-200 p-3">随机对照试验（RCT）、系统综述</td>
+                    <td class="border border-slate-200 p-3">内部效度、外部效度、临床意义</td>
+                    <td class="border border-slate-200 p-3">CONSORT声明、PRISMA指南</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-slate-200 p-3 font-medium">社会学</td>
+                    <td class="border border-slate-200 p-3">田野调查、深度访谈、扎根理论</td>
+                    <td class="border border-slate-200 p-3">信度、效度、理论饱和、反思性</td>
+                    <td class="border border-slate-200 p-3">美国社会学会伦理准则</td>
+                  </tr>
+                  <tr class="bg-slate-25">
+                    <td class="border border-slate-200 p-3 font-medium">经济学</td>
+                    <td class="border border-slate-200 p-3">双重差分（DID）、工具变量（IV）</td>
+                    <td class="border border-slate-200 p-3">识别假设、稳健性检验、政策相关性</td>
+                    <td class="border border-slate-200 p-3">AER、QJE等顶刊复制政策</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="data-sources" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">2.2 高质量数据源的四大核心渠道</h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-journal-whills text-blue-600"></i>
+                </div>
+                <h4 class="font-bold text-lg">顶刊《作者指南》</h4>
+              </div>
+              <p class="text-sm text-slate-600 mb-3">
+                学术期刊的《作者指南》是学科规范最权威、最系统的成文化表达，明确规定了投稿论文在研究设计、数据分析、结果报告、伦理合规等方面的具体要求。
+              </p>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>• <strong>Nature系列</strong>：数据可用性声明、代码共享要求</li>
+                <li>• <strong>NEJM</strong>：临床试验注册、伦理审批、知情同意</li>
+                <li>• <strong>经济学顶刊</strong>：识别策略透明度、稳健性检验</li>
+              </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-book-open text-green-600"></i>
+                </div>
+                <h4 class="font-bold text-lg">高被引科研方法论文献</h4>
+              </div>
+              <p class="text-sm text-slate-600 mb-3">
+                方法论文献是学科共同体对&#34;如何正确做研究&#34;的系统性反思，专注于研究设计、测量工具、分析技术的原理阐释与比较评估。
+              </p>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>• <strong>定量因果推断</strong>：Angrist &amp; Pischke、Imbens &amp; Rubin</li>
+                <li>• <strong>质性研究方法</strong>：Glaser &amp; Strauss、Creswell</li>
+                <li>• <strong>医学研究方法</strong>：Higgins、Schulz</li>
+              </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-users text-purple-600"></i>
+                </div>
+                <h4 class="font-bold text-lg">科研人实战经验</h4>
+              </div>
+              <p class="text-sm text-slate-600 mb-3">
+                学术共同体在日常研究实践中积累的&#34;隐性知识&#34;，以碎片化、情境化、即时性的形式存在于多种渠道。
+              </p>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>• <strong>小木虫</strong>：中文科研社区，覆盖数十万活跃研究者</li>
+                <li>• <strong>ResearchGate</strong>：全球性学术社交网络</li>
+                <li>• <strong>Stack Exchange</strong>：高质量技术问答社区</li>
+              </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
+                  <i class="fas fa-list-ol text-orange-600"></i>
+                </div>
+                <h4 class="font-bold text-lg">学术博主步骤化SOP</h4>
+              </div>
+              <p class="text-sm text-slate-600 mb-3">
+                学术博主通过博客、视频、播客等形式，将科研流程拆解为可操作的步骤化标准作业程序（SOP）。
+              </p>
+              <ul class="text-sm text-slate-600 space-y-1">
+                <li>• <strong>全流程SOP</strong>：从选题构思到投稿修改</li>
+                <li>• <strong>方法专项SOP</strong>：特定技术的详细操作指南</li>
+                <li>• <strong>困境应对SOP</strong>：常见卡点的诊断与解决</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="four-layers" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">2.3 四层结构化规则体系</h3>
+
+          <div class="mb-8">
+            <div class="mermaid-container">
+              <div class="mermaid-controls">
+                <button class="mermaid-control-btn zoom-in" title="放大">
+                  <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="mermaid-control-btn zoom-out" title="缩小">
+                  <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="mermaid-control-btn reset-zoom" title="重置">
+                  <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+                <button class="mermaid-control-btn fullscreen" title="全屏查看">
+                  <i class="fas fa-expand"></i>
+                </button>
+              </div>
+              <div class="mermaid" id="mermaid-diagram">
+                graph TD
+                A[&#34;全学科科研方法论Scale&#34;] --&gt; B[&#34;学科层&#34;]
+                A --&gt; C[&#34;方法层&#34;]
+                A --&gt; D[&#34;流程层&#34;]
+                A --&gt; E[&#34;应急层&#34;]
+
+                B --&gt; B1[&#34;主流研究范式&#34;]
+                B --&gt; B2[&#34;期刊硬规则&#34;]
+                B --&gt; B3[&#34;质量评估标准&#34;]
+                B --&gt; B4[&#34;学科交叉映射&#34;]
+
+                C --&gt; C1[&#34;适用场景&#34;]
+                C --&gt; C2[&#34;实施步骤&#34;]
+                C --&gt; C3[&#34;优劣对比&#34;]
+                C --&gt; C4[&#34;关键假设&#34;]
+                C --&gt; C5[&#34;常见误用&#34;]
+
+                D --&gt; D1[&#34;选题构思&#34;]
+                D --&gt; D2[&#34;文献综述&#34;]
+                D --&gt; D3[&#34;研究设计&#34;]
+                D --&gt; D4[&#34;数据收集&#34;]
+                D --&gt; D5[&#34;数据分析&#34;]
+                D --&gt; D6[&#34;结果解释&#34;]
+                D --&gt; D7[&#34;论文撰写&#34;]
+                D --&gt; D8[&#34;投稿审稿&#34;]
+
+                E --&gt; E1[&#34;数据不足应对&#34;]
+                E --&gt; E2[&#34;方法不匹配解决&#34;]
+                E --&gt; E3[&#34;结果不稳健处理&#34;]
+                E --&gt; E4[&#34;审稿质疑回应&#34;]
+
+                style A fill:#dbeafe,stroke:#1d4ed8,stroke-width:3px,color:#1e293b
+                style B fill:#f0f9ff,stroke:#0369a1,stroke-width:2px,color:#0c4a6e
+                style C fill:#f0fdf4,stroke:#16a34a,stroke-width:2px,color:#14532d
+                style D fill:#fdf4ff,stroke:#a21caf,stroke-width:2px,color:#701a75
+                style E fill:#fffbeb,stroke:#d97706,stroke-width:2px,color:#92400e
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h4 class="font-bold text-lg mb-3 text-slate-800">
+                <i class="fas fa-sitemap text-blue-500 mr-2"></i>
+                学科层：主流研究范式+期刊硬规则
+              </h4>
+              <p class="text-sm text-slate-600 mb-3">
+                建立&#34;问题→学科→范式&#34;的快速映射机制，系统编码各学科的历史发展脉络、主流理论框架、顶级期刊发表偏好。
+              </p>
+              <div class="bg-blue-50 p-3 rounded text-xs text-slate-600">
+                <strong>挑战：</strong>处理学科边界的模糊性与交叉性，支持多标签标注、权重分配、动态组合的灵活结构
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h4 class="font-bold text-lg mb-3 text-slate-800">
+                <i class="fas fa-tools text-green-500 mr-2"></i>
+                方法层：适用场景+实施步骤+优劣对比
+              </h4>
+              <p class="text-sm text-slate-600 mb-3">
+                精细化知识表征，明确界定每种方法的适用场景、实施步骤、优劣对比、关键假设、常见误用。
+              </p>
+              <div class="bg-green-50 p-3 rounded text-xs text-slate-600">
+                <strong>特色：</strong>建立方法之间的多维关系网络——层次、替代、组合、演进关系
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h4 class="font-bold text-lg mb-3 text-slate-800">
+                <i class="fas fa-route text-purple-500 mr-2"></i>
+                流程层：选题到结论的通用研究SOP
+              </h4>
+              <p class="text-sm text-slate-600 mb-3">
+                提供研究全过程的方法论导航，覆盖选题构思、文献综述、研究设计、数据收集、分析解释、论文撰写、投稿审稿的完整周期。
+              </p>
+              <div class="bg-purple-50 p-3 rounded text-xs text-slate-600">
+                <strong>价值：</strong>降低执行偏差，预防常见失误，提供质量检查点与风险预警
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h4 class="font-bold text-lg mb-3 text-slate-800">
+                <i class="fas fa-shield-alt text-orange-500 mr-2"></i>
+                应急层：数据不足/方法不匹配的自动解决方案
+              </h4>
+              <p class="text-sm text-slate-600 mb-3">
+                针对科研实践中的典型困境情境，提供诊断框架与解决方案库，增强非标准情境的应对能力。
+              </p>
+              <div class="bg-orange-50 p-3 rounded text-xs text-slate-600">
+                <strong>覆盖：</strong>数据不足、方法不匹配、结果不稳健、审稿质疑等卡点类型
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Applications Section -->
+      <section id="applications" class="mb-16">
+        <h2 class="serif text-3xl font-bold mb-8 text-slate-800">三、数据底座的实际应用价值</h2>
+
+        <div id="ai-developers" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">3.1 对AI从业者</h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h4 class="font-bold text-lg mb-4 text-slate-800">
+                <i class="fas fa-robot text-blue-500 mr-2"></i>
+                破解Agent跨学科能力弱难题，实现自动方法论匹配
+              </h4>
+              <p class="text-sm text-slate-600 mb-4">
+                通过预置的学科-范式-方法映射关系，使Agent能够实现&#34;自动方法论匹配&#34;：识别问题学科属性，调用该学科的主流范式与质量标准，生成符合专业规范的研究方案。
+              </p>
+              <div class="bg-blue-50 p-3 rounded">
+                <p class="text-xs text-slate-600">
+                  <strong>价值：</strong>显著扩展Agent的适用场景边界，从单一学科工具升级为真正的跨学科研究助手
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h4 class="font-bold text-lg mb-4 text-slate-800">
+                <i class="fas fa-chart-line text-green-500 mr-2"></i>
+                降低无效数据占比，提升训练效率
+              </h4>
+              <p class="text-sm text-slate-600 mb-4">
+                提供精准优化训练数据构成的抓手，避免海量互联网数据中大量token消耗于噪声、重复、低价值信息。
+              </p>
+              <div class="bg-green-50 p-3 rounded">
+                <p class="text-xs text-slate-600">
+                  <strong>效果：</strong>据行业经验估算，任务完成率提升2-3倍，训练数据量降低一个数量级
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-slate-200 mt-6">
+            <h5 class="font-semibold mb-4">方法论Scale数据 vs 通用预训练数据对比</h5>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600 mb-1">100x</div>
+                <div class="text-xs text-slate-600">信息密度提升</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-green-600 mb-1">优</div>
+                <div class="text-xs text-slate-600">结构清晰度</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-purple-600 mb-1">有</div>
+                <div class="text-xs text-slate-600">权威性保障</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-orange-600 mb-1">全</div>
+                <div class="text-xs text-slate-600">学科覆盖度</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="researchers" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">3.2 对科研人员/学生</h3>
+
+          <div class="highlight-box">
+            <h4 class="font-bold text-lg mb-3 text-slate-800">
+              <i class="fas fa-graduation-cap text-blue-500 mr-2"></i>
+              新手快速掌握顶刊认可的研究设计逻辑
+            </h4>
+            <p class="mb-4">
+              基于数据底座的AI辅助工具，可将专业社会化学习过程&#34;外化&#34;与&#34;加速&#34;：
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ul class="text-sm text-slate-600 space-y-2">
+                <li><strong>即时查询：</strong>遇到不熟悉的方法或规范，以自然语言提问获取结构化解答</li>
+                <li><strong>方案生成：</strong>输入研究问题，获取符合顶刊标准的研究设计草案</li>
+              </ul>
+              <ul class="text-sm text-slate-600 space-y-2">
+                <li><strong>错误预警：</strong>在设计与实施阶段，实时提示可能的规范违反与方法误用</li>
+                <li><strong>案例参照：</strong>获取同类研究的优秀实践案例，理解抽象方法在具体情境中的应用</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg border border-slate-200">
+            <h4 class="font-bold text-lg mb-3 text-slate-800">
+              <i class="fas fa-exchange-alt text-green-500 mr-2"></i>
+              跨学科研究时直接获取适配路径，无需从零学习
+            </h4>
+            <p class="mb-4">
+              数据底座提供&#34;方法论翻译器&#34;功能，当研究者进入陌生领域时，AI可以系统介绍该领域的核心概念、方法规范与潜在冲突。
+            </p>
+            <div class="bg-green-50 p-4 rounded text-sm text-slate-600">
+              <strong>案例：</strong>当一位经济学家希望运用社会学的质性方法补充量化发现时，AI可以系统介绍扎根理论、目的性抽样、理论饱和等核心概念，并提示与经济学研究习惯的潜在冲突。
+            </div>
+          </div>
+        </div>
+
+        <div id="platforms" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">3.3 对检索引擎/知识平台</h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h4 class="font-bold text-lg mb-4 text-slate-800">
+                <i class="fas fa-search-plus text-blue-500 mr-2"></i>
+                从&#34;信息碎片&#34;升级为&#34;可执行研究方案&#34;
+              </h4>
+              <p class="text-sm text-slate-600 mb-4">
+                实现从&#34;信息检索&#34;到&#34;方案生成&#34;的跃迁：用户输入研究问题、情境描述、约束条件，系统输出结构化研究方案。
+              </p>
+              <div class="bg-blue-50 p-3 rounded text-xs text-slate-600">
+                <strong>变革：</strong>将方法论判断的重担从用户转移到系统，从文献列表到完整方案
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg border border-slate-200">
+              <h4 class="font-bold text-lg mb-4 text-slate-800">
+                <i class="fas fa-bullseye text-green-500 mr-2"></i>
+                满足场景化需求：从&#34;什么是DID&#34;到&#34;我的问题能不能用DID&#34;
+              </h4>
+              <p class="text-sm text-slate-600 mb-4">
+                响应高度情境化的用户查询，系统整合用户的研究情境与方法论知识，进行推理与推荐。
+              </p>
+              <div class="bg-green-50 p-3 rounded text-xs text-slate-600">
+                <strong>优势：</strong>四层结构支持复杂推理——学科层识别需求，方法层检索条件，流程层定位节点，应急层提供卡点解决方案
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Trends Section -->
+      <section id="trends" class="mb-16">
+        <h2 class="serif text-3xl font-bold mb-8 text-slate-800">四、行业趋势判断：AI竞争进入&#34;专业能力&#34;时代</h2>
+
+        <div id="competition-shift" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">4.1 参数竞赛的瓶颈与转向</h3>
+
+          <div class="bg-gradient-to-r from-red-50 to-orange-50 p-6 rounded-lg border border-slate-200 mb-6">
+            <h4 class="font-bold text-lg mb-4 text-slate-800">
+              <i class="fas fa-chart-line-down text-red-500 mr-2"></i>
+              规模扩张边际效益递减
+            </h4>
+            <p class="mb-4">
+              大模型领域正经历从&#34;规模驱动&#34;向&#34;效率驱动&#34;的关键转折。单纯追求参数规模的竞赛已接近其经济和技术边界。
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ul class="text-sm text-slate-600 space-y-2">
+                <li><strong>成本激增：</strong>万亿参数模型训练成本达数千万美元级别</li>
+                <li><strong>能力分化：</strong>通用能力提升不自动转化为专业深度</li>
+              </ul>
+              <ul class="text-sm text-slate-600 space-y-2">
+                <li><strong>涌现不确定：</strong>某些能力难以预测控制，且非单调提升</li>
+                <li><strong>应用落地难：</strong>部署成本、延迟表现、可控性问题</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-slate-200">
+            <h4 class="font-bold text-lg mb-4 text-slate-800">
+              <i class="fas fa-trophy text-blue-500 mr-2"></i>
+              护城河回归数据质量：精准匹配场景、解决实际问题
+            </h4>
+            <p class="mb-4">
+              在参数竞赛边际效益递减的背景下，&#34;数据质量&#34;正重新成为竞争的核心维度——特指与目标应用场景的精准匹配度与对实际问题的有效解决能力。
+            </p>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr class="bg-white">
+                    <th class="border border-slate-200 p-2 text-left">竞争维度</th>
+                    <th class="border border-slate-200 p-2 text-left">参数竞赛时代</th>
+                    <th class="border border-slate-200 p-2 text-left">数据质量时代</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="border border-slate-200 p-2 font-medium">核心资产</td>
+                    <td class="border border-slate-200 p-2">计算集群、工程人才</td>
+                    <td class="border border-slate-200 p-2">专业数据、领域知识、专家网络</td>
+                  </tr>
+                  <tr class="bg-slate-25">
+                    <td class="border border-slate-200 p-2 font-medium">进入壁垒</td>
+                    <td class="border border-slate-200 p-2">资本密集、技术密集</td>
+                    <td class="border border-slate-200 p-2">知识密集、关系密集、时间密集</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-slate-200 p-2 font-medium">盈利模式</td>
+                    <td class="border border-slate-200 p-2">API调用量、订阅服务</td>
+                    <td class="border border-slate-200 p-2">解决方案、专家咨询、生态分成</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="future-features" class="mb-12">
+          <h3 class="serif text-2xl font-semibold mb-6 text-slate-700">4.2 未来AI产品的核心特征</h3>
+
+          <div class="highlight-box">
+            <h4 class="font-bold text-lg mb-3 text-slate-800">
+              <i class="fas fa-brain text-blue-500 mr-2"></i>
+              &#34;懂专业、会研究&#34;成为标配
+            </h4>
+            <p class="mb-4">
+              能够在科研辅助领域立足的AI产品，必须具备&#34;懂专业、会研究&#34;的核心特征，定位为&#34;研究伙伴&#34;而非简单工具。
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-white p-4 rounded-lg border border-slate-200">
+                <h5 class="font-semibold mb-2 text-blue-600">知识层</h5>
+                <p class="text-xs text-slate-600">系统掌握特定学科的专业知识，包括事实性、概念性、程序性、元认知知识</p>
+              </div>
+              <div class="bg-white p-4 rounded-lg border border-slate-200">
+                <h5 class="font-semibold mb-2 text-green-600">方法层</h5>
+                <p class="text-xs text-slate-600">内化该学科的研究方法论，能够进行方法选择、设计实施、诊断调整</p>
+              </div>
+              <div class="bg-white p-4 rounded-lg border border-slate-200">
+                <h5 class="font-semibold mb-2 text-purple-600">实践层</h5>
+                <p class="text-xs text-slate-600">理解该学科的研究实践生态，包括期刊规范、评审文化、合作模式</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg border border-slate-200">
+            <h4 class="font-bold text-lg mb-3 text-slate-800">
+              <i class="fas fa-cogs text-orange-500 mr-2"></i>
+              专业研究者思维方式的规则化与可学习化
+            </h4>
+            <p class="mb-4">
+              AI的发展正在推动&#34;专业研究者思维方式&#34;的规则化与可学习化进程。方法论数据底座的构建，本质上是对这种默会知识的显性化与结构化尝试。
+            </p>
+            <div class="bg-orange-50 p-4 rounded text-sm text-slate-600">
+              <strong>双重意义：</strong>一方面使AI能够模拟甚至超越人类专家的特定能力；另一方面为人类研究者提供反思与优化自身实践的外部参照，可能催生科研方法论本身的创新与演进。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Conclusion Section -->
+      <section id="conclusion" class="mb-16">
+        <h2 class="serif text-3xl font-bold mb-8 text-slate-800">五、结论与展望</h2>
+
+        <div class="bg-gradient-to-r from-slate-50 to-blue-50 p-8 rounded-lg border border-slate-200">
+          <h3 class="serif text-xl font-semibold mb-4 text-slate-800">AI的下一场竞争，是&#34;专业能力&#34;的竞争</h3>
+          <p class="text-lg leading-relaxed mb-6">
+            当大模型参数卷到瓶颈，真正的护城河会回归&#34;数据质量&#34;——不是海量数据，而是&#34;精准匹配场景、能解决实际问题&#34;的高质量数据。
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white p-4 rounded-lg border border-slate-200">
+              <h4 class="font-semibold mb-2 text-blue-600">对AI从业者</h4>
+              <p class="text-sm text-slate-600">不用再为&#34;Agent跨学科能力弱&#34;发愁，模型能自动匹配学科方法论，输出的研究方案更专业、更符合学术规范</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg border border-slate-200">
+              <h4 class="font-semibold mb-2 text-green-600">对科研人/学生</h4>
+              <p class="text-sm text-slate-600">新手能快速get顶刊认可的研究设计逻辑，跨学科研究时能直接获取适配的研究路径</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg border border-slate-200">
+            <h4 class="font-semibold mb-3 text-purple-600">
+              <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+              核心洞察
+            </h4>
+            <p class="text-sm text-slate-600">
+              我们之所以花大力气做全学科科研方法论采集与结构化，正是想把&#34;专业研究者的思维方式&#34;变成可被AI学习的规则。未来，好的AI产品，一定是&#34;懂专业、会研究&#34;的，而这一切的起点，就是这套扎实的数据底座。
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-lg">
+          <div class="text-center">
+            <h3 class="text-2xl font-bold mb-4">
+              <i class="fas fa-rocket mr-2"></i>
+              带带科研
+            </h3>
+            <p class="text-lg mb-4">
+              科研方法开源数据集，正在采集全学科科研方法论数据
+            </p>
+            <p class="text-base opacity-90">
+              为大模型/Agent提供&#34;会做研究&#34;的数据底座，让AI的专业能力再上一个台阶
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+        // Initialize Mermaid with enhanced configuration
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#dbeafe',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#1d4ed8',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#eff6ff',
+                background: '#ffffff',
+                mainBkg: '#ffffff',
+                secondaryBkg: '#f8fafc',
+                tertiaryBkg: '#f1f5f9',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '14px'
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                padding: 20
+            },
+            timeline: {
+                useMaxWidth: true,
+                padding: 20
+            },
+            gantt: {
+                useMaxWidth: true,
+                padding: 20
+            },
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 14
+        });
+
+        // Initialize Mermaid Controls for zoom and pan
+        function initializeMermaidControls() {
+            const containers = document.querySelectorAll('.mermaid-container');
+
+            containers.forEach(container => {
+            const mermaidElement = container.querySelector('.mermaid');
+            let scale = 1;
+            let isDragging = false;
+            let startX, startY, translateX = 0, translateY = 0;
+
+            // 触摸相关状态
+            let isTouch = false;
+            let touchStartTime = 0;
+            let initialDistance = 0;
+            let initialScale = 1;
+            let isPinching = false;
+
+            // Zoom controls
+            const zoomInBtn = container.querySelector('.zoom-in');
+            const zoomOutBtn = container.querySelector('.zoom-out');
+            const resetBtn = container.querySelector('.reset-zoom');
+            const fullscreenBtn = container.querySelector('.fullscreen');
+
+            function updateTransform() {
+                mermaidElement.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+
+                if (scale > 1) {
+                container.classList.add('zoomed');
+                } else {
+                container.classList.remove('zoomed');
+                }
+
+                mermaidElement.style.cursor = isDragging ? 'grabbing' : 'grab';
+            }
+
+            if (zoomInBtn) {
+                zoomInBtn.addEventListener('click', () => {
+                scale = Math.min(scale * 1.25, 4);
+                updateTransform();
+                });
+            }
+
+            if (zoomOutBtn) {
+                zoomOutBtn.addEventListener('click', () => {
+                scale = Math.max(scale / 1.25, 0.3);
+                if (scale <= 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+                updateTransform();
+                });
+            }
+
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                scale = 1;
+                translateX = 0;
+                translateY = 0;
+                updateTransform();
+                });
+            }
+
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('click', () => {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+                });
+            }
+
+            // Mouse Events
+            mermaidElement.addEventListener('mousedown', (e) => {
+                if (isTouch) return; // 如果是触摸设备，忽略鼠标事件
+
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                mermaidElement.style.cursor = 'grabbing';
+                updateTransform();
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging && !isTouch) {
+                translateX = e.clientX - startX;
+                translateY = e.clientY - startY;
+                updateTransform();
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging && !isTouch) {
+                isDragging = false;
+                mermaidElement.style.cursor = 'grab';
+                updateTransform();
+                }
+            });
+
+            document.addEventListener('mouseleave', () => {
+                if (isDragging && !isTouch) {
+                isDragging = false;
+                mermaidElement.style.cursor = 'grab';
+                updateTransform();
+                }
+            });
+
+            // 获取两点之间的距离
+            function getTouchDistance(touch1, touch2) {
+                return Math.hypot(
+                touch2.clientX - touch1.clientX,
+                touch2.clientY - touch1.clientY
+                );
+            }
+
+            // Touch Events - 触摸事件处理
+            mermaidElement.addEventListener('touchstart', (e) => {
+                isTouch = true;
+                touchStartTime = Date.now();
+
+                if (e.touches.length === 1) {
+                // 单指拖动
+                isPinching = false;
+                isDragging = true;
+
+                const touch = e.touches[0];
+                startX = touch.clientX - translateX;
+                startY = touch.clientY - translateY;
+
+                } else if (e.touches.length === 2) {
+                // 双指缩放
+                isPinching = true;
+                isDragging = false;
+
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                initialDistance = getTouchDistance(touch1, touch2);
+                initialScale = scale;
+                }
+
+                e.preventDefault();
+            }, { passive: false });
+
+            mermaidElement.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1 && isDragging && !isPinching) {
+                // 单指拖动
+                const touch = e.touches[0];
+                translateX = touch.clientX - startX;
+                translateY = touch.clientY - startY;
+                updateTransform();
+
+                } else if (e.touches.length === 2 && isPinching) {
+                // 双指缩放
+                const touch1 = e.touches[0];
+                const touch2 = e.touches[1];
+                const currentDistance = getTouchDistance(touch1, touch2);
+
+                if (initialDistance > 0) {
+                    const newScale = Math.min(Math.max(
+                    initialScale * (currentDistance / initialDistance),
+                    0.3
+                    ), 4);
+                    scale = newScale;
+                    updateTransform();
+                }
+                }
+
+                e.preventDefault();
+            }, { passive: false });
+
+            mermaidElement.addEventListener('touchend', (e) => {
+                // 重置状态
+                if (e.touches.length === 0) {
+                isDragging = false;
+                isPinching = false;
+                initialDistance = 0;
+
+                // 延迟重置isTouch，避免鼠标事件立即触发
+                setTimeout(() => {
+                    isTouch = false;
+                }, 100);
+                } else if (e.touches.length === 1 && isPinching) {
+                // 从双指变为单指，切换为拖动模式
+                isPinching = false;
+                isDragging = true;
+
+                const touch = e.touches[0];
+                startX = touch.clientX - translateX;
+                startY = touch.clientY - translateY;
+                }
+
+                updateTransform();
+            });
+
+            mermaidElement.addEventListener('touchcancel', (e) => {
+                isDragging = false;
+                isPinching = false;
+                initialDistance = 0;
+
+                setTimeout(() => {
+                isTouch = false;
+                }, 100);
+
+                updateTransform();
+            });
+
+            // Enhanced wheel zoom with better center point handling
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const rect = container.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                const newScale = Math.min(Math.max(scale * delta, 0.3), 4);
+
+                // Adjust translation to zoom towards center
+                if (newScale !== scale) {
+                const scaleDiff = newScale / scale;
+                translateX = translateX * scaleDiff;
+                translateY = translateY * scaleDiff;
+                scale = newScale;
+
+                if (scale <= 1) {
+                    translateX = 0;
+                    translateY = 0;
+                }
+
+                updateTransform();
+                }
+            });
+
+            // Initialize display
+            updateTransform();
+            });
+        }
+
+        // Call the function on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMermaidControls();
+        });
+
+        // Smooth scrolling for TOC links
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Update active TOC link on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Add hover effects to citation links
+        document.querySelectorAll('.citation-link').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-1px)';
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+  
+
+</body></html>

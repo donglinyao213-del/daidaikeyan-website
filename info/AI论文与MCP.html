@@ -1,0 +1,3514 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AI辅助全学科科研论文写作：Agent Skills与MCP技术体系指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .serif {
+            font-family: 'Noto Serif SC', serif;
+        }
+        .toc-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 320px;
+            height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-right: 1px solid #e2e8f0;
+            z-index: 50;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+        }
+        .main-content {
+            margin-left: 320px;
+            min-height: 100vh;
+        }
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 1.5rem;
+            height: 60vh;
+        }
+        .hero-title {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+        }
+        .hero-visual {
+            grid-column: 2 / 3;
+            grid-row: 1 / 3;
+        }
+        .hero-summary {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+        }
+        .mermaid-container {
+            display: flex;
+            justify-content: center;
+            min-height: 300px;
+            max-height: 800px;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mermaid-container .mermaid {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .mermaid-container .mermaid svg {
+            max-width: 100%;
+            height: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .mermaid-container .mermaid:active {
+            cursor: grabbing;
+        }
+
+        .mermaid-container.zoomed .mermaid {
+            height: 100%;
+            width: 100%;
+            cursor: grab;
+        }
+
+        .mermaid-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .mermaid-control-btn {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #374151;
+            font-size: 14px;
+            min-width: 36px;
+            height: 36px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mermaid-control-btn:hover {
+            background: #f8fafc;
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .mermaid-control-btn:active {
+            transform: scale(0.95);
+        }
+        .toc-link {
+            transition: all 0.2s ease;
+        }
+        .toc-link:hover {
+            background-color: #e2e8f0;
+            transform: translateX(4px);
+        }
+        .section-divider {
+            background: linear-gradient(90deg, #1e293b 0%, #475569 50%, #64748b 100%);
+            height: 2px;
+            margin: 3rem 0;
+        }
+        .citation-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .citation-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-left: 4px solid #3b82f6;
+        }
+        .skill-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .skill-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        @media (max-width: 1024px) {
+            .toc-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .toc-sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .hero-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                height: auto;
+            }
+            .hero-title {
+                grid-column: 1 / 2;
+                grid-row: 1 / 2;
+            }
+            .hero-visual {
+                grid-column: 1 / 2;
+                grid-row: 2 / 3;
+            }
+            .hero-summary {
+                grid-column: 1 / 2;
+                grid-row: 3 / 4;
+            }
+            .mermaid-control-btn:not(.reset-zoom) {
+                display: none;
+            }
+            .mermaid-controls {
+                top: auto;
+                bottom: 15px;
+                right: 15px;
+            }
+        }
+    </style>
+  <base target="_blank">
+</head>
+
+  <body class="bg-gray-50 text-gray-900">
+    <!-- Table of Contents Sidebar -->
+    <nav class="toc-sidebar">
+      <div class="mb-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 serif">目录导航</h2>
+        <div class="space-y-1">
+          <a href="#hero" class="toc-link block px-3 py-2 text-sm font-medium text-gray-700 rounded-md">
+            <i class="fas fa-home mr-2"></i>概述
+          </a>
+          <a href="#section-1" class="toc-link block px-3 py-2 text-sm font-medium text-gray-700 rounded-md">
+            <i class="fas fa-lightbulb mr-2"></i>1. 核心概念界定
+          </a>
+          <div class="ml-4 space-y-1">
+            <a href="#section-1-1" class="toc-link block px-3 py-1 text-xs text-gray-600 rounded-md">1.1 Agent Skills</a>
+            <a href="#section-1-2" class="toc-link block px-3 py-1 text-xs text-gray-600 rounded-md">1.2 MCP协议</a>
+            <a href="#section-1-3" class="toc-link block px-3 py-1 text-xs text-gray-600 rounded-md">1.3 科研链路框架</a>
+          </div>
+          <a href="#section-2" class="toc-link block px-3 py-2 text-sm font-medium text-gray-700 rounded-md">
+            <i class="fas fa-search mr-2"></i>2. 智能文献综述
+          </a>
+          <div class="ml-4 space-y-1">
+            <a href="#section-2-1" class="toc-link block px-3 py-1 text-xs text-gray-600 rounded-md">2.1 自动化检索</a>
+            <a href="#section-2-2" class="toc-link block px-3 py-1 text-xs text-gray-600 rounded-md">2.2 假设构建</a>
+            <a href="#section-2-3" class="toc-link block px-3 py-1 text-xs text-gray-600 rounded-md">2.3 PRISMA自动化</a>
+          </div>
+          <a href="#section-3" class="toc-link block px-3 py-2 text-sm font-medium text-gray-700 rounded-md">
+            <i class="fas fa-flask mr-2"></i>3. 智能实验设计
+          </a>
+          <a href="#section-4" class="toc-link block px-3 py-2 text-sm font-medium text-gray-700 rounded-md">
+            <i class="fas fa-edit mr-2"></i>4. 分阶段智能写作
+          </a>
+          <a href="#section-5" class="toc-link block px-3 py-2 text-sm font-medium text-gray-700 rounded-md">
+            <i class="fas fa-sync mr-2"></i>5. 智能评审修订
+          </a>
+          <a href="#section-6" class="toc-link block px-3 py-2 text-sm font-medium text-gray-700 rounded-md">
+            <i class="fas fa-cogs mr-2"></i>6. 技术实现
+          </a>
+          <a href="#section-7" class="toc-link block px-3 py-2 text-sm font-medium text-gray-700 rounded-md">
+            <i class="fas fa-shield-alt mr-2"></i>7. 伦理规范
+          </a>
+        </div>
+      </div>
+      <div class="text-xs text-gray-500 mt-8">
+        <p class="mb-2"><i class="fas fa-info-circle mr-1"></i> 基于最新AI研究技能标准</p>
+        <p><i class="fas fa-external-link-alt mr-1"></i> 所有引用可点击验证</p>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section id="hero" class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 text-white">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8 py-16">
+          <div class="hero-grid">
+            <!-- Title Section -->
+            <div class="hero-title flex flex-col justify-center">
+              <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold serif leading-tight mb-6">
+                <span class="italic text-blue-300">AI辅助全学科</span>
+                <br/>
+                科研论文写作
+              </h1>
+              <p class="text-xl text-gray-300 font-light leading-relaxed">
+                Agent Skills与MCP技术体系指南
+              </p>
+              <div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-400">
+                <span><i class="fas fa-calendar mr-2"></i>2025年技术指南</span>
+                <span><i class="fas fa-bookmark mr-2"></i>学术研究</span>
+                <span><i class="fas fa-robot mr-2"></i>AI辅助写作</span>
+              </div>
+            </div>
+
+            <!-- Visual Element -->
+            <div class="hero-visual">
+              <img src="https://kimi-web-img.moonshot.cn/img/i-blog.csdnimg.cn/15b44b9f9ae632102f7f21c011f796609eb0ca26.png" alt="人工智能神经网络概念图" class="w-full h-full object-cover rounded-lg opacity-90" size="large" aspect="wide" query="人工智能神经网络" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent rounded-lg"></div>
+            </div>
+
+            <!-- Executive Summary -->
+            <div class="hero-summary bg-white/10 backdrop-blur-sm rounded-lg p-4 sm:p-6">
+              <h3 class="text-xl font-semibold mb-4 serif">
+                <i class="fas fa-star mr-2 text-yellow-400"></i>核心要点
+              </h3>
+              <ul class="space-y-3 text-sm">
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle mr-2 text-green-400 mt-1"></i>
+                  <span><strong>Agent Skills</strong>：模块化智能技能，封装复杂科研流程</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle mr-2 text-green-400 mt-1"></i>
+                  <span><strong>MCP协议</strong>：标准化外部系统连接，实现即插即用</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle mr-2 text-green-400 mt-1"></i>
+                  <span><strong>全链路覆盖</strong>：从假设形成到论文发表的完整科研周期</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle mr-2 text-green-400 mt-1"></i>
+                  <span><strong>人机协作</strong>：AI处理繁琐任务，研究者主导创造性决策</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 1: 核心概念界定与技术基础 -->
+      <section id="section-1" class="py-16 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold serif text-gray-900 mb-4">核心概念界定与技术基础</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              深入理解Agent Skills与MCP的技术本质，构建全学科科研辅助的理论基础
+            </p>
+          </div>
+
+          <!-- Agent Skills Subsection -->
+          <div id="section-1-1" class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-robot mr-3 text-blue-600"></i>Agent Skills：智能体技能的革命性范式
+            </h3>
+
+            <div class="highlight-box p-6 rounded-lg mb-8">
+              <h4 class="text-xl font-semibold mb-4">定义与核心特征</h4>
+              <p class="text-gray-700 leading-relaxed mb-4">
+                根据<a href="https://www.anthropic.com/news/model-context-protocol" class="citation-link">Anthropic 2025年12月发布的开放标准</a>，
+                <strong>Agent Skills</strong>被定义为&#34;可重用的AI能力模块，能够将通用大语言模型转化为特定领域的专业智能体&#34;。
+                这一技术代表了从&#34;提示工程&#34;向&#34;能力工程&#34;的根本性转变。
+              </p>
+              <div class="grid md:grid-cols-2 gap-6 mt-6">
+                <div class="skill-card p-4 rounded-lg">
+                  <h5 class="font-semibold text-blue-600 mb-2">渐进式披露架构</h5>
+                  <p class="text-sm text-gray-600">仅在启动时加载技能名称和描述，触发时加载完整指令文件，执行中按需加载参考文档</p>
+                </div>
+                <div class="skill-card p-4 rounded-lg">
+                  <h5 class="font-semibold text-blue-600 mb-2">模块化能力封装</h5>
+                  <p class="text-sm text-gray-600">将领域知识、工作流程、最佳实践和验证规则封装为独立可组合的能力单元</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg mb-8">
+              <h4 class="text-xl font-semibold mb-4">技术组成架构</h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="border-b-2 border-gray-200">
+                      <th class="text-left py-3 px-4 font-semibold">组件层级</th>
+                      <th class="text-left py-3 px-4 font-semibold">文件/目录</th>
+                      <th class="text-left py-3 px-4 font-semibold">功能描述</th>
+                      <th class="text-left py-3 px-4 font-semibold">加载时机</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="py-3 px-4 font-medium">元数据指令</td>
+                      <td class="py-3 px-4 text-blue-600">SKILL.md</td>
+                      <td class="py-3 px-4">YAML前置元数据 + Markdown执行指令</td>
+                      <td class="py-3 px-4">触发时加载完整内容</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 px-4 font-medium">可执行脚本</td>
+                      <td class="py-3 px-4 text-green-600">scripts/</td>
+                      <td class="py-3 px-4">Python、JavaScript、Shell等自动化脚本</td>
+                      <td class="py-3 px-4">执行时按需调用</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 px-4 font-medium">参考文档</td>
+                      <td class="py-3 px-4 text-orange-600">references/</td>
+                      <td class="py-3 px-4">领域知识库、方法论文献、格式指南</td>
+                      <td class="py-3 px-4">查询时动态加载</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 px-4 font-medium">数字资产</td>
+                      <td class="py-3 px-4 text-purple-600">assets/</td>
+                      <td class="py-3 px-4">模板文件、配置文件、示例数据</td>
+                      <td class="py-3 px-4">渲染时按需读取</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="mb-8">
+              <h4 class="text-xl font-semibold mb-4">技术栈定位与协同关系</h4>
+              <div class="mb-6">
+                <div class="mermaid-container">
+                  <div class="mermaid-controls">
+                    <button class="mermaid-control-btn zoom-in" title="放大">
+                      <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="mermaid-control-btn zoom-out" title="缩小">
+                      <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button class="mermaid-control-btn reset-zoom" title="重置">
+                      <i class="fas fa-expand-arrows-alt"></i>
+                    </button>
+                    <button class="mermaid-control-btn fullscreen" title="全屏查看">
+                      <i class="fas fa-expand"></i>
+                    </button>
+                  </div>
+                  <div class="mermaid">
+                    graph TB
+                    A[&#34;用户自然语言&#34;] --&gt; B[&#34;Agent Skills&#34;]
+                    B --&gt; C[&#34;MCP协议&#34;]
+                    C --&gt; D[&#34;外部系统&#34;]
+                    B --&gt; E[&#34;Function Calling&#34;]
+                    E --&gt; F[&#34;具体执行&#34;]
+
+                    B --&gt; G[&#34;文献综述&#34;]
+                    B --&gt; H[&#34;实验设计&#34;]
+                    B --&gt; I[&#34;论文写作&#34;]
+                    B --&gt; J[&#34;评审修订&#34;]
+
+                    C --&gt; K[&#34;arXiv数据库&#34;]
+                    C --&gt; L[&#34;实验平台&#34;]
+                    C --&gt; M[&#34;协作工具&#34;]
+
+                    style A fill:#f8fafc,stroke:#475569,stroke-width:2px,color:#1e293b
+                    style B fill:#dbeafe,stroke:#3b82f6,stroke-width:3px,color:#1e40af
+                    style C fill:#dcfce7,stroke:#22c55e,stroke-width:3px,color:#166534
+                    style D fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e
+                    style E fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+                    style F fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#991b1b
+                    style G fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+                    style H fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+                    style I fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+                    style J fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+                    style K fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e
+                    style L fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e
+                    style M fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e
+                  </div>
+                </div>
+              </div>
+              <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="skill-card p-4 rounded-lg">
+                  <h6 class="font-semibold text-blue-600 mb-2">Prompt</h6>
+                  <p class="text-xs text-gray-600 mb-2">原子级单次指令</p>
+                  <div class="text-xs text-gray-500">探索性查询、一次性任务</div>
+                </div>
+                <div class="skill-card p-4 rounded-lg">
+                  <h6 class="font-semibold text-green-600 mb-2">Function Calling</h6>
+                  <p class="text-xs text-gray-600 mb-2">操作级工具调用</p>
+                  <div class="text-xs text-gray-500">确定性计算、数据获取</div>
+                </div>
+                <div class="skill-card p-4 rounded-lg">
+                  <h6 class="font-semibold text-orange-600 mb-2">MCP</h6>
+                  <p class="text-xs text-gray-600 mb-2">接口级连接协议</p>
+                  <div class="text-xs text-gray-500">数据库访问、API集成</div>
+                </div>
+                <div class="skill-card p-4 rounded-lg bg-blue-50 border-2 border-blue-200">
+                  <h6 class="font-semibold text-blue-700 mb-2">Skills</h6>
+                  <p class="text-xs text-gray-600 mb-2">任务级工作流编排</p>
+                  <div class="text-xs text-gray-500">可重复专业工作流</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MCP Protocol Subsection -->
+          <div id="section-1-2" class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-network-wired mr-3 text-green-600"></i>MCP：模型上下文协议的标准化革命
+            </h3>
+
+            <div class="highlight-box p-6 rounded-lg mb-8">
+              <h4 class="text-xl font-semibold mb-4">协议定义与核心理念</h4>
+              <div class="flex items-start space-x-4 mb-4">
+                <img src="https://kimi-web-img.moonshot.cn/img/pica.zhimg.com/4e96be89f3f83a06cc30e00b879c5f3b5ca4d0de.jpg" alt="USB-C接口技术示意图" class="w-24 h-16 object-cover rounded-lg flex-shrink-0" size="small" aspect="wide" style="photo" query="USB-C接口" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+                <div>
+                  <p class="text-gray-700 leading-relaxed">
+                    <a href="https://www.anthropic.com/news/model-context-protocol" class="citation-link">Model Context Protocol（MCP）</a>由Anthropic于2024年11月推出，
+                    被誉为&#34;AI的USB-C端口&#34;。就像USB-C统一了电子设备的连接方式，MCP旨在统一AI系统与外部世界的连接方式，
+                    消除为每个新数据源或工具编写定制集成代码的需求。
+                  </p>
+                </div>
+              </div>
+              <div class="grid md:grid-cols-3 gap-4 mt-6">
+                <div class="text-center p-4 bg-white rounded-lg">
+                  <i class="fas fa-plug text-2xl text-green-600 mb-2"></i>
+                  <h5 class="font-semibold mb-1">即插即用</h5>
+                  <p class="text-xs text-gray-600">标准化的连接接口</p>
+                </div>
+                <div class="text-center p-4 bg-white rounded-lg">
+                  <i class="fas fa-shield-alt text-2xl text-green-600 mb-2"></i>
+                  <h5 class="font-semibold mb-1">安全可靠</h5>
+                  <p class="text-xs text-gray-600">内置权限与验证机制</p>
+                </div>
+                <div class="text-center p-4 bg-white rounded-lg">
+                  <i class="fas fa-expand-arrows-alt text-2xl text-green-600 mb-2"></i>
+                  <h5 class="font-semibold mb-1">无限扩展</h5>
+                  <p class="text-xs text-gray-600">支持多样化数据源</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-8">
+              <h4 class="text-xl font-semibold mb-4">核心组件架构</h4>
+              <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-lg mb-6">
+                <div class="grid md:grid-cols-3 gap-6">
+                  <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-desktop text-white text-xl"></i>
+                    </div>
+                    <h5 class="font-semibold mb-2">Hosts（宿主）</h5>
+                    <p class="text-sm text-gray-600">管理用户会话，协调Clients，处理UI/UX</p>
+                    <div class="text-xs text-gray-500 mt-2">如：Claude Desktop, Cursor</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-exchange-alt text-white text-xl"></i>
+                    </div>
+                    <h5 class="font-semibold mb-2">Clients（客户端）</h5>
+                    <p class="text-sm text-gray-600">与Server建立连接，转发请求，接收响应</p>
+                    <div class="text-xs text-gray-500 mt-2">内置MCP Client库</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <i class="fas fa-server text-white text-xl"></i>
+                    </div>
+                    <h5 class="font-semibold mb-2">Servers（服务器）</h5>
+                    <p class="text-sm text-gray-600">封装特定数据源或工具，暴露标准化接口</p>
+                    <div class="text-xs text-gray-500 mt-2">如：arXiv-MCP, Zotero-MCP</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <h5 class="font-semibold mb-4">通信四阶段协议</h5>
+                <div class="space-y-4">
+                  <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                    <div>
+                      <h6 class="font-semibold">发现阶段</h6>
+                      <p class="text-sm text-gray-600">版本协商、身份认证、能力探测</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                    <div>
+                      <h6 class="font-semibold">能力清单</h6>
+                      <p class="text-sm text-gray-600">工具/资源/提示的详细枚举</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                    <div>
+                      <h6 class="font-semibold">选择与使用</h6>
+                      <p class="text-sm text-gray-600">工具调用参数生成与验证</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                    <div>
+                      <h6 class="font-semibold">执行与返回</h6>
+                      <p class="text-sm text-gray-600">结果传输、错误处理、状态更新</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Research Pipeline Framework -->
+          <div id="section-1-3" class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-project-diagram mr-3 text-purple-600"></i>全科研链路的AI辅助框架
+            </h3>
+
+            <div class="grid lg:grid-cols-3 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <div class="flex items-center mb-4">
+                  <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-4">
+                    <i class="fas fa-lightbulb text-white text-xl"></i>
+                  </div>
+                  <h4 class="text-lg font-semibold">假设形成</h4>
+                </div>
+                <p class="text-gray-600 mb-4">AI作为创意催化剂，人类做价值判断</p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                  <li>• 文献综述与知识综合</li>
+                  <li>• 研究问题生成与深化</li>
+                  <li>• 趋势分析与缺口识别</li>
+                </ul>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <div class="flex items-center mb-4">
+                  <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mr-4">
+                    <i class="fas fa-flask text-white text-xl"></i>
+                  </div>
+                  <h4 class="text-lg font-semibold">假设验证</h4>
+                </div>
+                <p class="text-gray-600 mb-4">AI作为执行加速器，人类主导解释</p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                  <li>• 实验设计与方法选择</li>
+                  <li>• 数据收集与分析</li>
+                  <li>• 结果解释与验证</li>
+                </ul>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <div class="flex items-center mb-4">
+                  <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mr-4">
+                    <i class="fas fa-file-alt text-white text-xl"></i>
+                  </div>
+                  <h4 class="text-lg font-semibold">论文发表</h4>
+                </div>
+                <p class="text-gray-600 mb-4">AI作为质量增强器，人类保留决策权</p>
+                <ul class="text-sm text-gray-500 space-y-1">
+                  <li>• 学术写作与格式规范</li>
+                  <li>• 同行评审与修订</li>
+                  <li>• 期刊投稿与发表</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="highlight-box p-6 rounded-lg">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-balance-scale mr-2"></i>人机协作边界原则
+              </h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold text-blue-600 mb-3">AI适宜承担的任务</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>规则明确</strong>：引用格式、数据清洗等标准操作
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>劳动密集</strong>：文献去重、格式转换等耗时任务
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>可验证</strong>：统计计算、图表生成等可核查输出
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-orange-600 mb-3">人类必须主导的任务</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-star text-orange-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>价值负载</strong>：研究目标设定、意义判断
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-star text-orange-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>创造性</strong>：核心假设提出、理论创新
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-star text-orange-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>责任归属</strong>：最终决策、学术责任承担
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Section 2: 智能文献综述与假设生成 -->
+      <section id="section-2" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold serif text-gray-900 mb-4">科研前期：智能文献综述与假设生成</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              AI驱动的文献检索、知识综合与研究问题凝练，构建坚实的研究基础
+            </p>
+          </div>
+
+          <!-- Automated Literature Search -->
+          <div id="section-2-1" class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-search-plus mr-3 text-blue-600"></i>自动化文献检索与知识综合
+            </h3>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div>
+                <h4 class="text-xl font-semibold mb-4">arXiv-MCP服务器配置</h4>
+                <div class="bg-gray-900 text-green-400 p-4 rounded-lg text-sm font-mono mb-4">
+                  <div class="mb-2">// MCP服务器配置示例</div>
+                  <div>{</div>
+                  <div class="ml-4">&#34;mcpServers&#34;: {</div>
+                  <div class="ml-8">&#34;arxiv-mcp-server&#34;: {</div>
+                  <div class="ml-12">&#34;command&#34;: &#34;npx&#34;,</div>
+                  <div class="ml-12">&#34;args&#34;: [&#34;-y&#34;, &#34;@langgpt/arxiv-mcp-server&#34;],</div>
+                  <div class="ml-12">&#34;env&#34;: {</div>
+                  <div class="ml-16">&#34;SILICONFLOW_API_KEY&#34;: &#34;sk-...&#34;,</div>
+                  <div class="ml-16">&#34;WORK_DIR&#34;: &#34;/path/to/papers&#34;</div>
+                  <div class="ml-12">}</div>
+                  <div class="ml-8">}</div>
+                  <div class="ml-4">}</div>
+                  <div>}</div>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">
+                  根据<a href="https://juejin.cn/post/7579849892614357028" class="citation-link">TRAE SOLO 3.0实战指南</a>，
+                  配置arXiv-MCP Server需要指定API密钥和工作目录，确保安全的凭证管理和灵活的项目切换。
+                </p>
+              </div>
+              <div>
+                <h4 class="text-xl font-semibold mb-4">多源文献智能聚合</h4>
+                <div class="space-y-3">
+                  <div class="flex items-center space-x-3 p-3 bg-white rounded-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/info.arxiv.org/4de8a14a8f940718ee11ff1212a7e6c14b1de15d.jpg" alt="arXiv.org预印本网站标识" class="w-12 h-12 object-cover rounded" size="small" aspect="square" query="arXiv 标志" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+                    <div>
+                      <h6 class="font-semibold">预印本平台</h6>
+                      <p class="text-xs text-gray-600">arXiv, bioRxiv, SSRN - 时效性与开放性</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-3 p-3 bg-white rounded-lg">
+                    <img src="https://fixedplaceholder" alt="学术期刊封面" class="w-12 h-12 object-cover rounded" size="small" aspect="square" query="学术期刊封面" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+                    <div>
+                      <h6 class="font-semibold">传统期刊</h6>
+                      <p class="text-xs text-gray-600">质量保障与完整记录</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-3 p-3 bg-white rounded-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/objectmc2026.oss-cn-shenzhen.aliyuncs.com/ebc159a10627015eba38856e8e47d9b487c0a936.jpeg" alt="学术会议现场照片" class="w-12 h-12 object-cover rounded" size="small" aspect="square" style="photo" query="学术会议" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+                    <div>
+                      <h6 class="font-semibold">会议论文</h6>
+                      <p class="text-xs text-gray-600">技术前沿与快速迭代</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-3 p-3 bg-white rounded-lg">
+                    <img src="https://kimi-web-img.moonshot.cn/img/pic.pngsucai.com/85649d393655e7aac6c825226e5731ab30089d16.webp" alt="专利文件图标" class="w-12 h-12 object-cover rounded" size="small" aspect="square" query="专利文件图标" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+                    <div>
+                      <h6 class="font-semibold">专利文献</h6>
+                      <p class="text-xs text-gray-600">技术细节与商业视角</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box p-6 rounded-lg">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-chart-line mr-2"></i>研究趋势识别与知识缺口分析
+              </h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold text-blue-600 mb-3">趋势识别技术</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-arrow-right text-blue-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>时间序列语义分析</strong>：追踪概念集群演变轨迹
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-arrow-right text-blue-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>引用爆发检测</strong>：识别新兴热点论文
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-arrow-right text-blue-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>跨领域流动追踪</strong>：方法论迁移路径识别
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-orange-600 mb-3">缺口分析维度</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-search text-orange-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>方法学缺口</strong>：特定场景方法缺失
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-search text-orange-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>理论框架缺口</strong>：解释理论不足
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-search text-orange-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>证据基础缺口</strong>：特定群体研究缺乏
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Research Question Refinement -->
+          <div id="section-2-2" class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-question-circle mr-3 text-purple-600"></i>研究问题凝练与假设构建
+            </h3>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-comments mr-2 text-blue-600"></i>苏格拉底式引导模式
+                </h4>
+                <div class="mb-4">
+                  <img src="https://kimi-web-img.moonshot.cn/img/www.forwardpathway.com/90bdd736553f5577d51d61c779cce729693c5de1.jpg" alt="苏格拉底式对话场景" class="w-full h-32 object-cover rounded-lg mb-4" size="medium" aspect="wide" style="photo" query="苏格拉底式对话" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">
+                  通过连续的追问和反思，逐步剥离问题的表层特征，触及核心的知识诉求。
+                  <a href="https://github.com/Imbad0202/academic-research-skills" class="citation-link">academic-research-skills项目</a>
+                  采用SCR Loop（状态-挑战-反思）结构确保问题深化的系统性。
+                </p>
+                <div class="space-y-2 text-xs">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    <span><strong>澄清性问题</strong>：关注现象的具体方面</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span><strong>挑战性问题</strong>：质疑假设的成立条件</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                    <span><strong>拓展性问题</strong>：探索跨领域联系</span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+                    <span><strong>聚焦性问题</strong>：凝练核心问题</span>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-lightbulb mr-2 text-green-600"></i>可验证假设生成
+                </h4>
+                <div class="space-y-4">
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">概念操作化</h6>
+                    <p class="text-xs text-gray-600 mb-2">将抽象理论概念转化为可测量指标</p>
+                    <div class="bg-gray-100 p-2 rounded text-xs">
+                      例：&#34;社会支持&#34; → 感知支持量表/社会网络分析/支持行为观察
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">关系预测</h6>
+                    <p class="text-xs text-gray-600 mb-2">明确变量间的预期关联方向、形式和条件</p>
+                    <div class="bg-gray-100 p-2 rounded text-xs">
+                      包含：变量识别、关系方向、强度预期、边界条件
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">证据标准</h6>
+                    <p class="text-xs text-gray-600 mb-2">明确统计显著性水平和效应量标准</p>
+                    <div class="bg-gray-100 p-2 rounded text-xs">
+                      基于α=0.05，功效=80%，最小感兴趣效应量
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-tasks mr-2"></i>研究可行性预评估
+              </h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="border-b-2 border-gray-200">
+                      <th class="text-left py-3 px-4 font-semibold">评估维度</th>
+                      <th class="text-left py-3 px-4 font-semibold">关键考量</th>
+                      <th class="text-left py-3 px-4 font-semibold">AI辅助功能</th>
+                      <th class="text-left py-3 px-4 font-semibold">输出形式</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="py-3 px-4 font-medium text-blue-600">资源</td>
+                      <td class="py-3 px-4 text-xs">数据可及性、设备需求、资金预算</td>
+                      <td class="py-3 px-4 text-xs">识别数据来源、估算成本</td>
+                      <td class="py-3 px-4 text-xs">资源需求清单、获取策略</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 px-4 font-medium text-green-600">方法</td>
+                      <td class="py-3 px-4 text-xs">设计匹配度、执行能力、方法学风险</td>
+                      <td class="py-3 px-4 text-xs">方法选择决策树、风险识别</td>
+                      <td class="py-3 px-4 text-xs">方法评估报告、替代方案</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 px-4 font-medium text-orange-600">时间</td>
+                      <td class="py-3 px-4 text-xs">阶段分解、关键路径、瓶颈识别</td>
+                      <td class="py-3 px-4 text-xs">经验估算、并行化建议</td>
+                      <td class="py-3 px-4 text-xs">甘特图式时间线、风险标注</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRISMA Automation -->
+          <div id="section-2-3" class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-sitemap mr-3 text-indigo-600"></i>系统综述与PRISMA流程自动化
+            </h3>
+
+            <div class="highlight-box p-6 rounded-lg mb-8">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-database mr-2"></i>检索策略智能优化
+              </h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold text-blue-600 mb-3">PICO框架应用</h5>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex items-center space-x-2">
+                      <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                      <span><strong>P</strong>opulation：研究人群</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                      <span><strong>I</strong>ntervention：干预措施</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <span class="w-3 h-3 bg-orange-500 rounded-full"></span>
+                      <span><strong>C</strong>omparison：对照比较</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
+                      <span><strong>O</strong>utcome：结局指标</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-green-600 mb-3">布尔逻辑构建</h5>
+                  <div class="bg-gray-100 p-3 rounded text-xs font-mono">
+                    <div class="mb-1">(neural OR deep) AND</div>
+                    <div class="mb-1">(network OR learning) AND</div>
+                    <div class="mb-1">(medical OR clinical) AND</div>
+                    <div>NOT review</div>
+                  </div>
+                  <p class="text-xs text-gray-600 mt-2">
+                    OR扩大范围，AND缩小范围，NOT排除特定术语，NEAR限制术语接近程度
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-filter mr-2 text-indigo-600"></i>文献筛选与质量评估
+                </h4>
+                <div class="space-y-4">
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">标题-摘要筛选</h6>
+                    <p class="text-xs text-gray-600 mb-2">AI基于文本分类模型预测纳入可能性</p>
+                    <div class="bg-blue-50 p-2 rounded text-xs">
+                      &#34;人在回路&#34;设计：AI排序 → 研究者设定阈值 → 保留最终判断权
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">全文筛选</h6>
+                    <p class="text-xs text-gray-600 mb-2">AI自动提取关键特征生成结构化摘要</p>
+                    <div class="bg-green-50 p-2 rounded text-xs">
+                      设计类型、样本特征、干预措施、结局指标
+                    </div>
+                  </div>
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">质量评估</h6>
+                    <p class="text-xs text-gray-600 mb-2">基于CONSORT/STROBE等规范自动检查</p>
+                    <div class="bg-orange-50 p-2 rounded text-xs">
+                      识别潜在风险信号，辅助信息提取
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-chart-bar mr-2 text-green-600"></i>证据合成框架生成
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-gray-50 p-3 rounded">
+                    <h6 class="font-semibold text-sm mb-2">定量合成（元分析）</h6>
+                    <ul class="text-xs space-y-1">
+                      <li>• 自动计算效应量，选择适当公式</li>
+                      <li>• 异质性评估（I²统计量）</li>
+                      <li>• 发表偏倚检测（漏斗图、Egger检验）</li>
+                      <li>• 敏感性分析设计</li>
+                    </ul>
+                  </div>
+                  <div class="bg-gray-50 p-3 rounded">
+                    <h6 class="font-semibold text-sm mb-2">定性合成</h6>
+                    <ul class="text-xs space-y-1">
+                      <li>• 主题分析与共同主题识别</li>
+                      <li>• 变异模式与理论联系挖掘</li>
+                      <li>• 结构化综合矩阵生成</li>
+                      <li>• 结论透明度标注</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Section 3: 智能实验设计与数据分析 -->
+      <section id="section-3" class="py-16 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold serif text-gray-900 mb-4">科研中期：智能实验设计与数据分析</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              AI辅助的研究方法匹配、实验设计优化与数据处理的智能化工作流
+            </p>
+          </div>
+
+          <!-- Method Matching -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-cogs mr-3 text-blue-600"></i>研究方法智能匹配与优化
+            </h3>
+
+            <div class="highlight-box p-6 rounded-lg mb-8">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-balance-scale mr-2"></i>定量/定性/混合方法选择建议
+              </h4>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div class="skill-card p-4 rounded-lg">
+                  <h5 class="font-semibold text-blue-600 mb-3">
+                    <i class="fas fa-chart-line mr-1"></i>定量方法
+                  </h5>
+                  <p class="text-xs text-gray-600 mb-3">适用于检验预设假设、测量变量关系、统计推广</p>
+                  <div class="space-y-2">
+                    <div class="bg-blue-50 p-2 rounded text-xs">
+                      <strong>实验设计</strong>：RCT、准实验、观察性研究
+                    </div>
+                    <div class="bg-blue-50 p-2 rounded text-xs">
+                      <strong>统计分析</strong>：基于数据特征匹配方法
+                    </div>
+                    <div class="bg-blue-50 p-2 rounded text-xs">
+                      <strong>样本规划</strong>：效应量、功效精确计算
+                    </div>
+                  </div>
+                </div>
+                <div class="skill-card p-4 rounded-lg">
+                  <h5 class="font-semibold text-green-600 mb-3">
+                    <i class="fas fa-comments mr-1"></i>定性方法
+                  </h5>
+                  <p class="text-xs text-gray-600 mb-3">适用于探索复杂现象、理解主体经验、构建理论</p>
+                  <div class="space-y-2">
+                    <div class="bg-green-50 p-2 rounded text-xs">
+                      <strong>方法论</strong>：现象学、扎根理论、民族志
+                    </div>
+                    <div class="bg-green-50 p-2 rounded text-xs">
+                      <strong>数据收集</strong>：深度访谈、焦点小组、观察
+                    </div>
+                    <div class="bg-green-50 p-2 rounded text-xs">
+                      <strong>分析策略</strong>：主题分析、叙事分析
+                    </div>
+                  </div>
+                </div>
+                <div class="skill-card p-4 rounded-lg">
+                  <h5 class="font-semibold text-purple-600 mb-3">
+                    <i class="fas fa-layer-group mr-1"></i>混合方法
+                  </h5>
+                  <p class="text-xs text-gray-600 mb-3">整合定量定性，回答&#34;什么&#34;和&#34;为什么&#34;</p>
+                  <div class="space-y-2">
+                    <div class="bg-purple-50 p-2 rounded text-xs">
+                      <strong>整合时机</strong>：顺序式、并行式、嵌入式
+                    </div>
+                    <div class="bg-purple-50 p-2 rounded text-xs">
+                      <strong>整合深度</strong>：方法独立、互补、融合
+                    </div>
+                    <div class="bg-purple-50 p-2 rounded text-xs">
+                      <strong>元推论</strong>：超越单一方法的结论
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-flask mr-2 text-indigo-600"></i>实验设计模板生成
+                </h4>
+                <div class="space-y-4">
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">对照组设置</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 对照类型：无处理、安慰剂、标准治疗</li>
+                      <li>• 盲法实施：单盲、双盲、三盲设计</li>
+                      <li>• 组间平衡：基线特征统计调整</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">样本量计算</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 效应量预期：基于前人研究或临床重要性</li>
+                      <li>• 统计参数：α=0.05，功效=80%或90%</li>
+                      <li>• 设计调整：多组比较、多重终点校正</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">随机化方案</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 随机化方法：简单、区组、分层随机化</li>
+                      <li>• 分配隐藏：中央随机系统、编码信封</li>
+                      <li>• 序列生成：计算机生成随机序列</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-shield-alt mr-2 text-red-600"></i>研究伦理合规性检查
+                </h4>
+                <div class="space-y-4">
+                  <div>
+                    <h6 class="font-semibold text-red-600 text-sm mb-2">人类受试者保护</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 知情同意：信息充分性、自愿性保障</li>
+                      <li>• 风险-收益评估：风险最小化、收益合理性</li>
+                      <li>• 隐私保护：数据去标识化、安全存储</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 class="font-semibold text-orange-600 text-sm mb-2">动物实验伦理</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 3R原则：替代、减少、优化实施</li>
+                      <li>• 动物福利：人道操作、科学终点判定</li>
+                      <li>• 伦理审批：IACUC审查要求</li>
+                    </ul>
+                  </div>
+                  <div class="bg-yellow-50 p-3 rounded">
+                    <h6 class="font-semibold text-yellow-700 text-sm mb-1">AI辅助价值</h6>
+                    <p class="text-xs text-gray-600">系统化风险识别，基于历史数据标记潜在问题，提供改进建议</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Processing Workflow -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-database mr-3 text-green-600"></i>数据处理的智能工作流
+            </h3>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-broom mr-2 text-blue-600"></i>数据清洗与预处理
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-1">质量诊断</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 完整性检查：缺失值模式识别</li>
+                      <li>• 准确性检查：异常值检测</li>
+                      <li>• 一致性检查：重复记录识别</li>
+                    </ul>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-1">清洗操作</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 缺失值处理：多重插补策略</li>
+                      <li>• 异常值处理：Winsorize转换</li>
+                      <li>• 变量转换：标准化、归一化</li>
+                    </ul>
+                  </div>
+                  <div class="bg-gray-100 p-3 rounded text-xs">
+                    <strong>可审计性原则</strong>：所有操作生成详细日志，支持结果复现
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-calculator mr-2 text-green-600"></i>统计分析方法推荐
+                </h4>
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <span class="text-xs font-medium">组间比较</span>
+                    <span class="text-xs text-gray-600">t检验/ANOVA/非参数</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <span class="text-xs font-medium">关联分析</span>
+                    <span class="text-xs text-gray-600">相关/回归/SEM</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <span class="text-xs font-medium">因果推断</span>
+                    <span class="text-xs text-gray-600">IV/RD/DID/PSM</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <span class="text-xs font-medium">纵向数据</span>
+                    <span class="text-xs text-gray-600">混合效应/GEE</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <span class="text-xs font-medium">高维数据</span>
+                    <span class="text-xs text-gray-600">正则化/PCA/ML</span>
+                  </div>
+                </div>
+                <div class="mt-4 bg-green-100 p-3 rounded text-xs">
+                  <strong>代码实现</strong>：自动生成R/Python/Stata代码，降低技术门槛
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-chart-bar mr-2 text-orange-600"></i>学术图表自动化
+                </h4>
+                <div class="space-y-3">
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">图表类型选择</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 分布：直方图、密度图、箱线图</li>
+                      <li>• 比较：条形图（误差线）、森林图</li>
+                      <li>• 关联：散点图（拟合线）、热力图</li>
+                      <li>• 时间：折线图、面积图</li>
+                      <li>• 模型：系数图、ROC曲线</li>
+                    </ul>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-1">学术规范要求</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 自明性：标题注释完整</li>
+                      <li>• 精确性：符合学科惯例</li>
+                      <li>• 可访问性：色盲友好</li>
+                      <li>• 分辨率：300 dpi印刷质量</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Research Validation -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-check-double mr-3 text-orange-600"></i>研究发现的智能验证
+            </h3>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-shield-alt mr-2 text-red-600"></i>内部效度威胁识别
+                </h4>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-xs">
+                    <thead>
+                      <tr class="border-b">
+                        <th class="text-left py-2">威胁类型</th>
+                        <th class="text-left py-2">AI识别</th>
+                        <th class="text-left py-2">应对策略</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                      <tr>
+                        <td class="py-2 font-medium">选择偏倚</td>
+                        <td class="py-2">基线不平衡</td>
+                        <td class="py-2">随机化、匹配、统计调整</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 font-medium">测量偏倚</td>
+                        <td class="py-2">系统性差异</td>
+                        <td class="py-2">标准化测量、盲法评估</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 font-medium">混杂变量</td>
+                        <td class="py-2">因果图分析</td>
+                        <td class="py-2">设计控制、统计调整</td>
+                      </tr>
+                      <tr>
+                        <td class="py-2 font-medium">损耗偏倚</td>
+                        <td class="py-2">缺失模式追踪</td>
+                        <td class="py-2">意向性分析、多重插补</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-chart-area mr-2 text-blue-600"></i>敏感性分析与稳健性检验
+                </h4>
+                <div class="space-y-4">
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">模型假设敏感性</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 分布假设：正态性替代模型</li>
+                      <li>• 函数形式：线性vs非线性建模</li>
+                      <li>• 交互效应：关键变量间交互</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">分析方法敏感性</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 缺失数据处理策略比较</li>
+                      <li>• 异常值处理策略影响</li>
+                      <li>• 参数vs非参数方法对比</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h6 class="font-semibold text-sm mb-2">数据子集敏感性</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 不同时间窗口结果稳定性</li>
+                      <li>• 关键协变量分层一致性</li>
+                      <li>• Meta分析逐一剔除法</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box p-6 rounded-lg">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-exclamation-triangle mr-2"></i>负面结果的价值挖掘与规范报告
+              </h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold text-blue-600 mb-3">价值挖掘策略</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-search text-blue-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>真实性识别</strong>：区分真实阴性（功效充足）与虚假阴性（功效不足）
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-search text-blue-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>边界条件探索</strong>：在哪些子群体或情境中效果显现
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-search text-blue-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>理论解释</strong>：是否需要修正理论假设或识别调节机制
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-green-600 mb-3">规范报告要求</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-file-alt text-green-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>完整统计信息</strong>：效应量、置信区间、精确p值
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-file-alt text-green-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>功效分析</strong>：事后功效或最小可检测效应量
+                      </div>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-file-alt text-green-500 mr-2 mt-1"></i>
+                      <div>
+                        <strong>证据整合</strong>：对元分析证据基础的贡献
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="mt-4 bg-yellow-50 p-4 rounded">
+                <p class="text-sm text-yellow-800">
+                  <strong>核心价值</strong>：对抗发表偏倚，鼓励完整透明报告，提升科学文献的整体可靠性。
+                  <a href="https://cloud.tencent.com/developer/article/2525904" class="citation-link">腾讯云开发者指南</a>
+                  强调负面结果的科学价值不容忽视。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Section 4: 分阶段智能写作系统 -->
+      <section id="section-4" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold serif text-gray-900 mb-4">论文撰写：分阶段智能写作系统</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              AI驱动的学术写作全流程支持，从风格校准到引用管理的智能化解决方案
+            </p>
+          </div>
+
+          <!-- Pre-writing Style Calibration -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-palette mr-3 text-purple-600"></i>写作前的风格校准与结构规划
+            </h3>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-file-alt mr-2 text-blue-600"></i>目标期刊格式自动适配
+                </h4>
+                <div class="mb-4">
+                  <img src="https://kimi-web-img.moonshot.cn/img/sghimages.shobserver.com/209c0181905399c6bba44268abf0022969885ff9.jpg" alt="学术期刊封面展示" class="w-full h-24 object-cover rounded-lg" size="small" aspect="wide" style="photo" query="学术期刊封面" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">
+                  <a href="https://github.com/Imbad0202/academic-research-skills" class="citation-link">academic-research-skills项目</a>
+                  的Academic Paper Skill内置多格式输出能力，支持Markdown、DOCX、LaTeX等格式。
+                </p>
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between p-2 bg-blue-50 rounded">
+                    <span class="text-xs font-medium">Markdown</span>
+                    <span class="text-xs text-gray-600">协作编辑、版本控制</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-green-50 rounded">
+                    <span class="text-xs font-medium">DOCX</span>
+                    <span class="text-xs text-gray-600">与Word用户共享</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-orange-50 rounded">
+                    <span class="text-xs font-medium">LaTeX</span>
+                    <span class="text-xs text-gray-600">数学密集型高质量排版</span>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-user-edit mr-2 text-green-600"></i>风格校准技术
+                </h4>
+                <div class="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg mb-4">
+                  <h6 class="font-semibold text-sm mb-2">风格特征提取</h6>
+                  <p class="text-xs text-gray-600 mb-3">分析研究者过往论文，提取写作风格特征</p>
+                  <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-white p-2 rounded">
+                      <i class="fas fa-ruler mr-1 text-blue-500"></i>平均句长
+                    </div>
+                    <div class="bg-white p-2 rounded">
+                      <i class="fas fa-percentage mr-1 text-green-500"></i>语态比例
+                    </div>
+                    <div class="bg-white p-2 rounded">
+                      <i class="fas fa-language mr-1 text-orange-500"></i>术语偏好
+                    </div>
+                    <div class="bg-white p-2 rounded">
+                      <i class="fas fa-wave-square mr-1 text-purple-500"></i>论证节奏
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-gray-100 p-3 rounded text-xs">
+                  <strong>差异化功能</strong>：避免&#34;AI腔&#34;同质化表达，保持研究者个人学术声音
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-sitemap mr-2"></i>IMRaD结构变体与学科差异
+              </h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="border-b-2 border-gray-200">
+                      <th class="text-left py-3 px-4 font-semibold">学科领域</th>
+                      <th class="text-left py-3 px-4 font-semibold">结构特征</th>
+                      <th class="text-left py-3 px-4 font-semibold">关键变体</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td class="py-3 px-4 font-medium text-blue-600">医学/生命科学</td>
+                      <td class="py-3 px-4 text-xs">严格的IMRaD，强调方法可复现性</td>
+                      <td class="py-3 px-4 text-xs">CONSORT、STROBE、PRISMA扩展</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 px-4 font-medium text-green-600">心理学/社会科学</td>
+                      <td class="py-3 px-4 text-xs">方法学详细描述，理论框架显式阐述</td>
+                      <td class="py-3 px-4 text-xs">质性研究主题化、混合方法并行</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 px-4 font-medium text-orange-600">计算机科学/工程</td>
+                      <td class="py-3 px-4 text-xs">简洁方法描述，突出实验结果</td>
+                      <td class="py-3 px-4 text-xs">算法-实验结构、消融研究</td>
+                    </tr>
+                    <tr>
+                      <td class="py-3 px-4 font-medium text-purple-600">人文学科</td>
+                      <td class="py-3 px-4 text-xs">主题化组织，叙事性论证</td>
+                      <td class="py-3 px-4 text-xs">理论-文本-批评循环、历史脉络梳理</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="highlight-box p-6 rounded-lg">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-users mr-2"></i>作者贡献声明与利益冲突披露
+              </h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold text-blue-600 mb-3">CRediT贡献角色</h5>
+                  <p class="text-xs text-gray-600 mb-3">
+                    <a href="https://github.com/Imbad0202/academic-research-skills" class="citation-link">Academic Paper Skill</a>
+                    支持14种贡献角色的自动声明生成
+                  </p>
+                  <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-blue-50 p-2 rounded">概念化</div>
+                    <div class="bg-blue-50 p-2 rounded">方法学</div>
+                    <div class="bg-blue-50 p-2 rounded">软件</div>
+                    <div class="bg-blue-50 p-2 rounded">验证</div>
+                    <div class="bg-blue-50 p-2 rounded">形式分析</div>
+                    <div class="bg-blue-50 p-2 rounded">调查</div>
+                    <div class="bg-blue-50 p-2 rounded">资源</div>
+                    <div class="bg-blue-50 p-2 rounded">数据管理</div>
+                    <div class="bg-blue-50 p-2 rounded">写作-初稿</div>
+                    <div class="bg-blue-50 p-2 rounded">写作-审阅</div>
+                    <div class="bg-blue-50 p-2 rounded">可视化</div>
+                    <div class="bg-blue-50 p-2 rounded">监督</div>
+                    <div class="bg-blue-50 p-2 rounded">项目管理</div>
+                    <div class="bg-blue-50 p-2 rounded">资金获取</div>
+                  </div>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-red-600 mb-3">利益冲突检查</h5>
+                  <div class="space-y-2">
+                    <div class="flex items-center space-x-2 p-2 bg-red-50 rounded">
+                      <i class="fas fa-dollar-sign text-red-500"></i>
+                      <span class="text-xs">财务关系（资助、咨询费、股权）</span>
+                    </div>
+                    <div class="flex items-center space-x-2 p-2 bg-red-50 rounded">
+                      <i class="fas fa-briefcase text-red-500"></i>
+                      <span class="text-xs">雇佣关系（过去/现在雇主）</span>
+                    </div>
+                    <div class="flex items-center space-x-2 p-2 bg-red-50 rounded">
+                      <i class="fas fa-copyright text-red-500"></i>
+                      <span class="text-xs">知识产权（专利、版权、许可）</span>
+                    </div>
+                    <div class="flex items-center space-x-2 p-2 bg-red-50 rounded">
+                      <i class="fas fa-user-friends text-red-500"></i>
+                      <span class="text-xs">个人关系（家庭成员利益关联）</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Writing -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-edit mr-3 text-green-600"></i>分章节智能生成与优化
+            </h3>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-eye mr-2 text-blue-600"></i>摘要与标题优化
+                </h4>
+                <div class="mb-4">
+                  <img src="https://kimi-web-img.moonshot.cn/img/pic4.zhimg.com/4e484795999dfd426b678a96054f49356344b83c.jpg" alt="学术摘要示例" class="w-full h-24 object-cover rounded-lg" size="small" aspect="wide" style="photo" query="学术摘要" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">
+                  Abstract Bilingual Agent支持英文-中文双语输出，遵循&#34;背景-缺口-方法-发现-意义&#34;倒金字塔结构。
+                </p>
+                <div class="space-y-3">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-1">关键词优化</h6>
+                    <p class="text-xs text-gray-600">对比目标期刊近期论文，建议既符合领域惯例又具区分度的术语组合</p>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-1">多风格标题</h6>
+                    <div class="space-y-1 text-xs">
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span>描述性：突出研究发现</span>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        <span>声明性：陈述核心结论</span>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+                        <span>疑问性：问题形式呈现</span>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                        <span>方法性：强调方法创新</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-book-open mr-2 text-purple-600"></i>引言章节逻辑链
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">研究背景</h6>
+                    <p class="text-xs text-gray-600">建立领域重要性，量化活跃度，识别奠基性文献</p>
+                  </div>
+                  <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">文献缺口</h6>
+                    <p class="text-xs text-gray-600">批判性综述，构建研究必要性，通过对比分析识别局限</p>
+                  </div>
+                  <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">研究目标</h6>
+                    <p class="text-xs text-gray-600">明确填补缺口的方式，提出具体假设，预览主要发现</p>
+                  </div>
+                </div>
+                <div class="mt-4 bg-yellow-50 p-3 rounded">
+                  <h6 class="font-semibold text-yellow-700 text-xs mb-1">质量检查</h6>
+                  <p class="text-xs text-gray-600">Writing Quality Check Agent标记过度引用、缺口描述宽泛等问题</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-flask mr-2 text-indigo-600"></i>方法章节可复现性
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-indigo-50 p-3 rounded">
+                    <h6 class="font-semibold text-indigo-700 text-xs mb-1">研究设计</h6>
+                    <p class="text-xs text-gray-600">类型、时间框架、设计理由</p>
+                  </div>
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-1">参与者/材料</h6>
+                    <p class="text-xs text-gray-600">抽样策略、纳入标准、样本量计算</p>
+                  </div>
+                  <div class="bg-pink-50 p-3 rounded">
+                    <h6 class="font-semibold text-pink-700 text-xs mb-1">程序与数据分析</h6>
+                    <p class="text-xs text-gray-600">数据收集步骤、统计方法、分析计划</p>
+                  </div>
+                </div>
+                <div class="mt-4 bg-gray-100 p-3 rounded text-xs">
+                  <strong>协议注册</strong>：自动生成注册信息，支持ClinicalTrials.gov、OSF等平台
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-chart-line mr-2 text-green-600"></i>结果章节客观呈现
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-1">多层次组织</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 主要结局（核心假设）</li>
+                      <li>• 次要结局（探索性分析）</li>
+                      <li>• 亚组分析（异质性探索）</li>
+                      <li>• 敏感性分析（稳健性检验）</li>
+                    </ul>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-1">统计报告规范</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 效应量 + 置信区间优先</li>
+                      <li>• 精确p值（非&#34;p&lt;0.05&#34;）</li>
+                      <li>• 适当的效应量指标</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-lightbulb mr-2 text-orange-600"></i>讨论章节深度阐释
+                </h4>
+                <div class="space-y-2">
+                  <div class="flex items-center space-x-2 p-2 bg-orange-50 rounded">
+                    <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                    <span class="text-xs">主要发现总结</span>
+                  </div>
+                  <div class="flex items-center space-x-2 p-2 bg-blue-50 rounded">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                    <span class="text-xs">文献对比分析</span>
+                  </div>
+                  <div class="flex items-center space-x-2 p-2 bg-green-50 rounded">
+                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span class="text-xs">理论贡献阐述</span>
+                  </div>
+                  <div class="flex items-center space-x-2 p-2 bg-purple-50 rounded">
+                    <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
+                    <span class="text-xs">实践意义探讨</span>
+                  </div>
+                  <div class="flex items-center space-x-2 p-2 bg-red-50 rounded">
+                    <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                    <span class="text-xs">研究局限识别</span>
+                  </div>
+                  <div class="flex items-center space-x-2 p-2 bg-indigo-50 rounded">
+                    <span class="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                    <span class="text-xs">未来方向建议</span>
+                  </div>
+                </div>
+                <div class="mt-3 bg-gray-100 p-2 rounded text-xs">
+                  <strong>论证完整性检查</strong>：验证6个核心要素的覆盖
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Language Quality -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-language mr-3 text-red-600"></i>学术语言质量智能提升
+            </h3>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-spell-check mr-2 text-blue-600"></i>术语一致性检查
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">术语识别与提取</h6>
+                    <p class="text-xs text-gray-600">自动识别文献库中的领域核心术语及其变体</p>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">一致性检查</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 术语使用不一致标记</li>
+                      <li>• 缩写首次使用未定义</li>
+                      <li>• 同一概念不同表述</li>
+                    </ul>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">风格统一</h6>
+                    <p class="text-xs text-gray-600">基于期刊风格指南建议标准术语形式</p>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-project-diagram mr-2 text-green-600"></i>逻辑连贯性分析
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">段落衔接检查</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 识别逻辑跳跃</li>
+                      <li>• 缺失过渡标记</li>
+                      <li>• 重复信息识别</li>
+                    </ul>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">论证强度评估</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 证据类型分析（直接/间接）</li>
+                      <li>• 支持强度评估（单一/汇聚）</li>
+                      <li>• 证据薄弱点识别</li>
+                    </ul>
+                  </div>
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">论证结构可视化</h6>
+                    <p class="text-xs text-gray-600">生成论证地图，显示claim、证据、反驳关系</p>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-magic mr-2 text-orange-600"></i>语言风格优化
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">Humanizer Skill</h6>
+                    <p class="text-xs text-gray-600 mb-2">专门解决&#34;AI腔&#34;问题，注入&#34;人味&#34;元素</p>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 去除AI典型表达（&#34;值得注意的是&#34;）</li>
+                      <li>• 有观点的陈述</li>
+                      <li>• 节奏变化与不确定性承认</li>
+                      <li>• 第一人称自然使用</li>
+                    </ul>
+                  </div>
+                  <div class="bg-gray-100 p-3 rounded text-xs">
+                    <strong>核心原则</strong>：保留作者声音，提升清晰度而非消除个人风格
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Citation Management -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-bookmark mr-3 text-indigo-600"></i>引用管理与参考文献自动化
+            </h3>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-exchange-alt mr-2 text-blue-600"></i>多格式引用转换
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">主流引用风格支持</h6>
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span class="text-xs font-medium">APA 7th</span>
+                        <span class="text-xs text-gray-600">心理学、教育学</span>
+                      </div>
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span class="text-xs font-medium">MLA 9th</span>
+                        <span class="text-xs text-gray-600">人文学科、文学</span>
+                      </div>
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span class="text-xs font-medium">Chicago 17th</span>
+                        <span class="text-xs text-gray-600">历史学、艺术史</span>
+                      </div>
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span class="text-xs font-medium">IEEE</span>
+                        <span class="text-xs text-gray-600">工程技术、CS</span>
+                      </div>
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span class="text-xs font-medium">Vancouver</span>
+                        <span class="text-xs text-gray-600">生物医学</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">Citation Compliance Agent</h6>
+                    <p class="text-xs text-gray-600">自动识别期刊要求，批量转换格式，验证完整性</p>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-sync mr-2 text-green-600"></i>文献管理工具集成
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">Zotero-MCP集成</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 双向同步：检索结果保存到个人库</li>
+                      <li>• 写作时直接引用库中文献</li>
+                      <li>• 自动处理CSL引用格式</li>
+                      <li>• 标签管理与笔记同步</li>
+                    </ul>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">EndNote/Mendeley</h6>
+                    <p class="text-xs text-gray-600">通过导出/导入接口实现文献库互通</p>
+                  </div>
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">BibTeX处理</h6>
+                    <p class="text-xs text-gray-600">生成和清理BibTeX条目，处理特殊字符</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box p-6 rounded-lg">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-shield-alt mr-2"></i>引文准确性验证与学术诚信
+              </h4>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div>
+                  <h5 class="font-semibold text-blue-600 mb-3">来源验证</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
+                      <span class="text-xs">文内引用与参考文献列表交叉核对</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
+                      <span class="text-xs">识别缺失参考文献和未引用文献</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-check-circle text-blue-500 mr-2 mt-1"></i>
+                      <span class="text-xs">关键引用信息准确性核实</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-red-600 mb-3">抄袭防范</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-exclamation-triangle text-red-500 mr-2 mt-1"></i>
+                      <span class="text-xs">训练数据污染检测与改写建议</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-exclamation-triangle text-red-500 mr-2 mt-1"></i>
+                      <span class="text-xs">幻觉引用防范与强制验证</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-exclamation-triangle text-red-500 mr-2 mt-1"></i>
+                      <span class="text-xs">过度自引检测与引用多样性建议</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-green-600 mb-3">引文网络分析</h5>
+                  <ul class="space-y-2 text-sm">
+                    <li class="flex items-start">
+                      <i class="fas fa-network-wired text-green-500 mr-2 mt-1"></i>
+                      <span class="text-xs">识别&#34;引文俱乐部&#34;现象</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-network-wired text-green-500 mr-2 mt-1"></i>
+                      <span class="text-xs">自引比例计算与阈值提醒</span>
+                    </li>
+                    <li class="flex items-start">
+                      <i class="fas fa-network-wired text-green-500 mr-2 mt-1"></i>
+                      <span class="text-xs">推荐更广泛的文献基础</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="mt-4 bg-yellow-50 p-4 rounded">
+                <p class="text-sm text-yellow-800">
+                  <strong>多层验证机制</strong>：格式检查 → API验证 → 信息核实 → 内容比对，
+                  有效防止幻觉引用，确保学术诚信。
+                  <a href="https://forum.trae.cn/t/topic/844" class="citation-link">citation-verification技能</a>
+                  实现了完整的验证流程。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Section 5: 智能评审与迭代修订 -->
+      <section id="section-5" class="py-16 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold serif text-gray-900 mb-4">论文完善：智能评审与迭代修订</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              AI辅助的多视角同行评审、审稿意见解析与发表前最终检查系统
+            </p>
+          </div>
+
+          <!-- Multi-perspective Review -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-gavel mr-3 text-purple-600"></i>多视角智能同行评审
+            </h3>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-microscope mr-2 text-blue-600"></i>方法学家视角
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">研究设计严谨性</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 设计类型与研究问题匹配度</li>
+                      <li>• 样本代表性与抽样策略适当性</li>
+                      <li>• 测量工具信效度评估</li>
+                      <li>• 混淆变量识别与控制</li>
+                    </ul>
+                  </div>
+                  <div class="bg-gray-100 p-3 rounded">
+                    <h6 class="font-semibold text-gray-700 text-xs mb-2">风险评级</h6>
+                    <div class="space-y-1 text-xs">
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                        <span>高风险：影响结论可信度的核心问题</span>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                        <span>中风险：显著影响质量的建议</span>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span>低风险：锦上添花的小改进</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-brain mr-2 text-green-600"></i>领域专家视角
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">理论贡献评估</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 文献覆盖全面性与时效性</li>
+                      <li>• 理论定位准确性（支持/扩展/挑战）</li>
+                      <li>• 创新性判断（首次报告/方法改进）</li>
+                      <li>• 学术价值与潜在影响</li>
+                    </ul>
+                  </div>
+                  <div class="bg-yellow-50 p-3 rounded">
+                    <h6 class="font-semibold text-yellow-700 text-xs mb-2">AI辅助局限</h6>
+                    <p class="text-xs text-gray-600">
+                      更多作为&#34;预警系统&#34;：标记明显文献遗漏或理论脱节，而非替代专家深度判断
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-calculator mr-2 text-red-600"></i>统计审稿人视角
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-red-50 p-3 rounded">
+                    <h6 class="font-semibold text-red-700 text-xs mb-2">数据分析适当性</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 描述统计完整性（样本特征、缺失数据）</li>
+                      <li>• 推断统计正确性（假设检验、效应量）</li>
+                      <li>• 模型假设检验与违反应对</li>
+                      <li>• 多重比较控制策略</li>
+                    </ul>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">敏感性分析</h6>
+                    <p class="text-xs text-gray-600">关键假设的稳健性检验与结果一致性评估</p>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-chart-bar mr-2 text-purple-600"></i>0-100质量评分系统
+                </h4>
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between p-2 bg-purple-50 rounded">
+                    <span class="text-xs font-medium">研究设计严谨性</span>
+                    <span class="text-xs text-purple-600">25%</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-green-50 rounded">
+                    <span class="text-xs font-medium">理论贡献与创新性</span>
+                    <span class="text-xs text-green-600">25%</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-blue-50 rounded">
+                    <span class="text-xs font-medium">数据分析适当性</span>
+                    <span class="text-xs text-blue-600">20%</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-orange-50 rounded">
+                    <span class="text-xs font-medium">写作质量与清晰度</span>
+                    <span class="text-xs text-orange-600">20%</span>
+                  </div>
+                  <div class="flex items-center justify-between p-2 bg-red-50 rounded">
+                    <span class="text-xs font-medium">期刊匹配度</span>
+                    <span class="text-xs text-red-600">10%</span>
+                  </div>
+                </div>
+                <div class="mt-3 bg-gray-100 p-3 rounded text-xs">
+                  <strong>评分标准</strong>：&lt;50重大修订，50-70实质性修订，&gt;70小修后接受
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box p-6 rounded-lg">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-user-tie mr-2"></i>模拟5人评审委员会
+              </h4>
+              <div class="grid md:grid-cols-5 gap-4">
+                <div class="text-center p-3 bg-blue-50 rounded">
+                  <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-crown text-white text-sm"></i>
+                  </div>
+                  <h6 class="font-semibold text-blue-700 text-xs mb-1">主编（EIC）</h6>
+                  <p class="text-xs text-gray-600">期刊匹配度、创新性评估</p>
+                </div>
+                <div class="text-center p-3 bg-green-50 rounded">
+                  <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-flask text-white text-sm"></i>
+                  </div>
+                  <h6 class="font-semibold text-green-700 text-xs mb-1">方法学审稿人</h6>
+                  <p class="text-xs text-gray-600">研究设计、统计适当性</p>
+                </div>
+                <div class="text-center p-3 bg-orange-50 rounded">
+                  <div class="w-12 h-12 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-book text-white text-sm"></i>
+                  </div>
+                  <h6 class="font-semibold text-orange-700 text-xs mb-1">领域审稿人</h6>
+                  <p class="text-xs text-gray-600">理论贡献、文献覆盖</p>
+                </div>
+                <div class="text-center p-3 bg-purple-50 rounded">
+                  <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-eye text-white text-sm"></i>
+                  </div>
+                  <h6 class="font-semibold text-purple-700 text-xs mb-1">视角审稿人</h6>
+                  <p class="text-xs text-gray-600">跨学科、实践影响评估</p>
+                </div>
+                <div class="text-center p-3 bg-red-50 rounded">
+                  <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-exclamation text-white text-sm"></i>
+                  </div>
+                  <h6 class="font-semibold text-red-700 text-xs mb-1">魔鬼代言人</h6>
+                  <p class="text-xs text-gray-600">挑战核心论点、识别逻辑谬误</p>
+                </div>
+              </div>
+              <p class="text-sm text-gray-600 mt-4">
+                这种多视角设计显著提升了评审的全面性和建设性，模拟真实同行评审的深度和广度。
+              </p>
+            </div>
+          </div>
+
+          <!-- Review Response -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-reply mr-3 text-blue-600"></i>审稿意见智能解析与回应
+            </h3>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-sort mr-2 text-indigo-600"></i>评论分类与优先级
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-red-50 p-3 rounded border-l-4 border-red-500">
+                    <h6 class="font-semibold text-red-700 text-xs mb-2">实质性修改</h6>
+                    <p class="text-xs text-gray-600 mb-2">涉及研究设计、数据分析、核心结论</p>
+                    <div class="text-xs text-red-600">
+                      <strong>策略</strong>：详细说明修改，提供补充证据，或论证不修改理由
+                    </div>
+                  </div>
+                  <div class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-500">
+                    <h6 class="font-semibold text-yellow-700 text-xs mb-2">表述澄清</h6>
+                    <p class="text-xs text-gray-600 mb-2">对方法、结果、论证的疑问或误解</p>
+                    <div class="text-xs text-yellow-600">
+                      <strong>策略</strong>：重写相关段落，添加解释性内容，提供额外背景
+                    </div>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">格式调整</h6>
+                    <p class="text-xs text-gray-600 mb-2">引用格式、图表规范、语言风格</p>
+                    <div class="text-xs text-green-600">
+                      <strong>策略</strong>：直接按要求修改，确认修改完成
+                    </div>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">补充建议</h6>
+                    <p class="text-xs text-gray-600 mb-2">额外的分析、文献、讨论</p>
+                    <div class="text-xs text-blue-600">
+                      <strong>策略</strong>：评估可行性，实施或解释为何超出范围
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-file-signature mr-2 text-green-600"></i>回应信模板生成
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">逐条回应结构</h6>
+                    <ol class="text-xs text-gray-600 space-y-1 list-decimal list-inside">
+                      <li>致谢：感谢审稿人的具体建议</li>
+                      <li>回应概述：简要说明采纳的修改或解释理由</li>
+                      <li>具体修改：详细描述论文中的相应改动</li>
+                      <li>修订后文本：提供修改后的关键段落（可选）</li>
+                    </ol>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">反驳策略指导</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 对于误解性评论：礼貌澄清，重写以提高清晰度</li>
+                      <li>• 对于不可行建议：解释限制，提出替代方案</li>
+                      <li>• 对于意见分歧：提供额外证据，保持学术尊重</li>
+                    </ul>
+                  </div>
+                  <div class="bg-yellow-50 p-3 rounded">
+                    <h6 class="font-semibold text-yellow-700 text-xs mb-2">专业审核提醒</h6>
+                    <p class="text-xs text-gray-600">
+                      AI生成的回应信草稿需要研究者仔细审核，确保语气的专业性和论证的准确性
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-history mr-2"></i>修订痕迹追踪与版本对比
+              </h4>
+              <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center p-4 bg-blue-50 rounded-lg">
+                  <i class="fas fa-edit text-2xl text-blue-600 mb-3"></i>
+                  <h5 class="font-semibold text-blue-700 text-sm mb-2">修订痕迹自动标记</h5>
+                  <p class="text-xs text-gray-600">使用Word修订模式或LaTeX changebar包，高亮所有修改</p>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded-lg">
+                  <i class="fas fa-compress-arrows-alt text-2xl text-green-600 mb-3"></i>
+                  <h5 class="font-semibold text-green-700 text-sm mb-2">版本对比摘要</h5>
+                  <p class="text-xs text-gray-600">生成结构变化、内容增减、统计结果变更摘要</p>
+                </div>
+                <div class="text-center p-4 bg-orange-50 rounded-lg">
+                  <i class="fas fa-clipboard-list text-2xl text-orange-600 mb-3"></i>
+                  <h5 class="font-semibold text-orange-700 text-sm mb-2">修订决策日志</h5>
+                  <p class="text-xs text-gray-600">记录每条审稿意见的处理状态，支持有效沟通</p>
+                </div>
+              </div>
+              <div class="mt-4 bg-gray-50 p-4 rounded">
+                <p class="text-sm text-gray-700">
+                  这些功能支持研究者与合著者、导师、期刊编辑的有效沟通，展示修订的完整性和系统性。
+                  透明的版本管理对于多人协作和长期项目尤为重要。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pre-publication Check -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-flag-checkered mr-3 text-green-600"></i>发表前最终检查
+            </h3>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-tasks mr-2 text-blue-600"></i>期刊投稿清单核对
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">稿件完整性检查</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 所有必需章节结构验证</li>
+                      <li>• 字数限制统计</li>
+                      <li>• 图表编号与引用完整性</li>
+                    </ul>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">作者信息验证</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• ORCID、机构邮箱格式验证</li>
+                      <li>• 贡献声明完整性</li>
+                      <li>• 利益冲突披露</li>
+                    </ul>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">补充材料检查</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 数据、代码、协议文件</li>
+                      <li>• 伦理审批文件存在性</li>
+                      <li>• 元数据完整性</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-4 bg-gray-100 p-3 rounded text-xs">
+                  <strong>100%核对</strong>：Final Integrity Check阶段执行完整核对，生成通过/未通过报告
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-folder-plus mr-2 text-green-600"></i>补充材料完整性验证
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">研究数据</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 原始数据与处理后的分析数据集</li>
+                      <li>• 数据字典与变量说明</li>
+                      <li>• 格式适当性与元数据完整性</li>
+                    </ul>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">分析代码</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 数据清洗、统计、图表完整代码</li>
+                      <li>• 依赖环境说明</li>
+                      <li>• 可复现性验证</li>
+                    </ul>
+                  </div>
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">协议文件</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 研究方案与预分析计划</li>
+                      <li>• 伦理审批文件</li>
+                      <li>• 额外结果与敏感性分析</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-database mr-2 text-purple-600"></i>数据可用性与代码开源
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">数据可用性声明</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 完全可用：开放获取数据存储库</li>
+                      <li>• 受限可用：伦理或法律限制</li>
+                      <li>• 不可用：合理理由说明</li>
+                    </ul>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">代码仓库准备</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• README、LICENSE生成</li>
+                      <li>• 依赖文件requirements.txt</li>
+                      <li>• 使用说明文档</li>
+                    </ul>
+                  </div>
+                  <div class="bg-gray-100 p-3 rounded text-xs">
+                    <strong>支持开放科学</strong>：满足日益严格的开放科学要求，降低技术准备成本
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box p-6 rounded-lg">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-rocket mr-2"></i>从研究到发表的全流程质量保障
+              </h4>
+              <div class="grid md:grid-cols-4 gap-4">
+                <div class="text-center p-3 bg-blue-50 rounded">
+                  <i class="fas fa-microscope text-2xl text-blue-600 mb-2"></i>
+                  <h6 class="font-semibold text-blue-700 text-xs mb-1">研究透明度</h6>
+                  <p class="text-xs text-gray-600">完整的材料与方法报告</p>
+                </div>
+                <div class="text-center p-3 bg-green-50 rounded">
+                  <i class="fas fa-shield-check text-2xl text-green-600 mb-2"></i>
+                  <h6 class="font-semibold text-green-700 text-xs mb-1">数据可信性</h6>
+                  <p class="text-xs text-gray-600">可验证的数据与分析流程</p>
+                </div>
+                <div class="text-center p-3 bg-orange-50 rounded">
+                  <i class="fas fa-sync-alt text-2xl text-orange-600 mb-2"></i>
+                  <h6 class="font-semibold text-orange-700 text-xs mb-1">结果可复现</h6>
+                  <p class="text-xs text-gray-600">完整的代码与操作指南</p>
+                </div>
+                <div class="text-center p-3 bg-purple-50 rounded">
+                  <i class="fas fa-award text-2xl text-purple-600 mb-2"></i>
+                  <h6 class="font-semibold text-purple-700 text-xs mb-1">学术诚信</h6>
+                  <p class="text-xs text-gray-600">透明的贡献声明与利益冲突</p>
+                </div>
+              </div>
+              <div class="mt-4 bg-gray-50 p-4 rounded">
+                <p class="text-sm text-gray-700">
+                  通过系统性的最终检查，确保提交的论文在技术上完整、在方法上严谨、在伦理上合规，
+                  为成功发表奠定坚实基础。这一流程体现了现代学术出版的最高标准。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Section 6: 技术实现 -->
+      <section id="section-6" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold serif text-gray-900 mb-4">技术实现：Agent Skills开发与应用</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              学术研究技能库的构建、多智能体协作系统的实现与主流平台的部署指南
+            </p>
+          </div>
+
+          <!-- Skills Library -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-code mr-3 text-blue-600"></i>学术研究技能库构建
+            </h3>
+
+            <div class="highlight-box p-6 rounded-lg mb-8">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-star mr-2"></i>开源技能库参考：AI Research SKILLs
+              </h4>
+              <div class="flex items-start space-x-4 mb-4">
+                <img src="https://kimi-web-img.moonshot.cn/img/img.freepik.com/deda661111030ba34c2ac9a5b17cc05b636bd633.jpg" alt="AI研究技能库徽标" class="w-20 h-20 object-cover rounded-lg flex-shrink-0" size="small" aspect="square" query="AI研究技能库标志" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+                <div>
+                  <p class="text-gray-700 leading-relaxed mb-4">
+                    <a href="https://github.com/Orchestra-Research/AI-research-SKILLs" class="citation-link">AI Research SKILLs</a>
+                    是由Orchestra Research维护的综合性开源技能库，代表了当前学术AI辅助领域最系统、最全面的工程实践。
+                    截至2026年初，该库包含<strong>87个精心设计的技能，组织为22个功能类别</strong>，覆盖从研究构思到论文发表的完整生命周期。
+                  </p>
+                  <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-white p-3 rounded">
+                      <h6 class="font-semibold text-sm mb-2">技术特点</h6>
+                      <ul class="text-xs text-gray-600 space-y-1">
+                        <li>• 遵循Anthropic官方Skill最佳实践</li>
+                        <li>• YAML前置元数据标准化</li>
+                        <li>• 渐进式披露目录结构</li>
+                        <li>• 约束优先的指令设计</li>
+                      </ul>
+                    </div>
+                    <div class="bg-white p-3 rounded">
+                      <h6 class="font-semibold text-sm mb-2">使用方式</h6>
+                      <div class="bg-gray-900 text-green-400 p-2 rounded text-xs font-mono">
+                        npx @orchestra-research/ai-research-skills
+                      </div>
+                      <p class="text-xs text-gray-600 mt-2">
+                        兼容Claude Code、OpenCode、Cursor、Codex、Gemini CLI等多种AI编程代理
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-puzzle-piece mr-2 text-indigo-600"></i>学科专属技能定制
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-indigo-50 p-3 rounded">
+                    <h6 class="font-semibold text-indigo-700 text-xs mb-2">继承层</h6>
+                    <p class="text-xs text-gray-600 mb-2">复用通用技能的结构和流程模板</p>
+                    <div class="bg-white p-2 rounded text-xs">
+                      例：基于research-superpower技能的七阶段文献综述框架
+                    </div>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">扩展层</h6>
+                    <p class="text-xs text-gray-600 mb-2">针对学科范式添加特定模块</p>
+                    <div class="bg-white p-2 rounded text-xs">
+                      生物医学：IACUC、ClinicalTrials.gov、组学数据标准
+                    </div>
+                  </div>
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">覆盖层</h6>
+                    <p class="text-xs text-gray-600 mb-2">处理学科特有的边缘情况</p>
+                    <div class="bg-white p-2 rounded text-xs">
+                      神经影像学：详细扫描参数描述，覆盖通用模板
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-code-branch mr-2 text-green-600"></i>技能版本管理与协作
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">版本控制</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 语义化版本（MAJOR.MINOR.PATCH）</li>
+                      <li>• Git分支策略与变更日志</li>
+                      <li>• 破坏性更新与功能增强标识</li>
+                    </ul>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">团队协作</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• Fork-PR工作流与技能评审</li>
+                      <li>• Git子模块与组织级技能仓库</li>
+                      <li>• 上游同步与冲突解决</li>
+                    </ul>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">企业级部署</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 集中配置与访问权限控制</li>
+                      <li>• 使用审计与合规政策执行</li>
+                      <li>• npm包与FastMCP市场分发</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-agent System -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-users-cog mr-3 text-green-600"></i>多智能体协作系统（MCP应用）
+            </h3>
+
+            <div class="highlight-box p-6 rounded-lg mb-8">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-users mr-2"></i>角色分工型多智能体架构
+              </h4>
+              <div class="mb-6">
+                <div class="mermaid-container">
+                  <div class="mermaid-controls">
+                    <button class="mermaid-control-btn zoom-in" title="放大">
+                      <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="mermaid-control-btn zoom-out" title="缩小">
+                      <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button class="mermaid-control-btn reset-zoom" title="重置">
+                      <i class="fas fa-expand-arrows-alt"></i>
+                    </button>
+                    <button class="mermaid-control-btn fullscreen" title="全屏查看">
+                      <i class="fas fa-expand"></i>
+                    </button>
+                  </div>
+                  <div class="mermaid">
+                    graph TB
+                    subgraph &#34;协调器&#34;
+                    C[&#34;流程协调智能体&#34;]
+                    end
+
+                    subgraph &#34;专业角色&#34;
+                    RA[&#34;研究助理
+                    <br/>文献搜索技能&#34;]
+                    SA[&#34;统计顾问
+                    <br/>分析设计技能&#34;]
+                    WE[&#34;写作编辑
+                    <br/>科学写作技能&#34;]
+                    AP[&#34;语言润色
+                    <br/>学术优化技能&#34;]
+                    end
+
+                    subgraph &#34;MCP服务&#34;
+                    MS1[&#34;arXiv MCP
+                    <br/>文献数据库&#34;]
+                    MS2[&#34;R/Python MCP
+                    <br/>计算环境&#34;]
+                    MS3[&#34;Zotero MCP
+                    <br/>文献管理&#34;]
+                    MS4[&#34;Overleaf MCP
+                    <br/>排版服务&#34;]
+                    end
+
+                    C --&gt; RA
+                    C --&gt; SA
+                    C --&gt; WE
+                    C --&gt; AP
+
+                    RA --&gt; MS1
+                    SA --&gt; MS2
+                    WE --&gt; MS3
+                    AP --&gt; MS4
+
+                    RA --&gt; SA
+                    SA --&gt; WE
+                    WE --&gt; AP
+
+                    style C fill:#dbeafe,stroke:#3b82f6,stroke-width:3px,color:#1e40af
+                    style RA fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#166534
+                    style SA fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e
+                    style WE fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#be185d
+                    style AP fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+                    style MS1 fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#92400e
+                    style MS2 fill:#f0f9ff,stroke:#0ea5e9,stroke-width:2px,color:#0c4a6e
+                    style MS3 fill:#fce7f3,stroke:#ec4899,stroke-width:2px,color:#be185d
+                    style MS4 fill:#dcfce7,stroke:#22c55e,stroke-width:2px,color:#166534
+                  </div>
+                </div>
+              </div>
+              <div class="grid md:grid-cols-4 gap-4">
+                <div class="skill-card p-4 rounded-lg">
+                  <h5 class="font-semibold text-blue-600 text-sm mb-2">
+                    <i class="fas fa-search mr-1"></i>研究助理
+                  </h5>
+                  <ul class="text-xs text-gray-600 space-y-1">
+                    <li>• 文献搜索技能</li>
+                    <li>• 论文提取技能</li>
+                    <li>• 缺口分析技能</li>
+                  </ul>
+                  <div class="mt-2 text-xs text-blue-500">
+                    连接：arXiv, Semantic Scholar
+                  </div>
+                </div>
+                <div class="skill-card p-4 rounded-lg">
+                  <h5 class="font-semibold text-green-600 text-sm mb-2">
+                    <i class="fas fa-calculator mr-1"></i>统计顾问
+                  </h5>
+                  <ul class="text-xs text-gray-600 space-y-1">
+                    <li>• 实验设计技能</li>
+                    <li>• 统计分析技能</li>
+                    <li>• 结果验证技能</li>
+                  </ul>
+                  <div class="mt-2 text-xs text-green-500">
+                    连接：R/Python MCP, 计算集群
+                  </div>
+                </div>
+                <div class="skill-card p-4 rounded-lg">
+                  <h5 class="font-semibold text-pink-600 text-sm mb-2">
+                    <i class="fas fa-edit mr-1"></i>写作编辑
+                  </h5>
+                  <ul class="text-xs text-gray-600 space-y-1">
+                    <li>• 科学写作技能</li>
+                    <li>• 引用管理技能</li>
+                    <li>• 图表生成技能</li>
+                  </ul>
+                  <div class="mt-2 text-xs text-pink-500">
+                    连接：Zotero MCP, Overleaf
+                  </div>
+                </div>
+                <div class="skill-card p-4 rounded-lg">
+                  <h5 class="font-semibold text-cyan-600 text-sm mb-2">
+                    <i class="fas fa-magic mr-1"></i>语言润色
+                  </h5>
+                  <ul class="text-xs text-gray-600 space-y-1">
+                    <li>• 学术润色技能</li>
+                    <li>• 反AI检测技能</li>
+                    <li>• 期刊格式化技能</li>
+                  </ul>
+                  <div class="mt-2 text-xs text-cyan-500">
+                    连接：语法检查MCP, 期刊模板
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 bg-gray-50 p-4 rounded">
+                <h6 class="font-semibold text-sm mb-2">架构优势</h6>
+                <div class="grid md:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <strong>上下文隔离</strong>：每个智能体仅加载相关技能，避免上下文过载
+                  </div>
+                  <div>
+                    <strong>专业化深度</strong>：角色间清晰交付物接口形成质量检查点
+                  </div>
+                  <div>
+                    <strong>可扩展性</strong>：易于添加新角色或替换现有角色
+                  </div>
+                  <div>
+                    <strong>容错性</strong>：单个角色失效不影响整体系统运行
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-route mr-2 text-orange-600"></i>流程协调型智能体
+                </h4>
+                <div class="bg-orange-50 p-4 rounded mb-4">
+                  <h6 class="font-semibold text-orange-700 text-sm mb-2">10阶段学术流程管理</h6>
+                  <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-white p-2 rounded">1. 主题探索</div>
+                    <div class="bg-white p-2 rounded">2. 文献综述</div>
+                    <div class="bg-white p-2 rounded">3. 假设形成</div>
+                    <div class="bg-white p-2 rounded">4. 研究设计</div>
+                    <div class="bg-white p-2 rounded">5. 数据收集</div>
+                    <div class="bg-white p-2 rounded">6. 数据分析</div>
+                    <div class="bg-white p-2 rounded">7. 结果解释</div>
+                    <div class="bg-white p-2 rounded">8. 论文撰写</div>
+                    <div class="bg-white p-2 rounded">9. 同行评审</div>
+                    <div class="bg-white p-2 rounded">10. 发表传播</div>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">状态管理</h6>
+                    <p class="text-xs text-gray-600">维护全局项目状态机，记录完成度、阻塞问题、决策历史</p>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">进度追踪</h6>
+                    <p class="text-xs text-gray-600">通过MCP通知渠道触发人工工作流，自动恢复执行</p>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-adjust mr-2 text-red-600"></i>适应性检查点与动态重分配
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-red-50 p-3 rounded">
+                    <h6 class="font-semibold text-red-700 text-xs mb-2">适应性检查点</h6>
+                    <p class="text-xs text-gray-600 mb-2">在关键决策节点暂停自动化流程</p>
+                    <div class="bg-white p-2 rounded text-xs">
+                      例：文献综述发现与初始假设矛盾时，触发检查点请求人工确认
+                    </div>
+                  </div>
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">动态任务重分配</h6>
+                    <p class="text-xs text-gray-600 mb-2">响应资源或复杂度变化</p>
+                    <div class="bg-white p-2 rounded text-xs">
+                      例：统计需求超出能力时，广播能力缺口触发专家介入
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Platform Deployment -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-laptop-code mr-3 text-orange-600"></i>主流平台的技能部署
+            </h3>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fab fa-github mr-2 text-gray-800"></i>Claude Code配置
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-gray-50 p-3 rounded">
+                    <h6 class="font-semibold text-gray-700 text-xs mb-2">目录结构</h6>
+                    <div class="bg-gray-900 text-green-400 p-2 rounded text-xs font-mono">
+                      .claude/skills/
+                      <br/>
+                      └── skill-name/
+                      <br/>
+                          ├── SKILL.md
+                      <br/>
+                          ├── scripts/
+                      <br/>
+                          └── assets/
+                    </div>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">SKILL.md规范</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• frontmatter精确性：name、description清晰准确</li>
+                      <li>• 内容结构层次：应用场景→步骤→输入→输出→示例</li>
+                      <li>• 示例代表性：覆盖典型用例与边界情况</li>
+                    </ul>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">渐进式披露优化</h6>
+                    <p class="text-xs text-gray-600">将详细材料置于子目录，按需加载减少上下文占用</p>
+                  </div>
+                </div>
+                <div class="mt-4 bg-gray-100 p-3 rounded text-xs">
+                  <strong>调试命令</strong>：
+                  <code>claude skills test</code> 验证触发逻辑，
+                  <code>claude skills debug</code> 查看匹配评分
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fab fa-microsoft mr-2 text-blue-600"></i>GitHub Copilot集成
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">MCP Server配置</h6>
+                    <p class="text-xs text-gray-600 mb-2">在VS Code设置中配置，支持stdio和SSE传输模式</p>
+                    <div class="bg-gray-900 text-green-400 p-2 rounded text-xs font-mono">
+                      &#34;github.copilot.mcpServers&#34;: [
+                      <br/>
+                        { &#34;command&#34;: &#34;...&#34;, &#34;args&#34;: [...] }
+                      <br/>
+                      ]
+                    </div>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">代码-文档协同</h6>
+                    <p class="text-xs text-gray-600">通过MCP连接自动获取文献PDF、查询方法论、同步注释</p>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">企业级安全控制</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 组织范围技能仓库管理</li>
+                      <li>• MCP服务器连接权限控制</li>
+                      <li>• 关键操作人工审批要求</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-random mr-2 text-purple-600"></i>跨模型迁移策略
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">平台兼容性</h6>
+                    <div class="space-y-2 text-xs">
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span>Claude (Claude.ai &amp; Claude Code)</span>
+                        <span class="text-green-600">完全支持</span>
+                      </div>
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span>GitHub Copilot</span>
+                        <span class="text-green-600">完全支持</span>
+                      </div>
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span>VS Code</span>
+                        <span class="text-green-600">完全支持</span>
+                      </div>
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span>Codex (OpenAI)</span>
+                        <span class="text-yellow-600">支持</span>
+                      </div>
+                      <div class="flex items-center justify-between p-2 bg-white rounded">
+                        <span>Gemini CLI</span>
+                        <span class="text-yellow-600">支持</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">适配策略</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 严格遵循SKILL.md开放标准</li>
+                      <li>• 使用标准JSON Schema定义工具</li>
+                      <li>• 复杂逻辑封装为独立代码</li>
+                      <li>• 测试上下文长度与延迟特性</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- Section 7: 伦理规范 -->
+      <section id="section-7" class="py-16 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8">
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold serif text-gray-900 mb-4">伦理规范与质量保障</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+              AI辅助学术写作的伦理边界、质量控制机制与持续学习体系的建立
+            </p>
+          </div>
+
+          <!-- Academic Integrity -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-balance-scale mr-3 text-purple-600"></i>学术诚信与AI使用边界
+            </h3>
+
+            <div class="highlight-box p-6 rounded-lg mb-8">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-handshake mr-2"></i>原创性声明与AI贡献披露规范
+              </h4>
+              <div class="mb-4">
+                <img src="https://kimi-web-img.moonshot.cn/img/html.rhhz.net/23aa4d89a2ba3dd1f3552baf745648770c43a691.jpg" alt="学术诚信概念图" class="w-full h-32 object-cover rounded-lg" size="medium" aspect="wide" query="学术诚信" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+              </div>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 class="font-semibold text-blue-600 mb-3">国际学术出版共识</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    AI的使用本身并非不端行为，但隐瞒AI贡献、将AI生成内容冒充原创成果则构成学术欺诈。
+                    人类作者对发表成果承担完全责任。
+                    <a href="https://arxiv.org/abs/2503.01424" class="citation-link">arXiv AI辅助研究伦理指南</a>
+                    强调透明度和责任归属的重要性。
+                  </p>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-1">作者资格认定</h6>
+                    <p class="text-xs text-gray-600">坚持人类中心原则——AI不能列为作者，但其辅助作用需在贡献声明中如实反映</p>
+                  </div>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-green-600 mb-3">分级披露要求</h5>
+                  <div class="space-y-2 text-xs">
+                    <div class="flex items-start space-x-2 p-2 bg-green-50 rounded">
+                      <span class="w-2 h-2 bg-green-500 rounded-full mt-1"></span>
+                      <div><strong>Level 0-1</strong>：无AI或仅信息检索，通常无需披露</div>
+                    </div>
+                    <div class="flex items-start space-x-2 p-2 bg-yellow-50 rounded">
+                      <span class="w-2 h-2 bg-yellow-500 rounded-full mt-1"></span>
+                      <div><strong>Level 2-3</strong>：构思辅助或编辑润色，建议致谢或方法部分说明</div>
+                    </div>
+                    <div class="flex items-start space-x-2 p-2 bg-red-50 rounded">
+                      <span class="w-2 h-2 bg-red-500 rounded-full mt-1"></span>
+                      <div><strong>Level 4-5</strong>：任务完成或全面协作，需详细披露工具、版本、提示策略</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-shield-alt mr-2 text-red-600"></i>抄袭防范与检测机制
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-red-50 p-3 rounded">
+                    <h6 class="font-semibold text-red-700 text-xs mb-2">新型抄袭风险形态</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• <strong>训练数据污染</strong>：无意识复述特定论文表述</li>
+                      <li>• <strong>幻觉引用</strong>：编造不存在的文献或错误归属</li>
+                      <li>• <strong>过度自引</strong>：AI强调特定作者或工作</li>
+                    </ul>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">多层防范机制</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 抄袭检测工具预检与来源核实</li>
+                      <li>• 强制引用验证与文献管理工具核实</li>
+                      <li>• 自引比例上限与引用多样性指标</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-4 bg-gray-100 p-3 rounded text-xs">
+                  <strong>citation-verification技能</strong>实现：格式检查→API验证→信息核实→内容比对
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-lock mr-2 text-blue-600"></i>数据隐私与敏感信息保护
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">数据分级制度</h6>
+                    <div class="space-y-2 text-xs">
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <div><strong>公开数据</strong>：可自由用于AI辅助</div>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                        <div><strong>受限数据</strong>：评估AI服务协议，本地部署优先</div>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                        <div><strong>机密数据</strong>：禁止输入第三方AI，私有MCP Server</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">MCP本地部署</h6>
+                    <p class="text-xs text-gray-600">机构内部网络部署，实现&#34;数据不出域&#34;的AI辅助</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quality Assurance -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-check-double mr-3 text-blue-600"></i>输出质量的人机验证
+            </h3>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-search mr-2 text-blue-600"></i>事实准确性核查
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">来源锚定机制</h6>
+                    <p class="text-xs text-gray-600">所有事实性陈述关联可验证来源，嵌入来源标记或MCP资源URI</p>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">交叉验证</h6>
+                    <p class="text-xs text-gray-600">关键事实的多源确认，独立渠道验证，对比分析</p>
+                  </div>
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">专家终审</h6>
+                    <p class="text-xs text-gray-600">领域专家对AI生成内容的结构化评审与质量评分</p>
+                  </div>
+                </div>
+                <div class="mt-4 bg-yellow-50 p-3 rounded text-xs">
+                  <strong>双阶段完整性验证</strong>：Stage 2.5和4.5执行100%引用、数据、主张验证
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-balance-scale mr-2 text-green-600"></i>方法适当性终审
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">核心原则</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 方法选择的理论依据明确阐述</li>
+                      <li>• 分析假设的满足程度主动检验</li>
+                      <li>• 负面结果和敏感性分析完整报告</li>
+                      <li>• 因果推断的谨慎性反复强调</li>
+                    </ul>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">专家保留职责</h6>
+                    <p class="text-xs text-gray-600">统计方法的最终选择和关键结果解释必须由研究者主导</p>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-user-check mr-2 text-orange-600"></i>作者责任认定
+                </h4>
+                <div class="space-y-3">
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">完全责任原则</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 所有作者审阅并批准最终稿件</li>
+                      <li>• 确保内容准确性和完整性</li>
+                      <li>• 回应发表后的质疑和批评</li>
+                      <li>• 更正发现的错误</li>
+                    </ul>
+                  </div>
+                  <div class="bg-red-50 p-3 rounded">
+                    <h6 class="font-semibold text-red-700 text-xs mb-2">责任分配</h6>
+                    <p class="text-xs text-gray-600">无论AI参与程度如何，人类作者对发表成果承担完全责任</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Continuous Learning -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold serif text-gray-900 mb-8">
+              <i class="fas fa-graduation-cap mr-3 text-green-600"></i>持续学习与技能更新
+            </h3>
+
+            <div class="grid lg:grid-cols-3 gap-8 mb-8">
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-newspaper mr-2 text-blue-600"></i>跟踪最新发展
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">官方文档</h6>
+                    <p class="text-xs text-gray-600 mb-1">Anthropic、OpenAI、Google的技能和MCP更新</p>
+                    <span class="text-xs text-blue-600">更新频率：每月</span>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">开源社区</h6>
+                    <p class="text-xs text-gray-600 mb-1">GitHub技能库新贡献、最佳实践</p>
+                    <span class="text-xs text-green-600">更新频率：每周</span>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">学术期刊</h6>
+                    <p class="text-xs text-gray-600 mb-1">AI辅助研究伦理指南、政策声明</p>
+                    <span class="text-xs text-orange-600">更新频率：每季度</span>
+                  </div>
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">专业会议</h6>
+                    <p class="text-xs text-gray-600 mb-1">NeurIPS、ACL、AAAI的AI4Science工作坊</p>
+                    <span class="text-xs text-purple-600">更新频率：每年</span>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-cog mr-2 text-green-600"></i>个人技能库优化
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">使用日志分析</h6>
+                    <ul class="text-xs text-gray-600 space-y-1">
+                      <li>• 识别高频使用技能</li>
+                      <li>• 发现低效环节</li>
+                      <li>• 分析失败模式</li>
+                    </ul>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">成功案例提炼</h6>
+                    <p class="text-xs text-gray-600">将有效工作流程固化为新技能，纳入个人技能库</p>
+                  </div>
+                  <div class="bg-orange-50 p-3 rounded">
+                    <h6 class="font-semibold text-orange-700 text-xs mb-2">失败教训总结</h6>
+                    <p class="text-xs text-gray-600">更新技能错误处理和边界条件，提升鲁棒性</p>
+                  </div>
+                </div>
+              </div>
+              <div class="skill-card p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-4">
+                  <i class="fas fa-users mr-2 text-purple-600"></i>社区协作改进
+                </h4>
+                <div class="space-y-4">
+                  <div class="bg-purple-50 p-3 rounded">
+                    <h6 class="font-semibold text-purple-700 text-xs mb-2">跨机构协作</h6>
+                    <p class="text-xs text-gray-600">共享领域特定技能的开发与验证</p>
+                  </div>
+                  <div class="bg-blue-50 p-3 rounded">
+                    <h6 class="font-semibold text-blue-700 text-xs mb-2">方法论研究</h6>
+                    <p class="text-xs text-gray-600">系统评估AI辅助对研究质量和效率的影响</p>
+                  </div>
+                  <div class="bg-green-50 p-3 rounded">
+                    <h6 class="font-semibold text-green-700 text-xs mb-2">教育培训</h6>
+                    <p class="text-xs text-gray-600">将AI辅助技能纳入研究生方法论课程</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="highlight-box p-6 rounded-lg">
+              <h4 class="text-xl font-semibold mb-4">
+                <i class="fas fa-lightbulb mr-2"></i>构建负责任AI辅助研究生态
+              </h4>
+              <div class="grid md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-blue-50 rounded">
+                  <i class="fas fa-eye text-2xl text-blue-600 mb-3"></i>
+                  <h6 class="font-semibold text-blue-700 text-sm mb-2">透明度</h6>
+                  <p class="text-xs text-gray-600">公开AI使用程度和方式</p>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded">
+                  <i class="fas fa-handshake text-2xl text-green-600 mb-3"></i>
+                  <h6 class="font-semibold text-green-700 text-sm mb-2">责任</h6>
+                  <p class="text-xs text-gray-600">人类作者承担最终责任</p>
+                </div>
+                <div class="text-center p-4 bg-orange-50 rounded">
+                  <i class="fas fa-balance-scale text-2xl text-orange-600 mb-3"></i>
+                  <h6 class="font-semibold text-orange-700 text-sm mb-2">公平</h6>
+                  <p class="text-xs text-gray-600">避免偏见和不平等影响</p>
+                </div>
+                <div class="text-center p-4 bg-purple-50 rounded">
+                  <i class="fas fa-shield-alt text-2xl text-purple-600 mb-3"></i>
+                  <h6 class="font-semibold text-purple-700 text-sm mb-2">安全</h6>
+                  <p class="text-xs text-gray-600">保护敏感信息和隐私</p>
+                </div>
+              </div>
+              <div class="mt-4 bg-gray-50 p-4 rounded">
+                <p class="text-sm text-gray-700">
+                  通过建立完善的伦理规范和质量保障体系，我们能够确保AI技术真正服务于学术进步，
+                  而不是成为学术不端的工具。这需要研究者、机构、出版商和技术提供商的共同努力，
+                  在享受技术便利的同时，坚守学术诚信的底线。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="bg-slate-900 text-white py-12">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8">
+          <div class="grid lg:grid-cols-3 gap-8">
+            <div>
+              <h3 class="text-xl font-bold serif mb-4">AI辅助学术写作指南</h3>
+              <p class="text-gray-300 text-sm leading-relaxed">
+                基于最新Agent Skills与MCP技术体系的全学科科研写作完整解决方案，
+                为研究者提供从构思到发表的全流程智能化支持。
+              </p>
+            </div>
+            <div>
+              <h4 class="text-lg font-semibold mb-4">核心资源</h4>
+              <ul class="space-y-2 text-sm text-gray-300">
+                <li>
+                  <a href="https://github.com/Orchestra-Research/AI-research-SKILLs" class="citation-link hover:text-white">AI Research SKILLs开源库</a>
+                </li>
+                <li>
+                  <a href="https://www.anthropic.com/news/model-context-protocol" class="citation-link hover:text-white">MCP协议官方文档</a>
+                </li>
+                <li>
+                  <a href="https://github.com/Imbad0202/academic-research-skills" class="citation-link hover:text-white">academic-research-skills项目</a>
+                </li>
+                <li>
+                  <a href="https://arxiv.org/abs/2503.01424" class="citation-link hover:text-white">AI辅助研究伦理指南</a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="text-lg font-semibold mb-4">技术支持</h4>
+              <div class="space-y-2 text-sm text-gray-300">
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-code text-blue-400"></i>
+                  <span>Agent Skills开发指南</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-network-wired text-green-400"></i>
+                  <span>MCP服务器集成</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-graduation-cap text-purple-400"></i>
+                  <span>学术伦理培训</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <i class="fas fa-users text-orange-400"></i>
+                  <span>社区协作平台</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+            <p>© 2026 AI辅助学术写作指南. 基于最新Agent Skills与MCP技术标准.</p>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+    // Initialize Mermaid
+    mermaid.initialize({ 
+        startOnLoad: true,
+        theme: 'base',
+        themeVariables: {
+            // 主要颜色配置，确保对比度
+            primaryColor: '#3b82f6',      // 蓝色 - 用于主要元素
+            primaryTextColor: '#1e293b',  // 深灰 - 文本颜色
+            primaryBorderColor: '#1e40af', // 深蓝 - 边框
+            lineColor: '#64748b',         // 中灰 - 线条
+            
+            // 次要颜色配置
+            secondaryColor: '#22c55e',    // 绿色
+            secondaryTextColor: '#1e293b',
+            secondaryBorderColor: '#166534',
+            
+            // 第三级颜色配置
+            tertiaryColor: '#f59e0b',     // 橙色
+            tertiaryTextColor: '#1e293b',
+            tertiaryBorderColor: '#92400e',
+            
+            // 背景配置
+            background: '#ffffff',        // 白色背景
+            mainBkg: '#ffffff',           // 主背景
+            secondBkg: '#f8fafc',         // 次要背景 - 浅灰
+            tertiaryBkg: '#f1f5f9',       // 第三级背景
+        
+            // 确保节点文本对比度
+            nodeTextColor: '#1e293b',     // 节点文本颜色
+        
+            // 特殊节点颜色配置
+            cScale0: '#3b82f6',           // 蓝色 - 高对比度
+            cScale1: '#22c55e',           // 绿色
+            cScale2: '#f59e0b',           // 橙色
+            cScale3: '#8b5cf6',           // 紫色
+            cScale4: '#ec4899',           // 粉色
+            cScale5: '#0ea5e9',           // 天蓝
+        
+            // 确保不同颜色的文本对比度
+            c0TextColor: '#ffffff',       // 深色背景用白色文本
+            c1TextColor: '#ffffff',
+            c2TextColor: '#ffffff',
+            c3TextColor: '#ffffff',
+            c4TextColor: '#ffffff',
+            c5TextColor: '#ffffff'
+        },
+        flowchart: {
+            useMaxWidth: false,
+            htmlLabels: true,
+            curve: 'basis',
+            padding: 20
+        },
+        sequence: {
+            useMaxWidth: false,
+            wrap: true
+        },
+        gantt: {
+            useMaxWidth: false
+        }
+    });
+
+    // Initialize Mermaid Controls for zoom and pan
+    function initializeMermaidControls() {
+        const containers = document.querySelectorAll('.mermaid-container');
+
+        containers.forEach(container => {
+        const mermaidElement = container.querySelector('.mermaid');
+        let scale = 1;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+
+        // 触摸相关状态
+        let isTouch = false;
+        let touchStartTime = 0;
+        let initialDistance = 0;
+        let initialScale = 1;
+        let isPinching = false;
+
+        // Zoom controls
+        const zoomInBtn = container.querySelector('.zoom-in');
+        const zoomOutBtn = container.querySelector('.zoom-out');
+        const resetBtn = container.querySelector('.reset-zoom');
+        const fullscreenBtn = container.querySelector('.fullscreen');
+
+        function updateTransform() {
+            mermaidElement.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+
+            if (scale > 1) {
+            container.classList.add('zoomed');
+            } else {
+            container.classList.remove('zoomed');
+            }
+
+            mermaidElement.style.cursor = isDragging ? 'grabbing' : 'grab';
+        }
+
+        if (zoomInBtn) {
+            zoomInBtn.addEventListener('click', () => {
+            scale = Math.min(scale * 1.25, 4);
+            updateTransform();
+            });
+        }
+
+        if (zoomOutBtn) {
+            zoomOutBtn.addEventListener('click', () => {
+            scale = Math.max(scale / 1.25, 0.3);
+            if (scale <= 1) {
+                translateX = 0;
+                translateY = 0;
+            }
+            updateTransform();
+            });
+        }
+
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateTransform();
+            });
+        }
+
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', () => {
+            if (container.requestFullscreen) {
+                container.requestFullscreen();
+            } else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
+            } else if (container.msRequestFullscreen) {
+                container.msRequestFullscreen();
+            }
+            });
+        }
+
+        // Mouse Events
+        mermaidElement.addEventListener('mousedown', (e) => {
+            if (isTouch) return; // 如果是触摸设备，忽略鼠标事件
+
+            isDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+            mermaidElement.style.cursor = 'grabbing';
+            updateTransform();
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging && !isTouch) {
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            updateTransform();
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging && !isTouch) {
+            isDragging = false;
+            mermaidElement.style.cursor = 'grab';
+            updateTransform();
+            }
+        });
+
+        document.addEventListener('mouseleave', () => {
+            if (isDragging && !isTouch) {
+            isDragging = false;
+            mermaidElement.style.cursor = 'grab';
+            updateTransform();
+            }
+        });
+
+        // 获取两点之间的距离
+        function getTouchDistance(touch1, touch2) {
+            return Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+            );
+        }
+
+        // Touch Events - 触摸事件处理
+        mermaidElement.addEventListener('touchstart', (e) => {
+            isTouch = true;
+            touchStartTime = Date.now();
+
+            if (e.touches.length === 1) {
+            // 单指拖动
+            isPinching = false;
+            isDragging = true;
+
+            const touch = e.touches[0];
+            startX = touch.clientX - translateX;
+            startY = touch.clientY - translateY;
+
+            } else if (e.touches.length === 2) {
+            // 双指缩放
+            isPinching = true;
+            isDragging = false;
+
+            const touch1 = e.touches[0];
+            const touch2 = e.touches[1];
+            initialDistance = getTouchDistance(touch1, touch2);
+            initialScale = scale;
+            }
+
+            e.preventDefault();
+        }, { passive: false });
+
+        mermaidElement.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1 && isDragging && !isPinching) {
+            // 单指拖动
+            const touch = e.touches[0];
+            translateX = touch.clientX - startX;
+            translateY = touch.clientY - startY;
+            updateTransform();
+
+            } else if (e.touches.length === 2 && isPinching) {
+            // 双指缩放
+            const touch1 = e.touches[0];
+            const touch2 = e.touches[1];
+            const currentDistance = getTouchDistance(touch1, touch2);
+
+            if (initialDistance > 0) {
+                const newScale = Math.min(Math.max(
+                initialScale * (currentDistance / initialDistance),
+                0.3
+                ), 4);
+                scale = newScale;
+                updateTransform();
+            }
+            }
+
+            e.preventDefault();
+        }, { passive: false });
+
+        mermaidElement.addEventListener('touchend', (e) => {
+            // 重置状态
+            if (e.touches.length === 0) {
+            isDragging = false;
+            isPinching = false;
+            initialDistance = 0;
+
+            // 延迟重置isTouch，避免鼠标事件立即触发
+            setTimeout(() => {
+                isTouch = false;
+            }, 100);
+            } else if (e.touches.length === 1 && isPinching) {
+            // 从双指变为单指，切换为拖动模式
+            isPinching = false;
+            isDragging = true;
+
+            const touch = e.touches[0];
+            startX = touch.clientX - translateX;
+            startY = touch.clientY - translateY;
+            }
+
+            updateTransform();
+        });
+
+        mermaidElement.addEventListener('touchcancel', (e) => {
+            isDragging = false;
+            isPinching = false;
+            initialDistance = 0;
+
+            setTimeout(() => {
+            isTouch = false;
+            }, 100);
+
+            updateTransform();
+        });
+
+        // Enhanced wheel zoom with better center point handling
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            const newScale = Math.min(Math.max(scale * delta, 0.3), 4);
+
+            // Adjust translation to zoom towards center
+            if (newScale !== scale) {
+            const scaleDiff = newScale / scale;
+            translateX = translateX * scaleDiff;
+            translateY = translateY * scaleDiff;
+            scale = newScale;
+
+            if (scale <= 1) {
+                translateX = 0;
+                translateY = 0;
+            }
+
+            updateTransform();
+            }
+        });
+
+        // Initialize display
+        updateTransform();
+        });
+    }
+
+    // Initialize mermaid controls after DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeMermaidControls();
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Highlight active section in TOC
+        const sections = document.querySelectorAll('section[id]');
+        const tocLinks = document.querySelectorAll('.toc-link');
+
+        function highlightActiveSection() {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('bg-blue-100', 'text-blue-800');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('bg-blue-100', 'text-blue-800');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightActiveSection);
+        highlightActiveSection(); // Initial call
+    });
+</script>
+  
+
+</body></html>

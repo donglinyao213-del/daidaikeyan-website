@@ -1,0 +1,2611 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>科研绘图工具与AI Agent技术深度研究 | 学术可视化生态演进</title>
+
+  <!-- External Dependencies -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+
+  <!-- Mermaid Configuration -->
+  <script>
+      mermaid.initialize({
+          startOnLoad: true,
+          theme: 'base',
+          themeVariables: {
+              primaryColor: '#f8f7f4',
+              primaryTextColor: '#1f2937',
+              primaryBorderColor: '#374151',
+              lineColor: '#6b7280',
+              secondaryColor: '#f1f5f9',
+              tertiaryColor: '#e2e8f0',
+              background: '#ffffff',
+              mainBkg: '#f8f7f4',
+              secondBkg: '#f1f5f9',
+              tertiaryBkg: '#e2e8f0',
+              // Enhanced contrast for different node types
+              primaryBorderColor: '#374151',
+              primaryTextColor: '#111827',
+              secondaryTextColor: '#374151',
+              tertiaryTextColor: '#4b5563',
+              // Node backgrounds with good contrast
+              cScale0: '#f8f7f4',
+              cScale1: '#f1f5f9', 
+              cScale2: '#e2e8f0',
+              cScale3: '#cbd5e1',
+              cScale4: '#94a3b8',
+              // Ensure text is readable on all backgrounds
+              cScaleLabel0: '#1f2937',
+              cScaleLabel1: '#1f2937',
+              cScaleLabel2: '#374151',
+              cScaleLabel3: '#374151',
+              cScaleLabel4: '#f8f7f4'
+          },
+          flowchart: {
+              useMaxWidth: false,
+              htmlLabels: true,
+              curve: 'basis',
+              padding: 20
+          },
+          sequence: {
+              useMaxWidth: false,
+              wrap: true
+          },
+          gantt: {
+              useMaxWidth: false
+          }
+      });
+  </script>
+
+  <style>
+      :root {
+          --primary: #1e293b;
+          --secondary: #475569;
+          --accent: #0f172a;
+          --surface: #f8f7f4;
+          --text: #0f172a;
+          --text-muted: #64748b;
+          --border: #e2e8f0;
+      }
+      
+      body {
+          font-family: 'Inter', sans-serif;
+          line-height: 1.7;
+          color: var(--text);
+          background: var(--surface);
+          overflow-x: hidden;
+      }
+      
+      .font-display {
+          font-family: 'Playfair Display', serif;
+      }
+      
+      .toc-sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 280px;
+          height: 100vh;
+          background: white;
+          border-right: 1px solid var(--border);
+          z-index: 1000;
+          overflow-y: auto;
+          padding: 2rem 1.5rem;
+      }
+      
+      .main-content {
+          margin-left: 280px;
+          min-height: 100vh;
+      }
+      
+      .toc-link {
+          transition: all 0.2s ease;
+          border-left: 2px solid transparent;
+      }
+      
+      .toc-link:hover,
+      .toc-link.active {
+          border-left-color: var(--accent);
+          background: rgba(15, 23, 42, 0.05);
+      }
+      
+      .hero-grid {
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          gap: 2rem;
+          align-items: center;
+          min-height: 60vh;
+      }
+      
+      .citation {
+          color: var(--accent);
+          text-decoration: none;
+          font-weight: 500;
+          transition: all 0.2s ease;
+      }
+      
+      .citation:hover {
+          text-decoration: underline;
+          color: var(--secondary);
+      }
+      
+      .insight-box {
+          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+          border-left: 4px solid var(--accent);
+      }
+      
+      .chart-container {
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          padding: 2rem;
+          margin: 2rem 0;
+      }
+      
+      .mermaid-container {
+          display: flex;
+          justify-content: center;
+          min-height: 300px;
+          max-height: 800px;
+          background: #ffffff;
+          border: 2px solid #e5e7eb;
+          border-radius: 12px;
+          padding: 30px;
+          margin: 30px 0;
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+          position: relative;
+          overflow: hidden;
+      }
+
+      .mermaid-container .mermaid {
+          width: 100%;
+          max-width: 100%;
+          height: 100%;
+          cursor: grab;
+          transition: transform 0.3s ease;
+          transform-origin: center center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          touch-action: none; /* 防止触摸设备上的默认行为 */
+          -webkit-user-select: none; /* 防止文本选择 */
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+      }
+
+      .mermaid-container .mermaid svg {
+          max-width: 100%;
+          height: 100%;
+          display: block;
+          margin: 0 auto;
+      }
+
+      .mermaid-container .mermaid:active {
+          cursor: grabbing;
+      }
+
+      .mermaid-container.zoomed .mermaid {
+          height: 100%;
+          width: 100%;
+          cursor: grab;
+      }
+
+      .mermaid-controls {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          display: flex;
+          gap: 10px;
+          z-index: 20;
+          background: rgba(255, 255, 255, 0.95);
+          padding: 8px;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .mermaid-control-btn {
+          background: #ffffff;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          padding: 10px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          color: #374151;
+          font-size: 14px;
+          min-width: 36px;
+          height: 36px;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .mermaid-control-btn:hover {
+          background: #f8fafc;
+          border-color: #3b82f6;
+          color: #3b82f6;
+          transform: translateY(-1px);
+      }
+
+      .mermaid-control-btn:active {
+          transform: scale(0.95);
+      }
+      
+      /* Enhanced mermaid node styles for better contrast */
+      .mermaid .node rect,
+      .mermaid .node circle,
+      .mermaid .node ellipse,
+      .mermaid .node polygon {
+          stroke-width: 2px !important;
+      }
+      
+      .mermaid .node text {
+          font-family: 'Inter', sans-serif !important;
+          font-weight: 500 !important;
+          font-size: 14px !important;
+      }
+      
+      .mermaid .edgeLabel {
+          background-color: rgba(255, 255, 255, 0.95) !important;
+          padding: 4px 8px !important;
+          border-radius: 4px !important;
+          font-family: 'Inter', sans-serif !important;
+          font-weight: 500 !important;
+      }
+      
+      @media (max-width: 1024px) {
+          .toc-sidebar {
+              transform: translateX(-100%);
+              transition: transform 0.3s ease;
+          }
+          
+          .toc-sidebar.open {
+              transform: translateX(0);
+          }
+          
+          .main-content {
+              margin-left: 0;
+          }
+          
+          .hero-grid {
+              grid-template-columns: 1fr;
+          }
+
+          /* Responsive mermaid controls */
+          .mermaid-control-btn:not(.reset-zoom) {
+              display: none;
+          }
+          .mermaid-controls {
+              top: auto;
+              bottom: 15px;
+              right: 15px;
+          }
+      }
+
+      /* Mobile-specific styles */
+      @media (max-width: 768px) {
+          .px-8 {
+              padding-left: 1rem !important;
+              padding-right: 1rem !important;
+          }
+
+          .hero-grid h1 {
+              font-size: 2.25rem;
+              line-height: 2.5rem;
+          }
+
+          .hero-grid h1 span {
+              font-size: 1.5rem;
+          }
+
+          .hero-grid p {
+              font-size: 1rem;
+          }
+
+          .grid-cols-3, .grid-cols-2, .lg\:grid-cols-3, .lg\:grid-cols-2 {
+              grid-template-columns: 1fr;
+          }
+
+          .chart-container {
+              padding: 1rem;
+          }
+
+          .mermaid-container {
+              padding: 15px;
+          }
+      }
+  </style>
+<base target="_blank">
+</head>
+
+<body>
+  <!-- Table of Contents Sidebar -->
+  <nav class="toc-sidebar">
+    <div class="mb-8">
+      <h3 class="font-display text-lg font-bold text-gray-900 mb-4">目录导航</h3>
+      <div class="space-y-1">
+        <a class="toc-link block px-3 py-2 text-sm rounded-lg" href="#introduction">引言</a>
+        <a class="toc-link block px-3 py-2 text-sm rounded-lg" href="#visualization-systems">数据可视化工具体系</a>
+        <a class="toc-link block px-3 py-2 text-sm rounded-lg" href="#academic-illustrations">学术插图制作系统</a>
+        <a class="toc-link block px-3 py-2 text-sm rounded-lg" href="#domain-specific">特定领域专业化绘图</a>
+        <a class="toc-link block px-3 py-2 text-sm rounded-lg" href="#automation">自动化与编程驱动绘图</a>
+        <a class="toc-link block px-3 py-2 text-sm rounded-lg" href="#collaboration">协作与分享平台生态</a>
+        <a class="toc-link block px-3 py-2 text-sm rounded-lg" href="#ai-agents">AI Agent与MCP智能体</a>
+        <a class="toc-link block px-3 py-2 text-sm rounded-lg" href="#decision-framework">工具选型决策框架</a>
+      </div>
+    </div>
+
+    <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+      <h4 class="font-semibold text-sm text-gray-900 mb-2">核心洞察</h4>
+      <p class="text-xs text-gray-600">科研绘图正经历从传统桌面软件向AI驱动智能体的范式转移，MCP协议成为连接各层的关键基础设施。</p>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-br from-slate-50 to-gray-100 py-16 px-8">
+      <div class="max-w-7xl mx-auto">
+        <div class="hero-grid">
+          <div class="space-y-8">
+            <div class="space-y-4">
+              <h1 class="font-display text-5xl font-bold text-gray-900 leading-tight">
+                科研绘图工具与<span class="italic text-slate-700">AI Agent</span>技术深度研究
+              </h1>
+              <p class="text-xl text-gray-600 leading-relaxed">
+                从传统软件到MCP智能体生态的演进：探索学术可视化的三层架构与未来趋势
+              </p>
+            </div>
+
+            <!-- Key Highlights -->
+            <div class="grid grid-cols-3 gap-4">
+              <div class="bg-white p-4 rounded-lg shadow-sm">
+                <div class="text-2xl font-bold text-slate-800">3层架构</div>
+                <div class="text-sm text-gray-600">基础层·平台层·智能层</div>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow-sm">
+                <div class="text-2xl font-bold text-slate-800">72.7%</div>
+                <div class="text-sm text-gray-600">AI Agent盲评胜率</div>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow-sm">
+                <div class="text-2xl font-bold text-slate-800">$0.05</div>
+                <div class="text-sm text-gray-600">单张配图API成本</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative">
+            <img alt="AI辅助科研绘图" class="rounded-xl shadow-lg w-full h-80 object-cover" src="https://kimi-web-img.moonshot.cn/img/picx.zhimg.com/9c0b88a9a52cdd4357ee1fe636c477b45f5714de.jpg" size="medium" aspect="wide" query="人工智能科研绘图" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Introduction -->
+    <section class="py-16 px-8" id="introduction">
+      <div class="max-w-4xl mx-auto">
+        <header class="mb-12">
+          <h2 class="font-display text-3xl font-bold text-gray-900 mb-4">引言</h2>
+          <div class="w-24 h-1 bg-slate-800"></div>
+        </header>
+
+        <div class="prose prose-lg max-w-none">
+          <div class="insight-box p-8 rounded-lg mb-8">
+            <p class="text-lg leading-relaxed text-gray-800">
+              科研绘图工具正经历从传统桌面软件向AI驱动智能体的范式转移。当前生态呈现三层架构：<strong>基础层</strong>（Python/R编程、Origin等商业软件）保障精确性与可控性；<strong>平台层</strong>（BioRender、Hiplot等）降低专业门槛；<strong>智能层</strong>（PaperBanana等多智能体系统、MCP协议）实现自动化与协作。
+            </p>
+            <p class="text-lg leading-relaxed text-gray-800 mt-4">
+              核心趋势是<strong>&#34;人机协同&#34;</strong>——AI处理重复性视觉生成，人类专注科学判断与创意决策，MCP协议正成为连接各层的关键基础设施。
+            </p>
+          </div>
+
+          <!-- Architecture Diagram -->
+          <div class="mermaid-container">
+            <div class="mermaid-controls">
+              <button class="mermaid-control-btn zoom-in" title="放大">
+                <i class="fas fa-search-plus"></i>
+              </button>
+              <button class="mermaid-control-btn zoom-out" title="缩小">
+                <i class="fas fa-search-minus"></i>
+              </button>
+              <button class="mermaid-control-btn reset-zoom" title="重置">
+                <i class="fas fa-expand-arrows-alt"></i>
+              </button>
+              <button class="mermaid-control-btn fullscreen" title="全屏查看">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+            <div class="mermaid" id="architecture-diagram">
+              graph TD
+              A[&#34;科研绘图生态系统&#34;] --&gt; B[&#34;基础层&#34;]
+              A --&gt; C[&#34;平台层&#34;]
+              A --&gt; D[&#34;智能层&#34;]
+
+              B --&gt; B1[&#34;Python可视化栈
+              <br/>Matplotlib/Seaborn/Plotly&#34;]
+              B --&gt; B2[&#34;R语言生态
+              <br/>ggplot2&#34;]
+              B --&gt; B3[&#34;商业软件
+              <br/>Origin/GraphPad&#34;]
+
+              C --&gt; C1[&#34;Web交互平台
+              <br/>Hiplot/ChiPlot&#34;]
+              C --&gt; C2[&#34;专业插图系统
+              <br/>BioRender/PicDoc&#34;]
+              C --&gt; C3[&#34;矢量设计工具
+              <br/>Illustrator/Inkscape&#34;]
+
+              D --&gt; D1[&#34;多智能体系统
+              <br/>PaperBanana&#34;]
+              D --&gt; D2[&#34;MCP协议
+              <br/>标准化接口&#34;]
+              D --&gt; D3[&#34;AI Agent技能
+              <br/>自动化工作流&#34;]
+
+              style A fill:#1e293b,color:#ffffff,stroke:#475569,stroke-width:3px
+              style B fill:#f1f5f9,color:#1e293b,stroke:#64748b,stroke-width:2px
+              style C fill:#e2e8f0,color:#1e293b,stroke:#64748b,stroke-width:2px
+              style D fill:#0f172a,color:#ffffff,stroke:#475569,stroke-width:2px
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Visualization Systems -->
+    <section class="py-16 px-8 bg-white" id="visualization-systems">
+      <div class="max-w-6xl mx-auto">
+        <header class="mb-12">
+          <h2 class="font-display text-3xl font-bold text-gray-900 mb-4">数据可视化工具体系</h2>
+          <div class="w-24 h-1 bg-slate-800"></div>
+        </header>
+
+        <!-- Programming Ecosystems -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">编程语言生态</h3>
+
+          <!-- Python Stack -->
+          <div class="mb-12">
+            <h4 class="text-xl font-semibold text-gray-800 mb-6">Python可视化栈</h4>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <h5 class="font-semibold text-gray-900 mb-3">Matplotlib</h5>
+                <p class="text-sm text-gray-600 mb-4">底层绘图引擎，提供对二维图表的精细控制能力，支持出版级质量输出。</p>
+                <div class="text-xs text-gray-500">
+                  <a class="citation" href="https://www.yanfajia.com/news/5275.html" target="_blank">[585]</a>
+                  <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <h5 class="font-semibold text-gray-900 mb-3">Seaborn</h5>
+                <p class="text-sm text-gray-600 mb-4">高级统计可视化，与Pandas深度整合，一键生成分组小提琴图等复杂统计图形。</p>
+                <div class="text-xs text-gray-500">
+                  <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[551]</a>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <h5 class="font-semibold text-gray-900 mb-3">Plotly</h5>
+                <p class="text-sm text-gray-600 mb-4">交互式Web可视化，支持百万级数据点的流畅交互，语言无关性设计。</p>
+                <div class="text-xs text-gray-500">
+                  <a class="citation" href="https://www.biaodianfu.com/plotly.html" target="_blank">[622]</a>
+                  <a class="citation" href="https://juejin.cn/post/6844903424270532616" target="_blank">[625]</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="insight-box p-6 rounded-lg">
+              <p class="text-gray-800">
+                <strong>核心优势：</strong>Python可视化栈的竞争力在于<strong>可重复性（Reproducibility）</strong>——代码即文档，完整的绘图过程被记录在脚本中，配合版本控制系统和Jupyter Notebook环境，形成从数据探索到结果发布的透明工作流。
+                <a class="citation ml-2" href="https://www.yanfajia.com/news/5275.html" target="_blank">[620]</a>
+              </p>
+            </div>
+          </div>
+
+          <!-- R Ecosystem -->
+          <div class="mb-12">
+            <h4 class="text-xl font-semibold text-gray-800 mb-6">R语言可视化生态</h4>
+
+            <div class="bg-gray-50 p-8 rounded-lg">
+              <h5 class="font-semibold text-gray-900 mb-4">ggplot2：图形语法理论</h5>
+              <p class="text-gray-700 mb-4">
+                ggplot2基于Leland Wilkinson的《图形语法》理论构建，建立了<strong>分层化、声明式的绘图系统</strong>，将图表解构为数据、映射、几何对象、统计变换、坐标系、分面、主题七个独立层。
+                <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+              </p>
+
+              <div class="grid grid-cols-2 gap-4 mt-6">
+                <div>
+                  <h6 class="font-medium text-gray-900 mb-2">扩展生态</h6>
+                  <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• ggpubr：出版级主题与统计标注</li>
+                    <li>• ggrepel：标签重叠解决方案</li>
+                    <li>• ggridges：峰峦图实现</li>
+                    <li>• gganimate：动态可视化支持</li>
+                  </ul>
+                </div>
+                <div>
+                  <h6 class="font-medium text-gray-900 mb-2">统计专业化</h6>
+                  <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• 箱线图缺口显示显著性</li>
+                    <li>• QQ图正态性检验参考线</li>
+                    <li>• 残差图尺度-位置诊断</li>
+                    <li>• 生存分析专用可视化</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Commercial Desktop Software -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">商业桌面软件</h3>
+
+          <div class="mb-12">
+            <h4 class="text-xl font-semibold text-gray-800 mb-6">Origin/OriginPro</h4>
+
+            <div class="bg-white border rounded-lg overflow-hidden mb-8">
+              <div class="grid grid-cols-3 gap-0">
+                <div class="p-6 border-r">
+                  <h5 class="font-semibold text-gray-900 mb-3">曲线拟合</h5>
+                  <p class="text-sm text-gray-600 mb-4">200+内置函数与自定义方程</p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 线性/多项式/非线性最小二乘</li>
+                    <li>• 全局拟合与参数共享</li>
+                    <li>• 参数置信区间输出</li>
+                  </ul>
+                </div>
+                <div class="p-6 border-r">
+                  <h5 class="font-semibold text-gray-900 mb-3">峰值分析</h5>
+                  <p class="text-sm text-gray-600 mb-4">色谱/光谱数据专用模块</p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 自动峰检测与基线校正</li>
+                    <li>• 多峰解卷积</li>
+                    <li>• 面积积分与定量分析</li>
+                  </ul>
+                </div>
+                <div class="p-6">
+                  <h5 class="font-semibold text-gray-900 mb-3">信号处理</h5>
+                  <p class="text-sm text-gray-600 mb-4">FFT与小波变换</p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 快速傅里叶变换</li>
+                    <li>• 小波去噪与滤波</li>
+                    <li>• 相关分析与卷积</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-sm text-gray-600">
+              <a class="citation" href="https://cloud.tencent.com/developer/article/2648779" target="_blank">[637]</a>
+              <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Web Interactive Platforms -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">Web交互式平台</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <h4 class="text-xl font-semibold text-gray-800 mb-6">零代码在线工具</h4>
+
+              <div class="space-y-6">
+                <div class="bg-gray-50 p-6 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">Hiplot（华为开发）</h5>
+                  <p class="text-sm text-gray-600 mb-4">生物医学数据快速可视化，200+图表类型，强化医学统计模块。</p>
+                  <div class="text-xs text-gray-500">
+                    <a class="citation" href="https://cloud.tencent.com/developer/article/2649531?policyId=1004" target="_blank">[635]</a>
+                    <a class="citation" href="https://developer.aliyun.com/article/1580026" target="_blank">[632]</a>
+                  </div>
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">ChiPlot</h5>
+                  <p class="text-sm text-gray-600 mb-4">国产零代码可视化平台，支持14种核心图表类型，配套视频教程体系。</p>
+                  <div class="text-xs text-gray-500">
+                    <a class="citation" href="https://developer.aliyun.com/article/1580026" target="_blank">[632]</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <img alt="科研数据可视化平台的用户界面" class="w-full h-64 object-cover rounded-lg shadow-sm" src="https://kimi-web-img.moonshot.cn/img/picx.zhimg.com/701bac82913fcc04957a8bf81e7db983cf1ee2f6.jpg" size="medium" aspect="wide" style="photo" query="科研数据可视化平台界面" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Academic Illustrations -->
+    <section class="py-16 px-8" id="academic-illustrations">
+      <div class="max-w-6xl mx-auto">
+        <header class="mb-12">
+          <h2 class="font-display text-3xl font-bold text-gray-900 mb-4">学术插图制作系统</h2>
+          <div class="w-24 h-1 bg-slate-800"></div>
+        </header>
+
+        <!-- Vector Graphics Tools -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">矢量图形设计工具</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white p-8 rounded-lg border">
+              <h4 class="text-xl font-semibold text-gray-900 mb-4">Adobe Illustrator</h4>
+              <p class="text-gray-700 mb-6">
+                科研配图精修领域的<strong>&#34;终极工具&#34;</strong>，核心优势在于矢量图形的无限缩放精度与出版工作流的完整性。科研论文印刷要求通常为300dpi以上分辨率，而矢量图通过数学曲线描述图形元素，可在任意尺度保持边缘锐利。
+                <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+              </p>
+
+              <div class="space-y-4">
+                <div>
+                  <h5 class="font-medium text-gray-900 mb-2">核心功能</h5>
+                  <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• 钢笔工具：精确的贝塞尔曲线控制</li>
+                    <li>• 路径查找器：布尔运算构建复杂形状</li>
+                    <li>• 渐变网格：模拟三维立体感</li>
+                    <li>• 色板工具：色彩管理与一致性</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-medium text-gray-900 mb-2">典型工作流</h5>
+                  <p class="text-sm text-gray-600">
+                    数据工具生成基础图 → Illustrator精修组合：统一字体、对齐坐标轴、调整配色、添加标注
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <img alt="Adobe Illustrator编辑科研图表的界面" class="w-full h-80 object-cover rounded-lg shadow-sm" src="https://kimi-web-img.moonshot.cn/img/pica.zhimg.com/2876dc7dbdf72613beea7d8269472a28676de869.jpg" size="medium" aspect="wide" style="photo" query="Adobe Illustrator科研图表编辑界面" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Biomedical Illustration Platforms -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">生物医学专业插图平台</h3>
+
+          <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-lg mb-8">
+            <h4 class="text-xl font-semibold text-gray-900 mb-6">BioRender：行业标准地位</h4>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              <div class="text-center">
+                <div class="text-3xl font-bold text-blue-600 mb-2">90%+</div>
+                <div class="text-sm text-gray-600">期刊接受度</div>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl font-bold text-blue-600 mb-2">50,000+</div>
+                <div class="text-sm text-gray-600">专业图标</div>
+              </div>
+              <div class="text-center">
+                <div class="text-3xl font-bold text-blue-600 mb-2">30+</div>
+                <div class="text-sm text-gray-600">细分领域</div>
+              </div>
+            </div>
+
+            <p class="text-gray-700 mb-4">
+              BioRender在生命科学领域建立了<strong>&#34;行业标准&#34;</strong>地位，被Cell、Nature、Science等顶刊官方推荐。其核心资产包括超过5万个经过科学验证的专业图标，涵盖细胞膜结构、病毒颗粒、细胞器、实验器材等。
+              <a class="citation" href="https://www.picdoc.cn/blog/research-drawing-tools.html" target="_blank">[636]</a>
+              <a class="citation" href="https://juejin.cn/post/7618764794955792447" target="_blank">[646]</a>
+            </p>
+
+            <div class="bg-white p-4 rounded-lg">
+              <h5 class="font-medium text-gray-900 mb-2">核心优势</h5>
+              <ul class="text-sm text-gray-600 space-y-1">
+                <li>• 专家审核图标，科学准确性保障</li>
+                <li>• 拖拽式模块化操作界面</li>
+                <li>• 顶刊模板系统与团队协作功能</li>
+                <li>• 商业使用授权，版权合规保障</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Chinese AI Solutions -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-gray-50 p-6 rounded-lg">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4">PicDoc：国产AI解决方案</h4>
+              <p class="text-sm text-gray-600 mb-4">
+                核心定位<strong>&#34;AI文本转视觉，真正零门槛&#34;</strong>，采用生成式AI架构，支持文字描述、PDF上传、模板选择三种输入方式。
+                <a class="citation" href="https://juejin.cn/post/7618764794955792447" target="_blank">[646]</a>
+              </p>
+
+              <div class="space-y-3">
+                <div>
+                  <h6 class="font-medium text-gray-900 text-sm">核心能力</h6>
+                  <ul class="text-xs text-gray-600 mt-1 space-y-1">
+                    <li>• 信号通路图自动布局</li>
+                    <li>• 细胞结构3D/2D渲染</li>
+                    <li>• 动物实验流程标准化</li>
+                    <li>• 数据可视化自动选择</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h6 class="font-medium text-gray-900 text-sm">差异化优势</h6>
+                  <ul class="text-xs text-gray-600 mt-1 space-y-1">
+                    <li>• 中文语义理解深度优化</li>
+                    <li>• 访问便捷性与数据安全</li>
+                    <li>• 绘图效率提升6倍以上</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg">
+              <h4 class="text-lg font-semibold text-gray-900 mb-4">BioGDP：素材库+AI混合模式</h4>
+              <p class="text-sm text-gray-600 mb-4">
+                拥有<strong>10000+原创手绘素材</strong>和<strong>200+顶刊模板</strong>，覆盖各类科研插图需求，官方提供版权授权文件。
+                <a class="citation" href="https://cloud.tencent.com/developer/article/2645272?policyId=1003" target="_blank">[647]</a>
+              </p>
+
+              <div class="space-y-3">
+                <div>
+                  <h6 class="font-medium text-gray-900 text-sm">功能特色</h6>
+                  <ul class="text-xs text-gray-600 mt-1 space-y-1">
+                    <li>• 顶刊级审美与极简中文界面</li>
+                    <li>• 官方版权授权文件</li>
+                    <li>• 功能直观易上手</li>
+                    <li>• 解决&#34;从零开始画图&#34;痛点</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Domain-Specific Specialization -->
+    <section class="py-16 px-8 bg-white" id="domain-specific">
+      <div class="max-w-6xl mx-auto">
+        <header class="mb-12">
+          <h2 class="font-display text-3xl font-bold text-gray-900 mb-4">特定领域专业化绘图</h2>
+          <div class="w-24 h-1 bg-slate-800"></div>
+        </header>
+
+        <!-- Biomedical &amp; Life Sciences -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">生物医学与生命科学</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <div class="bg-blue-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-4">GraphPad Prism：统计+绘图黄金标准</h4>
+              <p class="text-gray-700 mb-6">
+                在生物医学领域确立了<strong>&#34;统计+绘图&#34;无缝衔接</strong>的地位，PubMed大量高分文章采用其生成图表。用户直接导入原始数据，即可完成t检验、ANOVA、非线性回归等计算，并自动生成符合国际期刊规范的图表。
+                <a class="citation" href="https://cloud.tencent.com/developer/article/2648779" target="_blank">[637]</a>
+              </p>
+
+              <div class="bg-white p-4 rounded-lg">
+                <h5 class="font-medium text-gray-900 mb-2">核心特点</h5>
+                <ul class="text-sm text-gray-600 space-y-1">
+                  <li>• 向导式界面降低分析错误风险</li>
+                  <li>• 自动标注统计结果（P值、置信区间）</li>
+                  <li>• 针对实验类型优化的数据表结构</li>
+                  <li>• &#34;Magic&#34;功能批量应用分析流程</li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <img alt="GraphPad Prism软件进行生物医学统计分析" class="w-full h-64 object-cover rounded-lg shadow-sm mb-6" src="https://kimi-web-img.moonshot.cn/img/www.xmfh.com.cn/3050ae92e462cccf7452c0fda65c8832ce037e8e.jpg" size="medium" aspect="wide" style="photo" query="GraphPad Prism 生物医学统计" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <h5 class="font-semibold text-gray-900 mb-3">分子与结构可视化</h5>
+                <ul class="text-sm text-gray-600 space-y-2">
+                  <li><strong>ChemDraw：</strong>化学结构绘制的行业标准，支持IUPAC名称自动生成结构</li>
+                  <li><strong>PyMOL：</strong>生物大分子3D结构可视化，支持PDB格式与分子表面渲染</li>
+                  <li><strong>ChimeraX：</strong>VR模式沉浸式结构探索，分子动力学轨迹动画</li>
+                </ul>
+                <div class="text-xs text-gray-500 mt-3">
+                  <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Physics, Chemistry &amp; Engineering -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">物理、化学与工程</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-green-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">复杂数据处理</h4>
+
+              <div class="space-y-6">
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">Origin优势</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    海量数据的批量处理能力与专业算法深度，支持各类仪器数据格式（XRD、XPS、Raman、FTIR等）。
+                    <a class="citation" href="https://cloud.tencent.com/developer/article/2648779" target="_blank">[637]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 批处理模板自动化流水线</li>
+                    <li>• 多峰叠加与全局拟合</li>
+                    <li>• 基线校正与参数提取</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">MATLAB生态</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    矩阵运算原生支持与完整工具箱生态，Simulink动态系统建模，DeepMat R2026整合大语言模型。
+                    <a class="citation" href="https://cloud.tencent.com/developer/article/2648779" target="_blank">[637]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 微分方程求解与优化控制</li>
+                    <li>• 实时数据采集与处理</li>
+                    <li>• 自然语言代码生成</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-purple-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">3D科学可视化</h4>
+
+              <div class="space-y-6">
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">ParaView</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    开源多平台数据可视化应用，专为大规模科学数据集设计，分布式并行架构处理十亿级网格单元。
+                    <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 体绘制与切片提取</li>
+                    <li>• 等值面与流线追踪</li>
+                    <li>• Python脚本自定义算法</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">WebGL技术</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    Three.js、Babylon.js实现浏览器中的交互式3D可视化，无需插件安装。
+                    <a class="citation" href="https://mdnice.com/writing/1ece5c291ecc4790a6e6f0dcc5105147" target="_blank">[642]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 分子结构旋转缩放</li>
+                    <li>• 地形数据飞行浏览</li>
+                    <li>• 气象场时序动画</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mathematics &amp; Theoretical CS -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">数学与理论计算机</h3>
+
+          <div class="bg-gray-50 p-8 rounded-lg">
+            <h4 class="text-xl font-semibold text-gray-900 mb-6">精确排版系统</h4>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <h5 class="font-semibold text-gray-900 mb-4">TikZ/PGF</h5>
+                <p class="text-gray-700 mb-4">
+                  LaTeX的矢量图形宏包，实现<strong>代码驱动的高质量图形生成</strong>，与LaTeX数学公式无缝集成，确保与正文公式的字体与样式一致性。
+                  <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+                </p>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h6 class="font-medium text-gray-900 mb-2">适用场景</h6>
+                  <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• 几何图形与函数图像</li>
+                    <li>• 算法流程图与复杂度标注</li>
+                    <li>• 自动机与形式语言</li>
+                    <li>• 组合结构与图论层次布局</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h5 class="font-semibold text-gray-900 mb-4">证明与逻辑可视化</h5>
+                <p class="text-gray-700 mb-4">
+                  树形证明、类型推导树、范畴论图表等专业需求的规范排版，对<strong>符号精确性与布局规范性</strong>要求远超视觉美观性。
+                </p>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h6 class="font-medium text-gray-900 mb-2">专业宏包</h6>
+                  <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• bussproofs：相继式演算</li>
+                    <li>• ebproof：自然演绎</li>
+                    <li>• tikz-cd：交换图与函子图</li>
+                    <li>• xypic：范畴图表</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Automation &amp; Programming -->
+    <section class="py-16 px-8" id="automation">
+      <div class="max-w-6xl mx-auto">
+        <header class="mb-12">
+          <h2 class="font-display text-3xl font-bold text-gray-900 mb-4">自动化与编程驱动绘图</h2>
+          <div class="w-24 h-1 bg-slate-800"></div>
+        </header>
+
+        <!-- Scripting Workflows -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">脚本化工作流</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-blue-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-4">可重复研究原则</h4>
+              <p class="text-gray-700 mb-6">
+                现代科研的<strong>可重复性（Reproducibility）</strong>要求研究成果的完整复现能力，包括数据、代码、环境、文档的全要素开放。<strong>代码即文档（Code as Documentation）</strong>是实现这一目标的核心策略。
+                <a class="citation" href="https://www.yanfajia.com/news/5275.html" target="_blank">[620]</a>
+              </p>
+
+              <div class="bg-white p-4 rounded-lg">
+                <h5 class="font-medium text-gray-900 mb-3">核心实践</h5>
+                <ul class="text-sm text-gray-600 space-y-2">
+                  <li>• <strong>Jupyter Notebook：</strong>代码、结果、说明整合</li>
+                  <li>• <strong>Binder/Colab：</strong>降低共享门槛</li>
+                  <li>• <strong>参数外部化：</strong>配置而非硬编码</li>
+                  <li>• <strong>环境依赖明确：</strong>requirements.txt</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="bg-green-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-4">批量与参数化生成</h4>
+              <p class="text-gray-700 mb-6">
+                编程驱动工作流的典型优势在于<strong>多条件实验的批量图表输出</strong>。通过循环结构自动生成对应分析图表，并统一应用样式主题。
+                <a class="citation" href="https://www.yanfajia.com/news/5275.html" target="_blank">[620]</a>
+              </p>
+
+              <div class="bg-white p-4 rounded-lg">
+                <h5 class="font-medium text-gray-900 mb-3">技术实现</h5>
+                <ul class="text-sm text-gray-600 space-y-2">
+                  <li>• <strong>主题一致性：</strong>Matplotlib rcParams、Seaborn set_style</li>
+                  <li>• <strong>参数化设计：</strong>关键参数调整与探索</li>
+                  <li>• <strong>批量处理：</strong>多数据集自动应用分析流程</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Workflow Comparison Diagram -->
+          <div class="mermaid-container">
+            <div class="mermaid-controls">
+              <button class="mermaid-control-btn zoom-in" title="放大">
+                <i class="fas fa-search-plus"></i>
+              </button>
+              <button class="mermaid-control-btn zoom-out" title="缩小">
+                <i class="fas fa-search-minus"></i>
+              </button>
+              <button class="mermaid-control-btn reset-zoom" title="重置">
+                <i class="fas fa-expand-arrows-alt"></i>
+              </button>
+              <button class="mermaid-control-btn fullscreen" title="全屏查看">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+            <div class="mermaid" id="workflow-diagram">
+              flowchart LR
+              A[&#34;原始数据&#34;] --&gt; B{&#34;选择工作流&#34;}
+
+              B --&gt; C[&#34;传统GUI软件&#34;]
+              B --&gt; D[&#34;编程驱动工作流&#34;]
+
+              C --&gt; C1[&#34;点击操作&#34;]
+              C --&gt; C2[&#34;手动调整&#34;]
+              C --&gt; C3[&#34;单图表输出&#34;]
+              C --&gt; C4[&#34;重复劳动&#34;]
+
+              D --&gt; D1[&#34;代码记录&#34;]
+              D --&gt; D2[&#34;参数化配置&#34;]
+              D --&gt; D3[&#34;批量生成&#34;]
+              D --&gt; D4[&#34;版本控制&#34;]
+
+              C1 --&gt; E[&#34;结果不可复现&#34;]
+              C2 --&gt; E
+              C3 --&gt; E
+              C4 --&gt; E
+
+              D1 --&gt; F[&#34;可重复研究&#34;]
+              D2 --&gt; F
+              D3 --&gt; F
+              D4 --&gt; F
+
+              E --&gt; G[&#34;效率低下&#34;]
+              F --&gt; H[&#34;高效协作&#34;]
+
+              style A fill:#f8fafc,stroke:#64748b,stroke-width:2px
+              style B fill:#e2e8f0,stroke:#475569,stroke-width:2px
+              style C fill:#fef2f2,stroke:#dc2626,stroke-width:2px
+              style D fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+              style E fill:#fef2f2,stroke:#dc2626,stroke-width:2px
+              style F fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+              style G fill:#fef2f2,stroke:#dc2626,stroke-width:2px
+              style H fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+            </div>
+          </div>
+        </div>
+
+        <!-- API &amp; Automation Integration -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">API与自动化集成</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white border rounded-lg p-8">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">编程接口调用</h4>
+
+              <div class="space-y-6">
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">RESTful API集成</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    实时数据获取与可视化成为可能：气象数据、金融数据、生物医学数据库均可通过Python requests库访问。
+                    <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• OpenWeatherMap、ERA5气象数据</li>
+                    <li>• UniProt、PubChem生物医学数据</li>
+                    <li>• Alpha Vantage、Quandl金融数据</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">数据库直连</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    SQLAlchemy、psycopg2、pymongo等驱动支持大规模数据查询聚合与增量更新。
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 关系型数据库：PostgreSQL、MySQL</li>
+                    <li>• NoSQL数据库：MongoDB、Cassandra</li>
+                    <li>• 图数据库：Neo4j、ArangoDB</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white border rounded-lg p-8">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">CI/CD与自动化报告</h4>
+
+              <div class="space-y-6">
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">持续集成理念</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    GitHub Actions/GitLab CI配置定时任务，触发数据更新、分析重跑、图表重生成、报告编译的全流程。
+                    <a class="citation" href="https://help.apiyi.com/paperbanana-scientific-illustration-guide.html" target="_blank">[352]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 定时任务（cron）自动触发</li>
+                    <li>• 版本语义化管理</li>
+                    <li>• 变更日志自动生成</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">图表版本管理</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    语义化版本（Semantic Versioning）实现：数据或分析方法更新时自动递增版本号。
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 主版本：重大算法变更</li>
+                    <li>• 次版本：数据集更新</li>
+                    <li>• 修订版：bug修复</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Collaboration Platforms -->
+    <section class="py-16 px-8 bg-white" id="collaboration">
+      <div class="max-w-6xl mx-auto">
+        <header class="mb-12">
+          <h2 class="font-display text-3xl font-bold text-gray-900 mb-4">协作与分享平台生态</h2>
+          <div class="w-24 h-1 bg-slate-800"></div>
+        </header>
+
+        <!-- Team Collaboration -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">团队协作功能</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-gray-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">实时协同编辑</h4>
+
+              <div class="space-y-6">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">MedPeer（国产平台）</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    创新推出协同绘图功能，支持多人共同进行绘图与头脑风暴，提供10万+矢量图标素材。
+                    <a class="citation" href="https://developer.aliyun.com/article/1580026" target="_blank">[632]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 实时同步引擎与编辑锁定</li>
+                    <li>• 评论批注系统</li>
+                    <li>• 系统图标版权局备案</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">BioRender（国际领先）</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    团队协作功能处于领先地位：角色分配、版本历史、实时同步。
+                    <a class="citation" href="https://juejin.cn/post/7618764794955792447" target="_blank">[646]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 查看/编辑/管理员角色分配</li>
+                    <li>• 版本历史回溯与时间旅行</li>
+                    <li>• 分布式团队实时协作</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">项目管理集成</h4>
+
+              <div class="space-y-6">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">板栗看板</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    任务可视化与科研项目管理结合，支持看板视图、甘特图、表格视图等多种展示方式。
+                    <a class="citation" href="https://bbs.huaweicloud.com/blogs/442309" target="_blank">[633]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 实验进度与论文写作状态跟踪</li>
+                    <li>• 时间线规划与里程碑管理</li>
+                    <li>• 与Slack、飞书等IM工具集成</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">专业项目管理工具</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    针对不同规模和复杂度的科研项目提供专业支持。
+                    <a class="citation" href="https://bbs.huaweicloud.com/blogs/442309" target="_blank">[394]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• Microsoft Project：资源整合与时间规划</li>
+                    <li>• ClickUp/Wrike：跨团队协作</li>
+                    <li>• Notion：模块化知识库工具</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Collaboration Tools Comparison -->
+          <div class="chart-container">
+            <h4 class="text-xl font-semibold text-gray-900 mb-6">团队协作工具对比</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b">
+                    <th class="text-left py-3 px-4 font-semibold">工具</th>
+                    <th class="text-left py-3 px-4 font-semibold">核心功能</th>
+                    <th class="text-left py-3 px-4 font-semibold">最佳团队规模</th>
+                    <th class="text-left py-3 px-4 font-semibold">学习曲线</th>
+                    <th class="text-left py-3 px-4 font-semibold">成本结构</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-600">
+                  <tr class="border-b">
+                    <td class="py-3 px-4 font-medium">板栗看板</td>
+                    <td class="py-3 px-4">任务可视化、实时同步</td>
+                    <td class="py-3 px-4">小型团队（&lt;10人）</td>
+                    <td class="py-3 px-4">低</td>
+                    <td class="py-3 px-4">免费/低价</td>
+                  </tr>
+                  <tr class="border-b">
+                    <td class="py-3 px-4 font-medium">BioRender</td>
+                    <td class="py-3 px-4">协同绘图、版本控制、权限管理</td>
+                    <td class="py-3 px-4">课题组级（10-50人）</td>
+                    <td class="py-3 px-4">中</td>
+                    <td class="py-3 px-4">订阅制</td>
+                  </tr>
+                  <tr class="border-b">
+                    <td class="py-3 px-4 font-medium">Microsoft Project</td>
+                    <td class="py-3 px-4">资源规划、甘特图、关键路径</td>
+                    <td class="py-3 px-4">大型项目（&gt;50人）</td>
+                    <td class="py-3 px-4">高</td>
+                    <td class="py-3 px-4">商业授权</td>
+                  </tr>
+                  <tr class="border-b">
+                    <td class="py-3 px-4 font-medium">Notion</td>
+                    <td class="py-3 px-4">知识库、文档协作、数据库</td>
+                    <td class="py-3 px-4">灵活</td>
+                    <td class="py-3 px-4">中</td>
+                    <td class="py-3 px-4">免费/团队版</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-4 font-medium">ClickUp/Wrike</td>
+                    <td class="py-3 px-4">多视图任务管理、自动化工作流</td>
+                    <td class="py-3 px-4">中大型团队</td>
+                    <td class="py-3 px-4">中高</td>
+                    <td class="py-3 px-4">订阅制</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-sm text-gray-500 mt-4">
+              <a class="citation" href="https://bbs.huaweicloud.com/blogs/442309" target="_blank">[633]</a>
+              <a class="citation" href="https://juejin.cn/post/7618764794955792447" target="_blank">[646]</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cloud &amp; Web Deployment -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">云端与Web部署</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-blue-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">在线平台优势</h4>
+
+              <div class="space-y-6">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">零安装门槛</h5>
+                  <p class="text-sm text-gray-600">
+                    研究者无需关注软件版本兼容性、操作系统差异、许可证服务器连接等技术细节，通过浏览器即可使用最新功能。
+                    <a class="citation" href="https://developer.aliyun.com/article/1580026" target="_blank">[632]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 mt-2 space-y-1">
+                    <li>• 自动更新机制确保功能同步</li>
+                    <li>• 云端存储实现多终端同步</li>
+                    <li>• 远程办公与出差便利性</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">弹性计算能力</h5>
+                  <p class="text-sm text-gray-600">
+                    大规模数据处理任务在服务器端完成heavy lifting，用户端仅需接收渲染结果。
+                    <a class="citation" href="https://cloud.tencent.com/developer/article/2649531?policyId=1004" target="_blank">[635]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 mt-2 space-y-1">
+                    <li>• 组学数据分析依托服务器集群</li>
+                    <li>• 普通笔记本无法完成的云端加速</li>
+                    <li>• 按需分配计算资源</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-red-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">数据安全与隐私</h4>
+
+              <div class="space-y-6">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">隐私考量</h5>
+                  <p class="text-sm text-gray-600">
+                    敏感实验数据（患者信息、未发表数据、商业机密）上传可能违反机构规定或伦理要求。
+                    <a class="citation" href="https://developer.aliyun.com/article/1580026" target="_blank">[632]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 mt-2 space-y-1">
+                    <li>• 仔细阅读平台隐私政策</li>
+                    <li>• 了解数据存储位置与访问权限</li>
+                    <li>• 备份策略与删除机制</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">企业级解决方案</h5>
+                  <p class="text-sm text-gray-600">
+                    机构版与企业级部署为数据敏感场景提供解决方案，满足HIPAA、GDPR等合规要求。
+                  </p>
+                  <ul class="text-xs text-gray-500 mt-2 space-y-1">
+                    <li>• 私有云部署保留机构防火墙内</li>
+                    <li>• 混合云架构灵活配置</li>
+                    <li>• 端到端加密与多因素认证</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Academic Social &amp; Open Science -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">学术社交与成果传播</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">嵌入式分享</h4>
+
+              <div class="space-y-4">
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">交互式图表</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    Plotly图表的HTML/JS导出格式支持网页嵌入与交互保留，实现&#34;可活化的图表&#34;（living figure）。
+                    <a class="citation" href="https://www.biaodianfu.com/plotly.html" target="_blank">[622]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 个人学术主页嵌入</li>
+                    <li>• 实验室网站动态展示</li>
+                    <li>• 预印本平台交互补充材料</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">社交媒体优化</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    Twitter Card、Open Graph协议、微信公众号长图等格式优化，支持研究成果快速传播。
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 一键分享至主流平台</li>
+                    <li>• 响应式设计适配多设备</li>
+                    <li>• 数据故事叙事模板</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">预印本与开放科学</h4>
+
+              <div class="space-y-4">
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">交互式补充材料</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    bioRxiv、medRxiv、arXiv等平台支持交互式补充材料托管，研究人员可上传完整数据集与可视化代码。
+                    <a class="citation" href="https://help.apiyi.com/paperbanana-scientific-illustration-guide.html" target="_blank">[352]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 读者可复现分析流程</li>
+                    <li>• 验证研究发现与结论</li>
+                    <li>• 促进学术交流与改进</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">FAIR原则</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    Findable, Accessible, Interoperable, Reusable——图表数据的可获取性要求原始数据、分析代码、可视化脚本开放共享。
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 可被查找与访问</li>
+                    <li>• 互操作性强</li>
+                    <li>• 可重用性高</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Agents &amp; MCP -->
+    <section class="py-16 px-8 bg-gradient-to-br from-purple-50 to-indigo-50" id="ai-agents">
+      <div class="max-w-6xl mx-auto">
+        <header class="mb-12">
+          <h2 class="font-display text-3xl font-bold text-gray-900 mb-4">AI Agent与MCP Server智能绘图</h2>
+          <div class="w-24 h-1 bg-slate-800"></div>
+        </header>
+
+        <!-- Multi-Agent Architecture -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">多智能体绘图架构</h3>
+
+          <div class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h4 class="text-2xl font-bold text-gray-900 mb-6">PaperBanana五智能体系统</h4>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              <div>
+                <p class="text-gray-700 mb-6">
+                  由北京大学与Google Cloud AI Research联合开发，于2026年2月正式开源，代表了<strong>AI驱动科研绘图的前沿架构</strong>。其核心创新在于将复杂的学术配图生成任务<strong>拆解为5个独立的专业化智能体</strong>。
+                  <a class="citation" href="https://help.apiyi.com/paperbanana-scientific-illustration-guide.html" target="_blank">[626]</a>
+                </p>
+
+                <div class="bg-purple-50 p-6 rounded-lg">
+                  <h5 class="font-semibold text-purple-900 mb-3">评测表现</h5>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <div class="text-2xl font-bold text-purple-600">72.7%</div>
+                      <div class="text-sm text-gray-600">盲评胜率 vs 人工</div>
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-purple-600">+37.2%</div>
+                      <div class="text-sm text-gray-600">简洁度提升</div>
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-purple-600">+12.9%</div>
+                      <div class="text-sm text-gray-600">可读性提升</div>
+                    </div>
+                    <div>
+                      <div class="text-2xl font-bold text-purple-600">+6.6%</div>
+                      <div class="text-sm text-gray-600">美观度提升</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <img alt="多智能体系统协作流程示意图" class="w-full h-80 object-cover rounded-lg shadow-sm" src="https://kimi-web-img.moonshot.cn/img/aisharenet.com/b165983f9d1acc79296cca8e102944a40456663a.jpg" size="medium" aspect="wide" query="AI多智能体系统协作流程" referrerpolicy="no-referrer" data-modified="1" data-score="0.00"/>
+              </div>
+            </div>
+
+            <!-- PaperBanana Architecture -->
+            <div class="mermaid-container">
+              <div class="mermaid-controls">
+                <button class="mermaid-control-btn zoom-in" title="放大">
+                  <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="mermaid-control-btn zoom-out" title="缩小">
+                  <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="mermaid-control-btn reset-zoom" title="重置">
+                  <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+                <button class="mermaid-control-btn fullscreen" title="全屏查看">
+                  <i class="fas fa-expand"></i>
+                </button>
+              </div>
+              <div class="mermaid" id="paperbanana-diagram">
+                graph TD
+                A[&#34;论文方法描述&#34;] --&gt; B[&#34;Retriever
+                <br/>参考检索&#34;]
+
+                B --&gt; B1[&#34;RAG技术&#34;]
+                B --&gt; B2[&#34;顶会数据库&#34;]
+                B --&gt; B3[&#34;结构匹配策略&#34;]
+
+                B1 --&gt; C[&#34;Planner
+                <br/>内容规划&#34;]
+                B2 --&gt; C
+                B3 --&gt; C
+
+                C --&gt; C1[&#34;上下文学习&#34;]
+                C --&gt; C2[&#34;结构化视觉布局&#34;]
+                C --&gt; C3[&#34;元素关系定义&#34;]
+
+                B --&gt; D[&#34;Stylist
+                <br/>风格统一&#34;]
+
+                D --&gt; D1[&#34;顶会审美指南&#34;]
+                D --&gt; D2[&#34;场景适配能力&#34;]
+                D --&gt; D3[&#34;颜色/字体/图标规范&#34;]
+
+                C --&gt; E[&#34;Visualizer
+                <br/>图像渲染&#34;]
+                D --&gt; E
+
+                E --&gt; E1[&#34;双模式生成&#34;]
+                E --&gt; E2[&#34;方法论配图&#34;]
+                E --&gt; E3[&#34;统计图表&#34;]
+
+                E --&gt; F[&#34;Critic
+                <br/>质量审查&#34;]
+
+                F --&gt; F1[&#34;4维度评估&#34;]
+                F --&gt; F2[&#34;迭代优化循环&#34;]
+                F --&gt; F3[&#34;修改建议与评分&#34;]
+
+                F1 --&gt; E
+                F2 --&gt; G[&#34;发表级配图&#34;]
+
+                style A fill:#f1f5f9,color:#1e293b,stroke:#64748b,stroke-width:2px
+                style B fill:#e0f2fe,color:#082f49,stroke:#0369a1,stroke-width:2px
+                style C fill:#f0f9ff,color:#0c4a6e,stroke:#0284c7,stroke-width:2px
+                style D fill:#ecfdf5,color:#14532d,stroke:#16a34a,stroke-width:2px
+                style E fill:#fdf4ff,color:#701a75,stroke:#9333ea,stroke-width:2px
+                style F fill:#fef3c7,color:#78350f,stroke:#d97706,stroke-width:2px
+                style G fill:#f0fdf4,color:#14532d,stroke:#16a34a,stroke-width:3px
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Mode Output Strategy -->
+          <div class="bg-gradient-to-r from-green-50 to-blue-50 p-8 rounded-lg">
+            <h4 class="text-xl font-semibold text-gray-900 mb-6">双模式输出策略</h4>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div class="bg-white p-6 rounded-lg">
+                <h5 class="font-semibold text-gray-900 mb-4">方法论配图（图像生成）</h5>
+                <p class="text-sm text-gray-600 mb-4">
+                  使用Nano Banana Pro扩散模型，实现视觉美观、布局专业、创意灵活的生成。
+                </p>
+                <ul class="text-xs text-gray-500 space-y-1">
+                  <li>• 架构图、流程图、机制示意图</li>
+                  <li>• 视觉美观，创意灵活</li>
+                  <li>• 专业布局与配色方案</li>
+                </ul>
+              </div>
+
+              <div class="bg-white p-6 rounded-lg">
+                <h5 class="font-semibold text-gray-900 mb-4">统计图表（代码生成）</h5>
+                <p class="text-sm text-gray-600 mb-4">
+                  Matplotlib Python脚本，确保数值精确、可复现、可修改，消除幻觉问题。
+                </p>
+                <ul class="text-xs text-gray-500 space-y-1">
+                  <li>• 柱状图、散点图、热力图、雷达图</li>
+                  <li>• 数值精确，可验证</li>
+                  <li>• 可直接审查修改代码</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-100 rounded-lg">
+              <p class="text-sm text-gray-800">
+                <strong>技术优势：</strong>扩散模型对精确数值关系缺乏可靠理解能力，代码生成模式将数据处理与视觉渲染分离，从根本上保证统计图表的准确性。
+                <a class="citation ml-2" href="https://help.apiyi.com/paperbanana-scientific-illustration-guide.html" target="_blank">[626]</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- MCP Protocol Integration -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">MCP协议与工具集成</h3>
+
+          <div class="bg-white p-8 rounded-lg shadow-lg mb-8">
+            <h4 class="text-xl font-semibold text-gray-900 mb-6">Model Context Protocol核心机制</h4>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              <div>
+                <p class="text-gray-700 mb-6">
+                  由Anthropic于2024年11月推出，被誉为<strong>&#34;AI界的USB-C接口&#34;</strong>——统一、通用、即插即用。MCP的核心设计目标是解决AI应用开发中的&#34;上下文孤岛&#34;问题。
+                  <a class="citation" href="https://agent.csdn.net/683545b4606a8318e85a71ec.html" target="_blank">[650]</a>
+                </p>
+
+                <div class="bg-blue-50 p-6 rounded-lg">
+                  <h5 class="font-semibold text-blue-900 mb-3">三角色架构</h5>
+                  <ul class="text-sm text-gray-700 space-y-2">
+                    <li>• <strong>MCP Host：</strong>包含MCP Client的AI应用（Claude Desktop、Cursor IDE）</li>
+                    <li>• <strong>MCP Server：</strong>轻量级独立进程，翻译外部系统API</li>
+                    <li>• <strong>MCP Client：</strong>嵌入Host内部，负责Server发现与指令转发</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h5 class="font-semibold text-gray-900 mb-4">技术优势</h5>
+                <ul class="space-y-3">
+                  <li class="flex items-start">
+                    <span class="text-green-500 mr-2">✓</span>
+                    <div>
+                      <div class="font-medium text-gray-900">流式传输优先</div>
+                      <div class="text-sm text-gray-600">增量响应机制，低延迟高效率</div>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="text-green-500 mr-2">✓</span>
+                    <div>
+                      <div class="font-medium text-gray-900">协议一致性</div>
+                      <div class="text-sm text-gray-600">不同模型实现间互操作性</div>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="text-green-500 mr-2">✓</span>
+                    <div>
+                      <div class="font-medium text-gray-900">安全性设计</div>
+                      <div class="text-sm text-gray-600">严格权限控制与沙箱机制</div>
+                    </div>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="text-green-500 mr-2">✓</span>
+                    <div>
+                      <div class="font-medium text-gray-900">可扩展性</div>
+                      <div class="text-sm text-gray-600">未来功能无缝集成</div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- MCP Protocol Structure -->
+            <div class="mermaid-container">
+              <div class="mermaid-controls">
+                <button class="mermaid-control-btn zoom-in" title="放大">
+                  <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="mermaid-control-btn zoom-out" title="缩小">
+                  <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="mermaid-control-btn reset-zoom" title="重置">
+                  <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+                <button class="mermaid-control-btn fullscreen" title="全屏查看">
+                  <i class="fas fa-expand"></i>
+                </button>
+              </div>
+              <div class="mermaid" id="mcp-diagram">
+                graph TB
+                A[&#34;Claude Desktop
+                <br/>MCP Host&#34;] --&gt; B1[&#34;github-server
+                <br/>MCP Server&#34;]
+
+                A --&gt; B2[&#34;postgres-server
+                <br/>MCP Server&#34;]
+
+                A --&gt; B3[&#34;custom-server
+                <br/>MCP Server&#34;]
+
+                B1 --&gt; C1[&#34;GitHub API&#34;]
+                B2 --&gt; C2[&#34;PostgreSQL DB&#34;]
+                B3 --&gt; C3[&#34;内部系统&#34;]
+
+                C1 --&gt; D1[&#34;Repository Data&#34;]
+                C2 --&gt; D2[&#34;Database Records&#34;]
+                C3 --&gt; D3[&#34;Custom Functions&#34;]
+
+                D1 --&gt; E[&#34;LLM Context&#34;]
+                D2 --&gt; E
+                D3 --&gt; E
+
+                E --&gt; F[&#34;智能决策&#34;]
+                F --&gt; G[&#34;Tool Calls&#34;]
+                G --&gt; B1
+                G --&gt; B2
+                G --&gt; B3
+
+                style A fill:#0f172a,color:#ffffff,stroke:#475569,stroke-width:3px
+                style B1 fill:#1e40af,color:#ffffff,stroke:#3b82f6,stroke-width:2px
+                style B2 fill:#059669,color:#ffffff,stroke:#10b981,stroke-width:2px
+                style B3 fill:#7c2d12,color:#ffffff,stroke:#ea580c,stroke-width:2px
+                style E fill:#7c3aed,color:#ffffff,stroke:#a855f7,stroke-width:2px
+                style F fill:#dc2626,color:#ffffff,stroke:#ef4444,stroke-width:2px
+                style G fill:#f59e0b,color:#ffffff,stroke:#fbbf24,stroke-width:2px
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-8 rounded-lg">
+            <h4 class="text-xl font-semibold text-gray-900 mb-6">MCP与Agent Skills的协同</h4>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <p class="text-gray-700 mb-6">
+                  <strong>关系定位：</strong>MCP与Agent Skills是能力层与流程层的协同，而非竞争替代。Anthropic的硬件店类比：MCP是货架通道系统，Agent Skills是员工的专业知识。
+                  <a class="citation" href="https://layered.dev/mcp-vs-agent-skills/" target="_blank">[629]</a>
+                </p>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-medium text-gray-900 mb-3">协作案例</h5>
+                  <ul class="text-sm text-gray-600 space-y-2">
+                    <li>• <strong>金融分析：</strong>Skill定义方法论，MCP提供数据访问</li>
+                    <li>• <strong>会议智能：</strong>Skill定义搜索策略，MCP处理CRUD操作</li>
+                    <li>• <strong>多服务器协调：</strong>Skill协调跨多个数据源的工作流</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">能力层（MCP）</h5>
+                  <p class="text-sm text-gray-600 mb-2">定义Agent&#34;能做什么&#34;：工具调用、数据访问、操作执行</p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• MCP Tools：Agent可以执行的操作</li>
+                    <li>• MCP Resources：Agent可以读取的上下文</li>
+                    <li>• MCP Prompts/Commands：显式用户调用</li>
+                    <li>• Rules：始终适用的不变量</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">流程层（Agent Skills）</h5>
+                  <p class="text-sm text-gray-600 mb-2">定义Agent&#34;如何做&#34;：工作流步骤、领域专业知识、约束条件</p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• Agent Skills：工作流、专业知识、分步指导</li>
+                    <li>• Subagents：并行工作流与隔离上下文</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-100 rounded-lg">
+              <p class="text-sm text-gray-800">
+                <strong>经验法则：</strong>&#34;MCP指令涵盖如何正确使用服务器及其工具；Skill指令涵盖如何在给定流程或多服务器工作流中使用它们。&#34;
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agent Development Frameworks -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">智能体开发框架</h3>
+
+          <div class="chart-container">
+            <h4 class="text-xl font-semibold text-gray-900 mb-6">主流框架对比</h4>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b">
+                    <th class="text-left py-3 px-4 font-semibold">框架</th>
+                    <th class="text-left py-3 px-4 font-semibold">核心定位</th>
+                    <th class="text-left py-3 px-4 font-semibold">架构特点</th>
+                    <th class="text-left py-3 px-4 font-semibold">最佳适用场景</th>
+                    <th class="text-left py-3 px-4 font-semibold">学习曲线</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-600">
+                  <tr class="border-b">
+                    <td class="py-3 px-4 font-medium">LangChain/LangGraph</td>
+                    <td class="py-3 px-4">模块化通用LLM应用开发</td>
+                    <td class="py-3 px-4">组件化Chains/Graphs，状态机驱动</td>
+                    <td class="py-3 px-4">快速原型、功能多样、状态复杂的智能体</td>
+                    <td class="py-3 px-4">中等</td>
+                  </tr>
+                  <tr class="border-b">
+                    <td class="py-3 px-4 font-medium">LlamaIndex</td>
+                    <td class="py-3 px-4">以数据为中心的RAG应用</td>
+                    <td class="py-3 px-4">数据摄取-索引-查询的完整pipeline</td>
+                    <td class="py-3 px-4">私有知识库查询、文献理解、数据检索</td>
+                    <td class="py-3 px-4">中等</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-4 font-medium">AutoGen</td>
+                    <td class="py-3 px-4">多智能体对话与协作</td>
+                    <td class="py-3 px-4">可定制Agent角色，自然语言消息传递</td>
+                    <td class="py-3 px-4">多角色协同、自主任务分配、复杂工作流</td>
+                    <td class="py-3 px-4">较高</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-sm text-gray-500 mt-4">
+              <a class="citation" href="https://github.com/Scodive/AI-Agent-Guide" target="_blank">[652]</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Future Trends -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">科研绘图Agent的演进趋势</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">当前能力边界</h4>
+
+              <div class="space-y-6">
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">表现评估</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    PaperBanana在292个NeurIPS 2025论文插图评测基准上取得72.7%盲评胜率，但内容忠实度仍需人工把关。
+                    <a class="citation" href="https://help.apiyi.com/paperbanana-scientific-illustration-guide.html" target="_blank">[626]</a>
+                  </p>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-green-50 p-3 rounded">
+                      <div class="text-lg font-bold text-green-600">72.7%</div>
+                      <div class="text-xs text-gray-600">盲评胜率</div>
+                    </div>
+                    <div class="bg-yellow-50 p-3 rounded">
+                      <div class="text-lg font-bold text-yellow-600">需人工</div>
+                      <div class="text-xs text-gray-600">内容忠实度</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h5 class="font-semibold text-gray-900 mb-3">核心瓶颈</h5>
+                  <ul class="text-sm text-gray-600 space-y-2">
+                    <li>• 复杂空间关系的精确理解（分子立体化学、电路拓扑）</li>
+                    <li>• 科学符号的准确渲染（数学公式、化学结构式）</li>
+                    <li>• 领域特定规范的严格遵循（期刊格式要求）</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">未来发展方向</h4>
+
+              <div class="space-y-6">
+                <div>
+                  <h5 class="font-semibold text-blue-900 mb-3">技术融合</h5>
+                  <ul class="text-sm text-gray-700 space-y-2">
+                    <li>• <strong>领域特定语言模型（DSLM）</strong>与生物医学知识深度融合</li>
+                    <li>• 结构化知识库（Gene Ontology、Cell Ontology）嵌入推理</li>
+                    <li>• 端到端科研流程的自动化：文献→设计→分析→图表→论文</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 class="font-semibold text-blue-900 mb-3">人机协作</h5>
+                  <ul class="text-sm text-gray-700 space-y-2">
+                    <li>• AI承担繁琐执行工作（素材搜索、布局调整）</li>
+                    <li>• 人类专注概念设计和科学判断</li>
+                    <li>• Critic智能体迭代优化机制预示未来工作流</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <p class="text-sm text-gray-800 font-medium">
+                    2026年被业界预测为<strong>多智能体系统全面投入应用的关键年份</strong>，Agent控制平面、A2A通信协议、Agent支付协议等配套技术的成熟将加速这一转型。
+                    <a class="citation" href="https://news.qq.com/rain/a/20260105A02WC200" target="_blank">[479]</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Decision Framework -->
+    <section class="py-16 px-8 bg-white" id="decision-framework">
+      <div class="max-w-6xl mx-auto">
+        <header class="mb-12">
+          <h2 class="font-display text-3xl font-bold text-gray-900 mb-4">工具选型决策框架</h2>
+          <div class="w-24 h-1 bg-slate-800"></div>
+        </header>
+
+        <!-- Skill Level Layering -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">按技能水平分层</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <!-- Beginner Level -->
+            <div class="bg-green-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">零基础友好型</h4>
+
+              <div class="space-y-6">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">BioGDP</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    10000+原创素材，200+顶刊模板，官方版权授权
+                    <a class="citation" href="https://cloud.tencent.com/developer/article/2645272?policyId=1003" target="_blank">[647]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 机制图、通路图、示意图</li>
+                    <li>• 学习曲线极低</li>
+                    <li>• 生物医学领域初阶研究者</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">Hiplot</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    200+可视化图表，内置医学统计模块，免费
+                    <a class="citation" href="https://cloud.tencent.com/developer/article/2649531?policyId=1004" target="_blank">[635]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 火山图、热图、网络图、生存曲线</li>
+                    <li>• 学习曲线低</li>
+                    <li>• 临床医生、流行病学研究者</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">PicDoc</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    AI一键出图，零门槛，中文优化
+                    <a class="citation" href="https://juejin.cn/post/7618764794955792447" target="_blank">[646]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 通路图、实验流程图、数据可视化</li>
+                    <li>• 无学习曲线</li>
+                    <li>• 时间紧迫的非设计背景研究者</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-6 p-4 bg-green-100 rounded-lg">
+                <p class="text-sm text-gray-800">
+                  <strong>共同特征：</strong>即开即用、模板驱动、中文界面优化，将原本需要数小时的专业绘图工作缩短至数分钟。
+                </p>
+              </div>
+            </div>
+
+            <!-- Intermediate Level -->
+            <div class="bg-blue-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">进阶专业型</h4>
+
+              <div class="space-y-6">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">GraphPad Prism</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    统计分析与图形生成无缝衔接
+                    <a class="citation" href="https://cloud.tencent.com/developer/article/2648779" target="_blank">[637]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• t检验、ANOVA、生存分析、非线性回归</li>
+                    <li>• 需要基础统计学知识</li>
+                    <li>• 生物医学实验数据统计分析</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">Origin</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    海量数据处理，非线性拟合，SCI顶刊标准输出
+                    <a class="citation" href="https://cloud.tencent.com/developer/article/2648779" target="_blank">[637]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 曲线拟合、峰值分析、信号处理、批量出图</li>
+                    <li>• 需掌握软件操作逻辑与高级功能</li>
+                    <li>• 物理、化学、生物跨学科复杂数据</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-6 p-4 bg-blue-100 rounded-lg">
+                <p class="text-sm text-gray-800">
+                  <strong>投资回报：</strong>期刊规范的内置支持减少后期调整工作，教育机构许可和实验室团购方案使商业软件使用成本可控。
+                </p>
+              </div>
+            </div>
+
+            <!-- Advanced Level -->
+            <div class="bg-purple-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">高阶定制型</h4>
+
+              <div class="space-y-6">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">Adobe Illustrator</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    矢量设计行业标准，精细化排版与配色
+                    <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 无限缩放精度，复合图高质量排版</li>
+                    <li>• 需要设计基础，掌握钢笔工具与色彩理论</li>
+                    <li>• 跨学科复杂图表、期刊封面、顶刊精修</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">MATLAB</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    高级建模与仿真，算法开发，2D/3D图表
+                    <a class="citation" href="https://cloud.tencent.com/developer/article/2648779" target="_blank">[637]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 微分方程求解，信号处理，图像分析</li>
+                    <li>• 需要编程基础，数学建模能力</li>
+                    <li>• 生物工程、神经科学定量研究与动态模拟</li>
+                  </ul>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">Python/R编程</h5>
+                  <p class="text-sm text-gray-600 mb-3">
+                    高度可编程，科学计算生态集成，交互式可视化
+                    <a class="citation" href="https://www.yanfajia.com/news/6005.html" target="_blank">[619]</a>
+                  </p>
+                  <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• 批量生成，版本控制，自动化流水线</li>
+                    <li>• 需要软件开发能力，版本控制实践</li>
+                    <li>• 需要频繁更新数据的长期研究项目</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-6 p-4 bg-purple-100 rounded-lg">
+                <p class="text-sm text-gray-800">
+                  <strong>核心挑战：</strong>技术栈的整合与维护需要持续工程投入，但回报是无限的定制可能性——任何视觉想象均可实现，任何分析流程均可自动化。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application Scenarios -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">按应用场景匹配</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="bg-blue-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">数据驱动研究</h4>
+              <div class="bg-white p-6 rounded-lg h-full">
+                <p class="text-gray-700 mb-4">
+                  以<strong>统计分析为核心</strong>的研究项目（临床试验、流行病学调查、组学数据挖掘）应<strong>优先选择编程工具</strong>。
+                  <a class="citation" href="https://www.yanfajia.com/news/5275.html" target="_blank">[620]</a>
+                </p>
+
+                <div class="space-y-4">
+                  <div>
+                    <h5 class="font-medium text-gray-900 mb-2">推荐工具</h5>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                      <li>• Python（Matplotlib/Seaborn/Plotly）</li>
+                      <li>• R（ggplot2）</li>
+                      <li>• Jupyter Notebook整合分析</li>
+                      <li>• 版本控制确保协作透明</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h5 class="font-medium text-gray-900 mb-2">核心优势</h5>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                      <li>• 统计方法完整覆盖</li>
+                      <li>• 结果可复现性保障</li>
+                      <li>• 探索性分析与报告整合</li>
+                      <li>• 高频更新的自动化优势</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-green-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">机制示意图</h4>
+              <div class="bg-white p-6 rounded-lg h-full">
+                <p class="text-gray-700 mb-4">
+                  <strong>概念性、说明性的机制图和通路图</strong>（信号通路假设、理论框架、技术路线）适合采用<strong>AI生成初稿 + 矢量编辑精修</strong>的组合策略。
+                  <a class="citation" href="https://www.picdoc.cn/blog/research-drawing-tools.html" target="_blank">[636]</a>
+                  <a class="citation" href="https://juejin.cn/post/7618764794955792447" target="_blank">[646]</a>
+                </p>
+
+                <div class="space-y-4">
+                  <div>
+                    <h5 class="font-medium text-gray-900 mb-2">推荐组合</h5>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                      <li>• BioRender/PicDoc生成初稿</li>
+                      <li>• Adobe Illustrator后期精修</li>
+                      <li>• 兼顾效率与质量</li>
+                      <li>• 生物医学领域标准实践</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h5 class="font-medium text-gray-900 mb-2">工作流程</h5>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                      <li>• AI工具快速产出符合规范草案</li>
+                      <li>• 矢量编辑软件实现细节调整</li>
+                      <li>• 多图排版与统一风格</li>
+                      <li>• 顶刊级质量最终输出</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-purple-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">跨学科复杂项目</h4>
+              <div class="bg-white p-6 rounded-lg h-full">
+                <p class="text-gray-700 mb-4">
+                  涉及<strong>多个学科方法、多种数据类型</strong>的复杂项目，<strong>Origin的多学科适配性 + AI Agent辅助生成</strong>提供了最佳平衡。
+                  <a class="citation" href="https://cloud.tencent.com/developer/article/2648779" target="_blank">[637]</a>
+                </p>
+
+                <div class="space-y-4">
+                  <div>
+                    <h5 class="font-medium text-gray-900 mb-2">最佳组合</h5>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                      <li>• Origin处理实验数据统计分析</li>
+                      <li>• AI Agent（PaperBanana）加速示意图生成</li>
+                      <li>• 人类专注科学判断和创新思考</li>
+                      <li>• 工具链协同效率最大化</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h5 class="font-medium text-gray-900 mb-2">成功要素</h5>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                      <li>• 团队技术储备与流程标准化</li>
+                      <li>• 明确分工与协作机制</li>
+                      <li>• 质量控制与版本管理</li>
+                      <li>• 持续优化与经验积累</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cost &amp; Copyright -->
+        <div class="mb-16">
+          <h3 class="font-display text-2xl font-semibold text-gray-900 mb-8">成本与版权考量</h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-green-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">免费开源组合</h4>
+
+              <div class="bg-white p-6 rounded-lg mb-6">
+                <h5 class="font-semibold text-gray-900 mb-4">零成本完整工具链</h5>
+                <p class="text-sm text-gray-600 mb-4">
+                  BioGDP免费版 + Hiplot + SciDraw + Inkscape + Python科学计算生态构成了<strong>功能覆盖度约70%</strong>的完整解决方案。
+                  <a class="citation" href="https://cloud.tencent.com/developer/article/2649531?policyId=1004" target="_blank">[635]</a>
+                  <a class="citation" href="https://cloud.tencent.com/developer/article/2645272?policyId=1003" target="_blank">[647]</a>
+                </p>
+
+                <div class="space-y-3">
+                  <div class="flex items-start">
+                    <span class="text-green-500 mr-2">✓</span>
+                    <div class="text-sm text-gray-600">机制图：BioGDP免费版替代BioRender付费版</div>
+                  </div>
+                  <div class="flex items-start">
+                    <span class="text-green-500 mr-2">✓</span>
+                    <div class="text-sm text-gray-600">统计图表：Hiplot替代GraphPad Prism部分功能</div>
+                  </div>
+                  <div class="flex items-start">
+                    <span class="text-green-500 mr-2">✓</span>
+                    <div class="text-sm text-gray-600">矢量精修：Inkscape替代Adobe Illustrator</div>
+                  </div>
+                  <div class="flex items-start">
+                    <span class="text-green-500 mr-2">✓</span>
+                    <div class="text-sm text-gray-600">编程可视化：Python生态替代MATLAB部分功能</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 bg-yellow-100 rounded-lg">
+                <p class="text-sm text-gray-800">
+                  <strong>功能缺口：</strong>专业统计引导（Prism卖点）、高级3D渲染（Origin/MATLAB优势）、协作功能（BioRender团队版）。
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-blue-50 p-8 rounded-lg">
+              <h4 class="text-xl font-semibold text-gray-900 mb-6">商业授权策略</h4>
+
+              <div class="space-y-4">
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">教育机构许可</h5>
+                  <p class="text-sm text-gray-600 mb-2">
+                    Origin、MATLAB、Adobe Creative Cloud等软件提供教育许可，价格约为商业版的40-60%
+                  </p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">实验室团购</h5>
+                  <p class="text-sm text-gray-600 mb-2">
+                    GraphPad Prism、BioRender团队版等提供实验室团购方案，单用户成本随规模递减
+                  </p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">团队版/企业版</h5>
+                  <p class="text-sm text-gray-600 mb-2">
+                    需要协作功能与权限管理的课题组，功能溢价 vs. 效率提升的权衡
+                  </p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg">
+                  <h5 class="font-semibold text-gray-900 mb-3">AI API按需调用</h5>
+                  <p class="text-sm text-gray-600 mb-2">
+                    Nano Banana Pro等生成式服务，$0.05/张，低至官方定价2折
+                    <a class="citation" href="https://help.apiyi.com/paperbanana-scientific-illustration-guide.html" target="_blank">[626]</a>
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-6 p-4 bg-red-100 rounded-lg">
+                <p class="text-sm text-gray-800">
+                  <strong>版权风险：</strong>使用未经授权的素材或软件可能导致论文撤稿、法律纠纷等严重后果。专业绘图平台的版权授权文件为投稿提供合规保障。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-8 bg-gray-900 text-white">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="mb-8">
+          <h3 class="font-display text-2xl font-bold mb-4">科研绘图工具生态演进</h3>
+          <p class="text-gray-300 leading-relaxed">
+            从传统桌面软件到AI驱动智能体，从单机操作到云端协作，科研绘图工具正在经历前所未有的范式转移。
+            选择合适的工具组合，将助力您的研究成果以更专业、更高效的方式呈现。
+          </p>
+        </div>
+
+        <div class="border-t border-gray-700 pt-8">
+          <p class="text-gray-400 text-sm">
+            2026 科研绘图工具与AI Agent技术深度研究 | 基于开放学术资源整理分析
+          </p>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Mobile Menu Toggle -->
+  <button class="fixed top-4 left-4 z-50 lg:hidden bg-white p-2 rounded-lg shadow-lg" id="mobile-menu-toggle">
+    <i class="fas fa-bars text-gray-900"></i>
+  </button>
+
+  <script>
+      // Initialize Mermaid with enhanced theme and contrast
+      mermaid.initialize({
+          startOnLoad: true,
+          theme: 'base',
+          themeVariables: {
+              primaryColor: '#f8f7f4',
+              primaryTextColor: '#1f2937',
+              primaryBorderColor: '#374151',
+              lineColor: '#6b7280',
+              secondaryColor: '#f1f5f9',
+              tertiaryColor: '#e2e8f0',
+              background: '#ffffff',
+              mainBkg: '#f8f7f4',
+              secondBkg: '#f1f5f9',
+              tertiaryBkg: '#e2e8f0',
+              // Enhanced contrast colors for better readability
+              primaryBorderColor: '#374151',
+              primaryTextColor: '#111827',
+              secondaryTextColor: '#374151',
+              tertiaryTextColor: '#4b5563',
+              // Node backgrounds with high contrast
+              cScale0: '#f8f7f4',
+              cScale1: '#f1f5f9',
+              cScale2: '#e2e8f0',
+              cScale3: '#cbd5e1',
+              cScale4: '#94a3b8',
+              // Text colors for different backgrounds
+              cScaleLabel0: '#1f2937',
+              cScaleLabel1: '#1f2937',
+              cScaleLabel2: '#374151',
+              cScaleLabel3: '#374151',
+              cScaleLabel4: '#f8f7f4'
+          },
+          flowchart: {
+              useMaxWidth: false,
+              htmlLabels: true,
+              curve: 'basis',
+              padding: 20
+          },
+          sequence: {
+              useMaxWidth: false,
+              wrap: true
+          },
+          gantt: {
+              useMaxWidth: false
+          }
+      });
+      
+      // Table of Contents Active Link Management
+      const sections = document.querySelectorAll('section[id]');
+      const tocLinks = document.querySelectorAll('.toc-link');
+      
+      function updateActiveLink() {
+          let current = '';
+          sections.forEach(section => {
+              const sectionTop = section.offsetTop - 100;
+              if (scrollY >= sectionTop) {
+                  current = section.getAttribute('id');
+              }
+          });
+          
+          tocLinks.forEach(link => {
+              link.classList.remove('active');
+              if (link.getAttribute('href') === `#${current}`) {
+                  link.classList.add('active');
+              }
+          });
+      }
+      
+      window.addEventListener('scroll', updateActiveLink);
+      updateActiveLink();
+      
+      // Smooth Scrolling for TOC Links
+      tocLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+              e.preventDefault();
+              const targetId = this.getAttribute('href').substring(1);
+              const targetSection = document.getElementById(targetId);
+              if (targetSection) {
+                  targetSection.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                  });
+              }
+              
+              // Close mobile menu after clicking
+              if (window.innerWidth <= 1024) {
+                  document.querySelector('.toc-sidebar').classList.remove('open');
+              }
+          });
+      });
+      
+      // Mobile Menu Toggle
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const tocSidebar = document.querySelector('.toc-sidebar');
+      
+      mobileMenuToggle.addEventListener('click', function() {
+          tocSidebar.classList.toggle('open');
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function(event) {
+          if (tocSidebar.classList.contains('open') && 
+              !tocSidebar.contains(event.target) && 
+              event.target !== mobileMenuToggle) {
+              tocSidebar.classList.remove('open');
+          }
+      });
+      
+      // Citation Hover Effects
+      document.addEventListener('DOMContentLoaded', function() {
+          const citations = document.querySelectorAll('.citation');
+          citations.forEach(citation => {
+              citation.addEventListener('mouseenter', function() {
+                  this.style.transform = 'scale(1.1)';
+              });
+              citation.addEventListener('mouseleave', function() {
+                  this.style.transform = 'scale(1)';
+              });
+          });
+      });
+      
+      // Mobile Menu Toggle
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const tocSidebar = document.querySelector('.toc-sidebar');
+      
+      mobileMenuToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          tocSidebar.classList.toggle('open');
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function(event) {
+          if (tocSidebar.classList.contains('open') && 
+              !tocSidebar.contains(event.target) && 
+              event.target !== mobileMenuToggle) {
+              tocSidebar.classList.remove('open');
+          }
+      });
+      
+      // Close mobile menu when window is resized to desktop
+      window.addEventListener('resize', function() {
+          if (window.innerWidth > 1024) {
+              tocSidebar.classList.remove('open');
+          }
+      });
+      
+      // Initialize Mermaid Controls for zoom and pan
+      function initializeMermaidControls() {
+          const containers = document.querySelectorAll('.mermaid-container');
+
+          containers.forEach(container => {
+          const mermaidElement = container.querySelector('.mermaid');
+          let scale = 1;
+          let isDragging = false;
+          let startX, startY, translateX = 0, translateY = 0;
+
+          // 触摸相关状态
+          let isTouch = false;
+          let touchStartTime = 0;
+          let initialDistance = 0;
+          let initialScale = 1;
+          let isPinching = false;
+
+          // Zoom controls
+          const zoomInBtn = container.querySelector('.zoom-in');
+          const zoomOutBtn = container.querySelector('.zoom-out');
+          const resetBtn = container.querySelector('.reset-zoom');
+          const fullscreenBtn = container.querySelector('.fullscreen');
+
+          function updateTransform() {
+              mermaidElement.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+
+              if (scale > 1) {
+              container.classList.add('zoomed');
+              } else {
+              container.classList.remove('zoomed');
+              }
+
+              mermaidElement.style.cursor = isDragging ? 'grabbing' : 'grab';
+          }
+
+          if (zoomInBtn) {
+              zoomInBtn.addEventListener('click', () => {
+              scale = Math.min(scale * 1.25, 4);
+              updateTransform();
+              });
+          }
+
+          if (zoomOutBtn) {
+              zoomOutBtn.addEventListener('click', () => {
+              scale = Math.max(scale / 1.25, 0.3);
+              if (scale <= 1) {
+                  translateX = 0;
+                  translateY = 0;
+              }
+              updateTransform();
+              });
+          }
+
+          if (resetBtn) {
+              resetBtn.addEventListener('click', () => {
+              scale = 1;
+              translateX = 0;
+              translateY = 0;
+              updateTransform();
+              });
+          }
+
+          if (fullscreenBtn) {
+              fullscreenBtn.addEventListener('click', () => {
+              if (container.requestFullscreen) {
+                  container.requestFullscreen();
+              } else if (container.webkitRequestFullscreen) {
+                  container.webkitRequestFullscreen();
+              } else if (container.msRequestFullscreen) {
+                  container.msRequestFullscreen();
+              }
+              });
+          }
+
+          // Mouse Events
+          mermaidElement.addEventListener('mousedown', (e) => {
+              if (isTouch) return; // 如果是触摸设备，忽略鼠标事件
+
+              isDragging = true;
+              startX = e.clientX - translateX;
+              startY = e.clientY - translateY;
+              mermaidElement.style.cursor = 'grabbing';
+              updateTransform();
+              e.preventDefault();
+          });
+
+          document.addEventListener('mousemove', (e) => {
+              if (isDragging && !isTouch) {
+              translateX = e.clientX - startX;
+              translateY = e.clientY - startY;
+              updateTransform();
+              }
+          });
+
+          document.addEventListener('mouseup', () => {
+              if (isDragging && !isTouch) {
+              isDragging = false;
+              mermaidElement.style.cursor = 'grab';
+              updateTransform();
+              }
+          });
+
+          document.addEventListener('mouseleave', () => {
+              if (isDragging && !isTouch) {
+              isDragging = false;
+              mermaidElement.style.cursor = 'grab';
+              updateTransform();
+              }
+          });
+
+          // 获取两点之间的距离
+          function getTouchDistance(touch1, touch2) {
+              return Math.hypot(
+              touch2.clientX - touch1.clientX,
+              touch2.clientY - touch1.clientY
+              );
+          }
+
+          // Touch Events - 触摸事件处理
+          mermaidElement.addEventListener('touchstart', (e) => {
+              isTouch = true;
+              touchStartTime = Date.now();
+
+              if (e.touches.length === 1) {
+              // 单指拖动
+              isPinching = false;
+              isDragging = true;
+
+              const touch = e.touches[0];
+              startX = touch.clientX - translateX;
+              startY = touch.clientY - translateY;
+
+              } else if (e.touches.length === 2) {
+              // 双指缩放
+              isPinching = true;
+              isDragging = false;
+
+              const touch1 = e.touches[0];
+              const touch2 = e.touches[1];
+              initialDistance = getTouchDistance(touch1, touch2);
+              initialScale = scale;
+              }
+
+              e.preventDefault();
+          }, { passive: false });
+
+          mermaidElement.addEventListener('touchmove', (e) => {
+              if (e.touches.length === 1 && isDragging && !isPinching) {
+              // 单指拖动
+              const touch = e.touches[0];
+              translateX = touch.clientX - startX;
+              translateY = touch.clientY - startY;
+              updateTransform();
+
+              } else if (e.touches.length === 2 && isPinching) {
+              // 双指缩放
+              const touch1 = e.touches[0];
+              const touch2 = e.touches[1];
+              const currentDistance = getTouchDistance(touch1, touch2);
+
+              if (initialDistance > 0) {
+                  const newScale = Math.min(Math.max(
+                  initialScale * (currentDistance / initialDistance),
+                  0.3
+                  ), 4);
+                  scale = newScale;
+                  updateTransform();
+              }
+              }
+
+              e.preventDefault();
+          }, { passive: false });
+
+          mermaidElement.addEventListener('touchend', (e) => {
+              // 重置状态
+              if (e.touches.length === 0) {
+              isDragging = false;
+              isPinching = false;
+              initialDistance = 0;
+
+              // 延迟重置isTouch，避免鼠标事件立即触发
+              setTimeout(() => {
+                  isTouch = false;
+              }, 100);
+              } else if (e.touches.length === 1 && isPinching) {
+              // 从双指变为单指，切换为拖动模式
+              isPinching = false;
+              isDragging = true;
+
+              const touch = e.touches[0];
+              startX = touch.clientX - translateX;
+              startY = touch.clientY - translateY;
+              }
+
+              updateTransform();
+          });
+
+          mermaidElement.addEventListener('touchcancel', (e) => {
+              isDragging = false;
+              isPinching = false;
+              initialDistance = 0;
+
+              setTimeout(() => {
+              isTouch = false;
+              }, 100);
+
+              updateTransform();
+          });
+
+          // Enhanced wheel zoom with better center point handling
+          container.addEventListener('wheel', (e) => {
+              e.preventDefault();
+              const rect = container.getBoundingClientRect();
+              const centerX = rect.width / 2;
+              const centerY = rect.height / 2;
+
+              const delta = e.deltaY > 0 ? 0.9 : 1.1;
+              const newScale = Math.min(Math.max(scale * delta, 0.3), 4);
+
+              // Adjust translation to zoom towards center
+              if (newScale !== scale) {
+              const scaleDiff = newScale / scale;
+              translateX = translateX * scaleDiff;
+              translateY = translateY * scaleDiff;
+              scale = newScale;
+
+              if (scale <= 1) {
+                  translateX = 0;
+                  translateY = 0;
+              }
+
+              updateTransform();
+              }
+          });
+
+          // Initialize display
+          updateTransform();
+          });
+      }
+      
+      // Initialize Mermaid Controls
+      initializeMermaidControls();
+  </script>
+
+
+
+</body></html>
